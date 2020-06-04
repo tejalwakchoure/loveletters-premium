@@ -1,5 +1,5 @@
 import random
-
+import copy
 
 
 class Card:
@@ -49,10 +49,14 @@ extCards = [Card(9, 'Bishop', ''),
 
         
 class Player:
-    def __init__(self, user):
+    def __init__(self, user, username = False):
         self.user = user
         self.reset()
         self.tokens = 0
+        if username:
+            self.username = username
+        else:
+            self.username = 'random' + user
         
     def reset(self):
         self.card = None
@@ -74,7 +78,7 @@ class Player:
         sum = 0
         
         for card in self.discard_pile:
-            sum += self.discard_pile.card_number
+            sum += card.card_number
             
         self.sum = sum
 
@@ -92,6 +96,7 @@ class Round:
         self.winner = None
         
         self.sychoTar = None
+        
         self.jesterTar = None
         self.jesterBet = None
         #TODO: Targets 
@@ -112,15 +117,18 @@ class Round:
         
     def player_turn(self):
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
+        ################
+        self.curr_stat()
+        
         #TODO: if it's a Countess with a prince or King, has to discard the Countess
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given):
-        if card_chosen.card_name == self.players[self.turn].card.card_name:#Chose his normal card
+        if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
             card_discarded = self.players[self.turn].card
             self.players[self.turn].card = self.players[self.turn].extra
             self.players[self.turn].extra = None
             
-        elif card_chosen.card_name == self.players[self.turn].extra.card_name:#Chose the extra one
+        elif card_chosen == self.players[self.turn].extra.card_name:#Chose the extra one
             card_discarded = self.players[self.turn].extra
             self.players[self.turn].extra = None
             
@@ -128,19 +136,22 @@ class Round:
             print("Unknown card chosen??")
             return
             
-        self.player[self.turn].discard_pile.append(card_discarded)
+        self.players[self.turn].discard_pile.append(card_discarded)
         self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
         if self.check_win():
             self.players[self.winner].tokens += 1
             self.super_game.end_round()
         else:
-            self.turn_no = (self.turn_no + 1) % len(self.players)
+            self.turn_no = (self.turn_no + 1) % len(self.order)
             self.turn = self.order[self.turn_no]
             self.player_turn()
             
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
+        if self.players[plyr1].out or self.players[plyr2].out:
+            print("One player is out, unacceptable")
+            raise Exception("Hello Sir, what is this") 
         
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
@@ -162,13 +173,13 @@ class Round:
             #Nothing on tie
             
         elif played_card.card_name == 'King': #Exchange cards with chosen player
-            player_trade(self, self.turn, plyr1)
+            self.player_trade(self.turn, plyr1)
         
         elif played_card.card_name == 'Constable': #Nothing happens on discard
              self.players[self.turn].dis_const += 1
             
         elif played_card.card_name == 'Prince': #Chosen player discards current card
-            player_discard(plyr1)
+            self.player_discard(plyr1)
             
         elif played_card.card_name == 'Count': #Nothing happens on discard
             self.players[self.turn].dis_count += 1
@@ -191,7 +202,7 @@ class Round:
             pass #TODO HERE
             
         elif played_card.card_name == 'Cardinal': #Two people  exchange
-            player_trade(self, plyr1, plyr2)
+            self.player_trade(plyr1, plyr2)
             # TODO: Reveal one card 
             
         elif played_card.card_name == 'Priest': #Reveal card here
@@ -200,6 +211,7 @@ class Round:
         elif played_card.card_name == 'Guard': #Number and player revealed
             if self.players[plyr1].card.card_name == 'Assassin':
                 self.knockout_player(self.turn)
+                self.player_discard(plyr1) #Discard the assassin
                 
             elif self.players[plyr1].card.card_number == numb_given:
                 self.knockout_player(plyr1)
@@ -223,7 +235,7 @@ class Round:
         
         if not self.players[plyr].out:
             if(self.cards):
-                self.players[plyr].card = self.card.pop()
+                self.players[plyr].card = self.cards.pop()
             else:
                 self.players[plyr].card = self.top_card
         
@@ -236,11 +248,15 @@ class Round:
         self.order.remove(plyr)
         self.players[plyr].out = True
         self.players[plyr].tokens += self.players[plyr].dis_const
+        
+        
+        ##################
+        print(plyr + " HAS BEEN ELIMINATED")
 
         
     def check_win(self):
         fin_players = []
-        win False
+        win = False
         if len(self.order) == 1: #only one player is left, he wins
             self.winner = self.order[0]
             win =  True
@@ -266,7 +282,14 @@ class Round:
             if self.winner == self.jesterTar: #If the bet made by the joker was correct, give the token
                 self.players[self.jesterBet].tokens += 1
         return win
-                
+        
+    def curr_stat(self):
+        print(self.order)
+        
+        for plyrs in self.order:
+            print(plyrs + ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
+        
+        print(self.turn + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
     
 
 class Game:
@@ -302,19 +325,19 @@ class Game:
         if len(self.order) > 4:
             self.cards.extend(extCards)
             
-        self.round = Round(self, self.players, self.order, self.cards, random.randint(0, len(self.order)-1))
+        self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), random.randint(0, len(self.order)-1))
             
         
     def check_winner(self):
         for plyr in self.players:
-            if plyr.tokens == 4:
+            if self.players[plyr].tokens == 4:
                 self.end_round(False)
                 self.overall_winner = plyr
                 return True
         return False
         
     def end_round(self, new = True):
-        if new and not self.check_winner:
+        if new and not self.check_winner():
             
             winner_no = 0
             for x in self.order:
@@ -322,15 +345,18 @@ class Game:
                     break
                 winner_no += 1
                 
-            self.cards = allCards
-            if len(self.order) > 4:
-                self.cards.extend(extCards)
-            self.round = Round(self, self.players, self.order, self.cards, winner_no)
+            self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), winner_no)
         else:
             self.round = None
 
-            
 
-        
-    
-    
+#This is testing part
+game = Game('user', 'password', 'roomname')
+
+game.add_player('a')
+game.add_player('b')
+game.add_player('c')
+game.add_player('d')
+game.add_player('e')
+game.start_game()
+
