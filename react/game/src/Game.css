@@ -1,0 +1,60 @@
+.Game {
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .Game-logo {
+    animation: Game-logo-spin infinite 20s linear;
+  }
+}
+
+.Game-header {
+  background-color: #3A1D1D;
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.Card-carousel {
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-start;
+   background-color: #231212;
+   padding: 5px 5px 5px 3px;
+   min-width: 80vw;
+   border-radius: 5px;
+}
+
+.Discard-button {
+  height: 10vh;
+  margin-bottom: 10px;
+  background-color: #C1631E !important;
+  font-weight: bold !important;
+  border-radius: 3px !important;
+  border: 1px solid black !important;
+}
+
+.Card-design {
+  color: gray;
+  background-color: aliceblue;
+  width: 15rem;
+  border-radius: 10px !important;
+  border: 1px solid gray !important; 
+  box-shadow: 5px 5px 5px 5px black;
+} 
+.Card-design :hover {
+    opacity: 0.97;
+    cursor: pointer;
+  }
+
+@keyframes Game-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
