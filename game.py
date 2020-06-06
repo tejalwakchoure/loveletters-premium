@@ -95,6 +95,8 @@ class Round:
         self.cards = cards
         self.winner = None
         
+        
+        
         self.sychoTar = None
         
         self.jesterTar = None
@@ -117,6 +119,7 @@ class Round:
         
     def player_turn(self):
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
+        
         ################
         self.curr_stat()
         
@@ -306,13 +309,13 @@ class Game:
         self.cards = allCards
         self.overall_winner = None
         
-    def add_player(self, user):
+    def add_player(self, user, username):
         if self.state != 0:
             print('Can\'t add already started')
             return
             
         if not user in self.players:  
-            self.players[user] = Player(user)
+            self.players[user] = Player(user, username)
             self.order.append(user)
             
     def start_game(self):
@@ -333,6 +336,7 @@ class Game:
             if self.players[plyr].tokens == 4:
                 self.end_round(False)
                 self.overall_winner = plyr
+                self.state = 0
                 return True
         return False
         
@@ -351,12 +355,13 @@ class Game:
 
 
 #This is testing part
-game = Game('user', 'password', 'roomname')
+if __name__ == '__main__':
+    game = Game('user', 'password', 'roomname')
 
-game.add_player('a')
-game.add_player('b')
-game.add_player('c')
-game.add_player('d')
-game.add_player('e')
-game.start_game()
+    game.add_player('a')
+    game.add_player('b')
+    game.add_player('c')
+    game.add_player('d')
+    game.add_player('e')
+    game.start_game()
 
