@@ -61,10 +61,11 @@
 }
 
 .List-item-design {
-  background-color: #231212 !important;
+  background-color: #882a2a !important;
   color: #f1e4d7 !important;
   min-width: 40vw;
   text-align: center;
+  justify-content: space-between;
 }
 
 @keyframes Game-logo-spin {
