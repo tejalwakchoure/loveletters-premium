@@ -16,8 +16,9 @@ class Round extends React.Component {
 	    this.state = {
 	    	opacity: 1,
 		    cardToPlay: " ",
-		    playStatus: "Player 1 is discarding",
-		    discardMode: false
+		    discardMode: false,
+		    currentPlayer: "p1",
+		    playStatus: "p1"+" is discarding",
 		};
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
@@ -53,7 +54,7 @@ class Round extends React.Component {
   	}
 
 	render() {
-		const currentCard = Values.current_cards[Values.current_player];
+		const currentCard = Values.current_cards[this.state.currentPlayer];
 		const drawnCard = this.drawCard();
 		if(this.state.discardMode) {
 			return(

@@ -57,6 +57,14 @@
 
 .Play-status {
   color: #f1e4d7;
+  vertical-align: top;
+}
+
+.List-item-design {
+  background-color: #231212 !important;
+  color: #f1e4d7 !important;
+  min-width: 40vw;
+  text-align: center;
 }
 
 @keyframes Game-logo-spin {
