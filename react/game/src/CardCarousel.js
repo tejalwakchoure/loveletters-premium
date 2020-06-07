@@ -11,7 +11,7 @@ class CardCarousel extends React.Component {
 	render() {
 		return(
 		  	<div className='Card-carousel'> 
-		  	{Values.playedCards.map((item, i) => {
+		  	{Values.played_cards.map((item, i) => {
 		  		return <div id={i}>
 		  			<Card style={{ width: '6rem', marginLeft: '2px' }}>
 				      <Card.Body style={{ padding: 0 }}>
