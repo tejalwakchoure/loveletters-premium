@@ -28,7 +28,7 @@
    border-radius: 5px;
 }
 
-.Discard-button {
+.Confirm-button {
   height: 8vh;
   margin: 10px 0px 10px 0px;
   background-color: #C1631E !important;
@@ -39,7 +39,7 @@
 
 .Card-design {
   color: gray;
-  background-color: aliceblue;
+  background-color: gray;
   width: 15rem;
   display: inline-table;
   border-radius: 10px !important;

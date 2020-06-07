@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import './Game.css';
 import Cards from './Card.js';
 import CardCarousel from './CardCarousel.js';
+import PlayCard from './PlayCard.js';
 import {Values} from '../assets/values.js';
 import {Container, Row, Col} from 'react-bootstrap';
 
@@ -14,24 +15,14 @@ class Round extends React.Component {
 	    super(props);
 	    this.state = {
 	    	opacity: 1,
-		    toDiscard: " ",
-		    playStatus: "Player 1 is discarding"
+		    cardToPlay: " ",
+		    playStatus: "Player 1 is discarding",
+		    discardMode: false
 		};
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
-	 }
-
-	selectCard(id) {
-		this.setState({
-			toDiscard: id,
-			opacity: 0.9
-		});
-    	console.log('Clicked ' + this.state.toDiscard);
-  	}
-
-  	discard = () => {
-  		console.log('Discarding ' + this.state.toDiscard);
-  	}
+	    this.endRound = this.endRound.bind(this);
+	}
 
 	drawCard() {
 		const drawn = Values.draw_pile[0];
@@ -39,30 +30,72 @@ class Round extends React.Component {
 		return drawn;
 	}
 
+	selectCard(id) {
+		this.setState({
+			cardToPlay: id,
+			opacity: 0.9
+		});
+    	console.log('Clicked ' + this.state.cardToPlay);
+  	}
+
+  	discard = () => {
+  		this.setState({
+			discardMode: true
+		});
+  		console.log('Discarding ' + this.state.cardToPlay);
+  	}
+
+  	endRound = () => {
+  		this.setState({
+			discardMode: false
+		});
+  		console.log('Ending Round');
+  	}
+
 	render() {
 		const currentCard = Values.current_cards[Values.current_player];
 		const drawnCard = this.drawCard();
-		return(
-			<Container className="Game-header">
-			  	<Row>
-			  		<CardCarousel/>
-			  	</Row>
-			  	<Row>
-			  		<h4 className='Play-status'>{this.state.playStatus}</h4>
-			  	</Row>
-			  	<Row>
-			  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, e)}>
-			  			<Cards cardname={currentCard}/>
-			  		</Col>
-			  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(drawnCard, e)}>
-			  			<Cards cardname={drawnCard}/>
-			  		</Col>
-			  	</Row> 
-			  	<Row style={{width: '50vw'}}> 
-			  		<Button size="lg" block className='Discard-button' onClick={this.discard}>Discard</Button>
-			  	</Row>
-			</Container>
-		);
+		if(this.state.discardMode) {
+			return(
+				<Container className="Game-header">
+				  	<Row>
+				  		<CardCarousel/>
+				  	</Row>
+				  	<Row>
+				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+				  	</Row>
+				  	<Row>
+				  		<PlayCard cardPlayed={this.state.cardToPlay}/>
+				  	</Row> 
+				  	<Row style={{width: '50vw'}}> 
+				  		<Button size="lg" block className='Confirm-button' onClick={this.endRound}>OK</Button>
+				  	</Row>
+				</Container>
+			);
+		} 
+		else {
+			return(
+				<Container className="Game-header">
+				  	<Row>
+				  		<CardCarousel/>
+				  	</Row>
+				  	<Row>
+				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+				  	</Row>
+				  	<Row>
+				  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, e)}>
+				  			<Cards cardname={currentCard}/>
+				  		</Col>
+				  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(drawnCard, e)}>
+				  			<Cards cardname={drawnCard}/>
+				  		</Col>
+				  	</Row> 
+				  	<Row style={{width: '50vw'}}> 
+				  		<Button size="lg" block className='Confirm-button' disabled={this.state.cardToPlay==" "} onClick={this.discard}>Discard</Button>
+				  	</Row>
+				</Container>
+			);
+		}
 	}
 }
 
