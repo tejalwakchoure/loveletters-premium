@@ -9,17 +9,21 @@ class CardCarousel extends React.Component {
 		return require('../assets/cards/'+name+'.png');
 	}	
 	render() {
+		let playedCardlist = Values.played_cards;
+		if(this.props.addCard!= " ") {
+			playedCardlist = [...playedCardlist, this.props.addCard];
+		}
 		return(
 		  	<div className='Card-carousel'> 
-		  	{Values.played_cards.map((item, i) => {
-		  		return <div id={i}>
-		  			<Card style={{ width: '6rem', marginLeft: '2px' }}>
-				      <Card.Body style={{ padding: 0 }}>
-				        <Card.Img src={this.getCard(item)}/>
-				      </Card.Body>
-				    </Card>
-		  		</div>
-			})}
+			  	{playedCardlist.map((item) => 
+			  		<div id={item}>
+			  			<Card style={{ width: '6rem', marginLeft: '2px' }}>
+					      <Card.Body style={{ padding: 0 }}>
+					        <Card.Img src={this.getCard(item)}/>
+					      </Card.Body>
+					    </Card>
+					</div>
+				)}
 		  	</div>
 		);
 	}

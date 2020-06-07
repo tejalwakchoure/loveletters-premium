@@ -19,12 +19,12 @@ class Landing extends React.Component {
 	}
 
 	startGame = () => {
-		this.props.gameCallback(1);
+		this.props.gameCallback(true);
 	}
 
 	endGame = () => {
 		this.setState({
-			gameOn: false
+			gameOn: false //remove this player from the game metadata; it could still go on
 		});
 	}
 
@@ -32,10 +32,10 @@ class Landing extends React.Component {
 		if(this.props.toStartGame) {
 			return(
 				<Container className="Game-header">
-				  	<Row>
-				  		<h4 className='Play-status'> Waiting for players... </h4>
+				  	<Row style={{margin: 'auto'}}>
+				  		<h4 className='Play-status'>Waiting For Players...</h4>
 				  	</Row>
-				  	<Row>
+				  	<Row style={{margin: 'auto'}}>
 				  		<ListGroup>
 				  			{Values.all_players.map((item, i) => {
 		  						return <ListGroup.Item className='List-item-design'>{item}</ListGroup.Item>})}
@@ -50,14 +50,13 @@ class Landing extends React.Component {
 		else {
 			return(
 				<Container className="Game-header">
-				<Row>
-				  	<h4 className='Play-status'>Game Over</h4>
+				<Row style={{margin: 'auto'}}>
+				  	<h4 className='Play-status'>{this.props.final_winner} won the game!</h4>
 			  	</Row>
-			  	{this.state.gameOn?
-			  	<Row> 
+			  	<Row style={{margin: 'auto'}}> 
 			  		<Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.endGame}>Leave Game</Button>
 			  		<Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.startGame}>Start New Game</Button>
-			  	</Row> : <h4 className='Play-status'>Thanks for playing!</h4>}
+			  	</Row>
 				</Container>
 			);
 		}
