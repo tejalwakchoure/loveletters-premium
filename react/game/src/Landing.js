@@ -20,8 +20,11 @@ class Landing extends React.Component {
 	   	this.startNewGame = this.startNewGame.bind(this);
 	   	this.endGame = this.endGame.bind(this);
 	   	this.all_players = []
-	   	socket.emit('players', 'all')//request all players
-	   	socket.on('players', this.addPlayer)
+	   	socket.send('players')//request all players
+	   	socket.on('message', function(data){
+	   		this.all_players = data.in
+	   		console.log(data.in)
+	   	})
 	}
 
 	startGame = () => {
@@ -38,10 +41,6 @@ class Landing extends React.Component {
 		});
 	}
 
-	addPlayer = (msg) => {
-
-		this.all_players = msg.in
-	}
 
 	render() {
 		if(this.props.toStartGame) {
