@@ -11,10 +11,15 @@ class Results extends React.Component {
 
 	constructor(props) {
 	    super(props);
+	    this.sendResults = this.sendResults.bind(this);
+	}
+
+	sendResults = (final_winner) => {
+		this.props.gameCallback(final_winner);
 	}
 
 	render() {
-		const points_display = this.props.points;//display & check for 4
+		const points_display = this.props.points; //games won
 		let final_winner = " ";
 		Object.entries(points_display).map(([key,value]) => {
 			if (value>=4) {
@@ -25,10 +30,6 @@ class Results extends React.Component {
 				stars+="*";
 			points_display[key] = stars; // Fontawesome hearts/envelopes
 		})
-
-		if(final_winner!= " ") {
-			this.props.gameCallback(final_winner);
-		}
 		return(
 			<Container className="Game-header">
 			  	<Row style={{margin: 'auto'}}>
@@ -44,8 +45,8 @@ class Results extends React.Component {
 					</ListGroup>
 			  	</Row>
 			  	<Row style={{width: '50vw'}}> 
-			  		{final_winner? <Button size="lg" block className='Confirm-button' onClick={this.startGame}>OK</Button>
-			  			:<Button size="lg" block className='Confirm-button' onClick={this.startGame}>Start Next Round</Button>}
+			  		{final_winner!=" "? <Button size="lg" block className='Confirm-button' onClick={this.sendResults}>OK</Button>
+			  			:<Button size="lg" block className='Confirm-button' onClick={this.sendResults}>Start Next Round</Button>}
 			  	</Row>
 			</Container> 
 		);

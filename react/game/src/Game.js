@@ -40,10 +40,17 @@ class Game extends React.Component {
 	}
 
 	resultsCallback = (resultsData) => {
-		this.setState({
-			gameStatus: 3,
-			round_winner: resultsData
-		});
+		if(resultsData!=" ") {
+			this.setState({
+				gameStatus: 3,
+				round_winner: resultsData
+			});
+		}
+		else {
+			this.setState({
+				gameStatus: 1
+			});
+		}
 	}
 
 	render() {

@@ -147,6 +147,12 @@ class gameLoginHandler(RequestHandler):
             print(self.request.arguments)
         
         
+class gameBoardHandler(RequestHandler):
+    def get(self):
+        self.render('build/index.html')  
+
+
+
 class Application(tornado.web.Application):
 
     def __init__(self, *args, **kwargs):
@@ -158,7 +164,7 @@ class Application(tornado.web.Application):
 settings = dict(
         cookie_secret="SX4gE3etDbVr0vbfdsFDSMl",
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
-        static_path=os.path.join(os.path.dirname(__file__), "static"),
+        static_path=os.path.join(os.path.dirname(__file__), "templates/build/static"),
 )
 
 
@@ -166,10 +172,10 @@ handlers = [
         (r'/', LoginHandler),
         (r'/login.js', LoginJSHandler),
         (r'/login.css', LoginCSSHandler),
-        (r"/getGame", gameLoginHandler)
+        (r"/getGame", gameLoginHandler),
+        (r"/gameBoard", gameBoardHandler)
       
 ]
-
 if __name__ == "__main__":
     app = Application(handlers, **settings)
     app.listen(options.port)
