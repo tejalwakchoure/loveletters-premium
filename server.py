@@ -160,7 +160,9 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         print("WebSocket opened", self.user)
 
     def on_message(self, message):
-        self.write_message(u"You said: " + message, self.user)
+        print(u"You said: " + message, self.user)
+        if message == 'players':
+            self.write_message({'in':[1,2,3,4,5,6]})
 
     def on_close(self):
         print("WebSocket closed")
