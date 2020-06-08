@@ -41,7 +41,7 @@ class Round extends React.Component {
 		this.setState({
 			cardToPlay: chosen,
 			cardRemaining: remaining,
-			opacity: 0.9
+			opacity: 0.9 
 		});
     	console.log('Clicked ' + this.state.cardToPlay);
   	}

@@ -71,10 +71,10 @@ class PlayCard extends React.Component {
 	render() {
 		return(
 			<div>
-				<Row style={{margin: 'auto'}}>
+				<Row style={{justifyContent: 'center'}}>
 					{this.getList()}
 				</Row>
-				<Row style={{width: '50vw'}}> 
+				<Row style={{width: '50vw', paddingTop: '10px'}}> 
 					<Button size="lg" block className='Confirm-button' onClick={this.endPlay}>OK</Button>
 				</Row>
 			</div>
