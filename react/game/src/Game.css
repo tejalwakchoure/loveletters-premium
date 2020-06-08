@@ -9,7 +9,7 @@
 }
 
 .Game-header {
-  background-color: #3A1D1D;
+  background-color: #58283f; /*#3A1D1D*/
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
@@ -22,7 +22,7 @@
    display: flex;
    flex-direction: row;
    justify-content: flex-start;
-   background-color: #231212;
+   background-color: #421d2e; /*#231212*/
    padding: 5px 5px 5px 3px;
    min-width: 80vw;
    border-radius: 5px;
@@ -31,19 +31,19 @@
 .Confirm-button {
   height: 8vh;
   margin: 10px 0px 10px 0px;
-  background-color: #C1631E !important;
+  background-color: #0d8c74 !important; /*#C1631E*/
   font-weight: bold !important;
   border-radius: 3px !important;
-  border: 1px solid black !important;
+  border: 1px solid #484747 !important;
 }
 
 .Card-design {
-  color: gray;
-  background-color: gray;
+  color: #f1e4d7;
+  background-color: #421d2e;
   width: 15rem;
   display: inline-table;
   border-radius: 10px !important;
-  border: 1px solid gray !important; 
+  border: 1px solid #484747 !important; 
   box-shadow: 5px 5px 5px 5px black;
 } 
 .Card-design :hover {
@@ -61,10 +61,10 @@
 }
 
 .List-item-design {
-  background-color: #882a2a !important;
+  background-color: #421d2e !important; /*#231212*/
   color: #f1e4d7 !important;
   min-width: 40vw;
-  text-align: center;
+  text-align: center !important;
   justify-content: space-between;
 }
 
