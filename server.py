@@ -12,7 +12,10 @@ import tornado.locks
 import tornado.gen
 
 from tornado.options import define, options, parse_command_line
-from game import Game
+from game import Game, Users
+
+import socketio
+
 
 define("port", default=5556, help="run on the given port", type=int)
 define("debug", default=True, help="run in debug mode")
@@ -38,7 +41,7 @@ class Commands(object):
 
 class RequestHandler(tornado.web.RequestHandler):
 
-    USER_COOKIE_NAME = 'dixit_user'
+    USER_COOKIE_NAME = 'letters_user'
 
     def prepare(self):
         uid = self.get_cookie(self.USER_COOKIE_NAME)
@@ -46,12 +49,11 @@ class RequestHandler(tornado.web.RequestHandler):
             if uid is None:
                 uid = hash_obj(id(self), add_random=True)
                 self.set_cookie(self.USER_COOKIE_NAME, uid)
-            self.user = uid #self.application.users.add_user(uid)
+            self.user = self.application.users.add_user(uid)
         else:
-            self.user = uid #self.application.users.get_user(uid)
-            
-        self.application.users.append(uid)
-        
+            self.user = self.application.users.get_user(uid)
+
+
 
 
 class LoginHandler(RequestHandler):
@@ -84,7 +86,7 @@ class gameLoginHandler(RequestHandler):
         
             notFound = -1
             for i, gm in self.application.games.items():
-                if gm.name == roomname :
+                if gm.room_name == roomname :
                     notFound = i
                     break
                     
@@ -157,7 +159,7 @@ class Application(tornado.web.Application):
 
     def __init__(self, *args, **kwargs):
         self.games = {}
-        self.users = []
+        self.users = Users()
 
         super(Application, self).__init__(*args, **kwargs)
         
@@ -168,12 +170,26 @@ settings = dict(
 )
 
 
+
+gameEventHandler = socketio.AsyncServer(async_mode='tornado')
+@gameEventHandler.event
+async def connect(sid, environ):
+    print('connect ', sid)
+
+
+@gameEventHandler.event
+async def players(sid, data):
+    print('Asked for players')
+    return 'players', {'in': [x for x in self.application.]}
+
+
 handlers = [
         (r'/', LoginHandler),
         (r'/login.js', LoginJSHandler),
         (r'/login.css', LoginCSSHandler),
         (r"/getGame", gameLoginHandler),
-        (r"/gameBoard", gameBoardHandler)
+        (r"/gameBoard", gameBoardHandler),
+        (r"/socket.io/", socketio.get_tornado_handler(gameEventHandler))
       
 ]
 if __name__ == "__main__":

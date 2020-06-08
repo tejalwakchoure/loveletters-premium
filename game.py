@@ -354,6 +354,11 @@ class Game:
             self.round = None
 
 
+
+class Users():
+    def __init__(self):
+
+
 #This is testing part
 if __name__ == '__main__':
     game = Game('user', 'password', 'roomname')
