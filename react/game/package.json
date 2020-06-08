@@ -14,7 +14,8 @@
     "react-dom": "^16.13.1",
     "react-fontawesome": "^1.7.1",
     "react-scripts": "3.4.1",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "websocket": "^1.0.31"
   },
   "scripts": {
     "start": "react-app-rewired start",

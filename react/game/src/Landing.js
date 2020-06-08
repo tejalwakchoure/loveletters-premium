@@ -20,11 +20,19 @@ class Landing extends React.Component {
 	   	this.startNewGame = this.startNewGame.bind(this);
 	   	this.endGame = this.endGame.bind(this);
 	   	this.all_players = []
-	   	socket.send('players')//request all players
-	   	socket.on('message', function(data){
-	   		this.all_players = data.in
-	   		console.log(data.in)
-	   	})
+	   	socket.onopen = () => {
+			console.log('WebSocket Client Connected');
+			socket.send('Hello Server!');
+			socket.send('players')
+		};
+
+
+	   	socket.onmessage = (event) => {
+	   		console.log(event)
+	   		var obj = JSON.parse(event.data);
+	   		this.all_players = obj.in
+	   		console.log(obj.in)
+	   	}
 	}
 
 	startGame = () => {

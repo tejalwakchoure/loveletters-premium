@@ -6,7 +6,7 @@ import Results from './Results.js';
 import {Values} from '../assets/values.js';
 
 
-import socket from './socket-context'
+
 
 
 class Game extends React.Component {

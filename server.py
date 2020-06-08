@@ -157,12 +157,13 @@ class gameBoardHandler(RequestHandler):
 
 class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
     def open(self):
-        print("WebSocket opened", self.user)
+        print("WebSocket opened", self.user.user)
 
     def on_message(self, message):
-        print(u"You said: " + message, self.user)
+        print(u"You said: " + message)
         if message == 'players':
-            self.write_message({'in':[1,2,3,4,5,6]})
+            self.write_message(json.dumps({'in':[1,2,3,4,5,6]}))
+            print('playrs requested')
 
     def on_close(self):
         print("WebSocket closed")
@@ -191,7 +192,7 @@ handlers = [
         (r'/login.css', LoginCSSHandler),
         (r"/getGame", gameLoginHandler),
         (r"/gameBoard", gameBoardHandler),
-        (r"/socket.io/", webSocketHandler)
+        (r"/ws", webSocketHandler)
       
 ]
 if __name__ == "__main__":
