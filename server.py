@@ -45,10 +45,11 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def prepare(self):
         uid = self.get_cookie(self.USER_COOKIE_NAME)
-        if uid in self.application.users:
+        if not self.application.users.has_user(uid):
             if uid is None:
                 uid = hash_obj(id(self), add_random=True)
                 self.set_cookie(self.USER_COOKIE_NAME, uid)
+            puid = hash_obj(uid, add_random=True)
             self.user = self.application.users.add_user(uid)
         else:
             self.user = self.application.users.get_user(uid)
@@ -94,13 +95,14 @@ class gameLoginHandler(RequestHandler):
                 #Room already exists
                 self.write(json.dumps({'game':'exists'}))
             else:
-                game = Game(self.user, password, roomname)
+                game = Game(self.user, password, roomname, totalGames)
                 
                 #self.user.gid = totalGames
                 
                 game.add_player(self.user, username)
                 self.application.games[totalGames] = game
                 self.write(json.dumps({'game':str(totalGames)}))
+                print("Create romm:", roomname, password, username, totalGames)
                 totalGames += 1
                 
                 #ADDING EXTRA PLAYERS TO HELP TEST
@@ -110,7 +112,6 @@ class gameLoginHandler(RequestHandler):
                 #game.add_player(x1, display.BunnyPalette.allColors[1])
                 #game.add_player(x2, display.BunnyPalette.allColors[2])
                 #game.add_player(x3, display.BunnyPalette.allColors[3])
-                print("Create romm:", roomname, password, username)
                 
                 
             
@@ -154,6 +155,16 @@ class gameBoardHandler(RequestHandler):
         self.render('build/index.html')  
 
 
+class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
+    def open(self):
+        print("WebSocket opened", self.user)
+
+    def on_message(self, message):
+        self.write_message(u"You said: " + message, self.user)
+
+    def on_close(self):
+        print("WebSocket closed")
+
 
 class Application(tornado.web.Application):
 
@@ -171,17 +182,6 @@ settings = dict(
 
 
 
-gameEventHandler = socketio.AsyncServer(async_mode='tornado')
-@gameEventHandler.event
-async def connect(sid, environ):
-    print('connect ', sid)
-
-
-@gameEventHandler.event
-async def players(sid, data):
-    print('Asked for players')
-    return 'players', {'in': [x for x in self.application.]}
-
 
 handlers = [
         (r'/', LoginHandler),
@@ -189,7 +189,7 @@ handlers = [
         (r'/login.css', LoginCSSHandler),
         (r"/getGame", gameLoginHandler),
         (r"/gameBoard", gameBoardHandler),
-        (r"/socket.io/", socketio.get_tornado_handler(gameEventHandler))
+        (r"/socket.io/", webSocketHandler)
       
 ]
 if __name__ == "__main__":
