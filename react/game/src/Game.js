@@ -23,7 +23,7 @@ class Game extends React.Component {
 
 	landingCallback = (landingData) => {
 		this.setState({
-			gameStatus: 1
+			gameStatus: landingData
 		})
 	}
 
@@ -45,11 +45,14 @@ class Game extends React.Component {
 				gameStatus: 3,
 				round_winner: resultsData
 			});
+			console.log('results='+resultsData);
+			console.log('set state=3');
 		}
 		else {
 			this.setState({
 				gameStatus: 1
 			});
+			console.log('set state=1');
 		}
 	}
 

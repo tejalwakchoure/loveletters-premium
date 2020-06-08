@@ -14,13 +14,14 @@ class Results extends React.Component {
 	    this.sendResults = this.sendResults.bind(this);
 	}
 
-	sendResults = (final_winner) => {
+	sendResults(final_winner) {
+		console.log('Sent winner='+final_winner);
 		this.props.gameCallback(final_winner);
 	}
 
 	render() {
 		const points_display = this.props.points; //games won
-		let final_winner = " ";
+		let final_winner = "p1";
 		Object.entries(points_display).map(([key,value]) => {
 			if (value>=4) {
 				final_winner = key;
@@ -45,8 +46,8 @@ class Results extends React.Component {
 					</ListGroup>
 			  	</Row>
 			  	<Row style={{width: '50vw'}}> 
-			  		{final_winner!=" "? <Button size="lg" block className='Confirm-button' onClick={this.sendResults}>OK</Button>
-			  			:<Button size="lg" block className='Confirm-button' onClick={this.sendResults}>Start Next Round</Button>}
+			  		{final_winner!=" "? <Button size="lg" block className='Confirm-button' onClick={(e) => this.sendResults(final_winner, e)}>OK</Button>
+			  			:<Button size="lg" block className='Confirm-button' onClick={(e) => this.sendResults(final_winner, e)}>Start Next Round</Button>}
 			  	</Row>
 			</Container> 
 		);
