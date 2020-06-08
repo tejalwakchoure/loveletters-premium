@@ -12,7 +12,10 @@ import tornado.locks
 import tornado.gen
 
 from tornado.options import define, options, parse_command_line
-from game import Game
+from game import Game, Users
+
+import socketio
+
 
 define("port", default=5556, help="run on the given port", type=int)
 define("debug", default=True, help="run in debug mode")
@@ -38,20 +41,20 @@ class Commands(object):
 
 class RequestHandler(tornado.web.RequestHandler):
 
-    USER_COOKIE_NAME = 'dixit_user'
+    USER_COOKIE_NAME = 'letters_user'
 
     def prepare(self):
         uid = self.get_cookie(self.USER_COOKIE_NAME)
-        if uid in self.application.users:
+        if not self.application.users.has_user(uid):
             if uid is None:
                 uid = hash_obj(id(self), add_random=True)
                 self.set_cookie(self.USER_COOKIE_NAME, uid)
-            self.user = uid #self.application.users.add_user(uid)
+            puid = hash_obj(uid, add_random=True)
+            self.user = self.application.users.add_user(uid)
         else:
-            self.user = uid #self.application.users.get_user(uid)
-            
-        self.application.users.append(uid)
-        
+            self.user = self.application.users.get_user(uid)
+
+
 
 
 class LoginHandler(RequestHandler):
@@ -84,7 +87,7 @@ class gameLoginHandler(RequestHandler):
         
             notFound = -1
             for i, gm in self.application.games.items():
-                if gm.name == roomname :
+                if gm.room_name == roomname :
                     notFound = i
                     break
                     
@@ -92,13 +95,14 @@ class gameLoginHandler(RequestHandler):
                 #Room already exists
                 self.write(json.dumps({'game':'exists'}))
             else:
-                game = Game(self.user, password, roomname)
+                game = Game(self.user, password, roomname, totalGames)
                 
                 #self.user.gid = totalGames
                 
                 game.add_player(self.user, username)
                 self.application.games[totalGames] = game
                 self.write(json.dumps({'game':str(totalGames)}))
+                print("Create romm:", roomname, password, username, totalGames)
                 totalGames += 1
                 
                 #ADDING EXTRA PLAYERS TO HELP TEST
@@ -108,7 +112,6 @@ class gameLoginHandler(RequestHandler):
                 #game.add_player(x1, display.BunnyPalette.allColors[1])
                 #game.add_player(x2, display.BunnyPalette.allColors[2])
                 #game.add_player(x3, display.BunnyPalette.allColors[3])
-                print("Create romm:", roomname, password, username)
                 
                 
             
@@ -152,12 +155,25 @@ class gameBoardHandler(RequestHandler):
         self.render('build/index.html')  
 
 
+class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
+    def open(self):
+        print("WebSocket opened", self.user.user)
+
+    def on_message(self, message):
+        print(u"You said: " + message)
+        if message == 'players':
+            self.write_message(json.dumps({'in':[1,2,3,4,5,6]}))
+            print('playrs requested')
+
+    def on_close(self):
+        print("WebSocket closed")
+
 
 class Application(tornado.web.Application):
 
     def __init__(self, *args, **kwargs):
         self.games = {}
-        self.users = []
+        self.users = Users()
 
         super(Application, self).__init__(*args, **kwargs)
         
@@ -168,12 +184,15 @@ settings = dict(
 )
 
 
+
+
 handlers = [
         (r'/', LoginHandler),
         (r'/login.js', LoginJSHandler),
         (r'/login.css', LoginCSSHandler),
         (r"/getGame", gameLoginHandler),
-        (r"/gameBoard", gameBoardHandler)
+        (r"/gameBoard", gameBoardHandler),
+        (r"/ws", webSocketHandler)
       
 ]
 if __name__ == "__main__":

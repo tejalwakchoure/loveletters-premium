@@ -4,6 +4,8 @@ import './index.css';
 import Game from './Game';
 import * as serviceWorker from './serviceWorker';
 
+import socket from './socket-context'
+
 ReactDOM.render(
 	<React.StrictMode>
 		<Game />

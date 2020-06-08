@@ -5,6 +5,10 @@ import Landing from './Landing.js';
 import Results from './Results.js';
 import {Values} from '../assets/values.js';
 
+
+
+
+
 class Game extends React.Component {
 	
 	constructor(props) {
