@@ -76,7 +76,7 @@ class Round extends React.Component {
 	render() {
 		const currentCard = Values.current_cards[this.state.currentPlayer];
 		const drawnCard = this.drawCard();
-		
+		console.log('in round');
 		if(this.state.discardMode) {
 			return(
 				<Container className="Game-header">
