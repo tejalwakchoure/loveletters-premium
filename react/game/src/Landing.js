@@ -15,11 +15,16 @@ class Landing extends React.Component {
 	    	gameOn: true
 	    };
 	   	this.startGame = this.startGame.bind(this);
+	   	this.startNewGame = this.startNewGame.bind(this);
 	   	this.endGame = this.endGame.bind(this);
 	}
 
 	startGame = () => {
-		this.props.gameCallback(true);
+		this.props.gameCallback(1);
+	}
+
+	startNewGame = () => {
+		this.props.gameCallback(0);
 	}
 
 	endGame = () => {
@@ -54,8 +59,8 @@ class Landing extends React.Component {
 				  	<h4 className='Play-status'>{this.props.final_winner} won the game!</h4>
 			  	</Row>
 			  	<Row style={{margin: 'auto'}}> 
-			  		<Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.endGame}>Leave Game</Button>
-			  		<Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.startGame}>Start New Game</Button>
+			  		<Col><Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.endGame}>Leave Game</Button></Col>
+			  		<Col><Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.startNewGame}>Start New Game</Button></Col>
 			  	</Row>
 				</Container>
 			);
