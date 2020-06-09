@@ -4,8 +4,7 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Container, Row, Col} from 'react-bootstrap';
-
-import socket from './socket-context'
+import socket from './socket-context';
 
 
 class Landing extends React.Component {
@@ -14,7 +13,8 @@ class Landing extends React.Component {
 	    super(props);
 	    this.state = {
 	    	gameOn: true,
-	    	all_players: ["p1", "p2", "p3"]
+	    	all_players: ["p1", "p2", "p3"],
+	    	showStart: false
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
@@ -33,18 +33,16 @@ class Landing extends React.Component {
 			console.log(obj)
 			if(obj.type == 'playersS'){
 				this.setState({all_players: obj.plyrs});
-				//obj.uid has the my user-id
-				//obj.host has uid of host 
-				//obj.username has my username
+				if(obj.uid == obj.host) {
+					this.setState({showStart: true});
+				}
 			}
-	   		
 	   	}
 	}
 
 	startGame = () => {
 		this.props.gameCallback(1, this.state.all_players);
-		//socket.send(JSON.stringify({'type':'startGame'}))startGame
-		//ALso have to change the onmessage function to something else, done is round.js
+		socket.send(JSON.stringify({'type':'startGame'}))
 	}
 
 	startNewGame = () => {
@@ -74,7 +72,7 @@ class Landing extends React.Component {
 						</ListGroup>
 				  	</Row>
 				  	<Row style={{width: '50vw'}}> 
-				  		<Button size="lg" block className='Confirm-button' onClick={this.startGame}>Start Game</Button>
+				  		<Button size="lg" block className='Confirm-button' disabled={!this.state.showStart} onClick={this.startGame}>Start Game</Button>
 				  	</Row>
 				</Container>
 			);
