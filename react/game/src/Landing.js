@@ -14,8 +14,8 @@ class Landing extends React.Component {
 	    this.state = {
 	    	gameOn: true,
 	    	all_players: ["p1", "p2", "p3"],
-	    	showStartButton: true,
-	    	toStart: true
+	    	showStartButton: false,
+	    	toStart: false
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
