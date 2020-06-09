@@ -13,10 +13,10 @@ class CardCarousel extends React.Component {
 		if(this.props.addCard!= " ") {
 			playedCardlist = [...playedCardlist, this.props.addCard];
 		}
-		return(
+		return( // make cards unique using keys
 		  	<div className='Card-carousel'> 
 			  	{playedCardlist.map((item) => 
-			  		<div id={item}>
+			  		<div key={item}>
 			  			<Card style={{ width: '6rem', marginLeft: '2px' }}>
 					      <Card.Body style={{ padding: 0 }}>
 					        <Card.Img src={this.getCard(item)}/>

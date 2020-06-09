@@ -60,7 +60,7 @@ class Landing extends React.Component {
 				  	<Row style={{margin: 'auto'}}>
 				  		<ListGroup>
 				  			{this.all_players.map((item, i) => {
-		  						return <ListGroup.Item className='List-item-design'>{item}</ListGroup.Item>})}
+		  						return <ListGroup.Item key={item} className='List-item-design'>{item}</ListGroup.Item>})}
 						</ListGroup>
 				  	</Row>
 				  	<Row style={{width: '50vw'}}> 

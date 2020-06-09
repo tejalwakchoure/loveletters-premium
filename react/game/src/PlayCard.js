@@ -1,36 +1,76 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Multiselect from 'react-bootstrap-multiselect';
 import './Game.css';
 import {Values} from '../assets/values.js';
 import {Container, Row, Col} from 'react-bootstrap';
-
 
 class PlayCard extends React.Component {
 	
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	selectedPlayer: " "
+	    	selectedPlayers: [],
+	    	selectionSatisfied: false,
+	    	selectedCard: " "
 	    }
 	    this.selectPlayer = this.selectPlayer.bind(this);
+	    this.selectCard = this.selectCard.bind(this);
 		this.endPlay = this.endPlay.bind(this);
 		this.getList = this.getList.bind(this);
 	}
 
-	selectPlayer(id){ 
-		this.setState({
-			selectedPlayer: id //turn that item disabled also
-		});
+	selectPlayer(type, item){ 
+		let selectedPlayers = null;
+		let x = 0;
+		if(type=='single') {
+			selectedPlayers = [item];
+			if(this.props.cardPlayed!="Guard")
+				this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+			else
+				this.setState({selectedPlayers: selectedPlayers});
+		}
+		else {
+			if((x=this.state.selectedPlayers.indexOf(item))>=0) {
+				selectedPlayers = this.state.selectedPlayers;
+				selectedPlayers.splice(x, 1);	
+			} else {
+				selectedPlayers = this.state.selectedPlayers.concat(item);
+			}
+			
+			if(type=='double') {
+				if(selectedPlayers.length==2) {
+						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+				} else {
+					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
+				}
+			} else {
+				if(selectedPlayers.length==1 || selectedPlayers.length==2) {
+						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+				} else {
+					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
+				}
+			}	
+		}
+		console.log('selected player:'+selectedPlayers)
+	}
+	selectCard(item) {
+		this.setState({selectionSatisfied: true, selectedCard: item});
+		console.log('selected card:'+item);
 	}
 
 	endPlay() {
 		const valuesToSend = {};
-		valuesToSend[this.state.selectedPlayer] = Values.current_cards[this.state.selectedPlayer];
+		this.state.selectedPlayers.map((item, i) => {
+			valuesToSend[item] = Values.current_cards[item]});
 		valuesToSend[this.props.currentPlayer] = this.props.cardRemaining;
+		
+		if(this.props.cardPlayed=="Guard")
+			valuesToSend["Guessed"] = this.state.selectedCard;
 		console.log(valuesToSend);
+		
 		//getResult(valuesToSend);
 		const results = {} //0 : no change (ex.Priest)
 		results[this.state.selectedPlayer] = 1;//won
@@ -40,53 +80,72 @@ class PlayCard extends React.Component {
 	}
 
 	getList() {
-		//clean up list diaplay alignment also
-		//Eliminated?? ICON!
-		//Make sure you cant select yourself unless allowed
+		//Eliminated?? ICON! Immune?? ICON!
+		//change color on select
 		var list = null;
-		if(this.props.cardPlayed in ["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"]) {
-			list = {}; //no selection reqd
+		if(["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"].indexOf(this.props.cardPlayed)>=0) { //no action
+			list = null;
+			console.log('list is null');
 		}
-		else if(this.props.cardPlayed=="Baroness") {
-			list = (<ListGroup>
-	  			{Values.all_players.map((item, i) => {
-						return <ListGroup.Item action className='List-item-design' key={item} onClick={(e) => this.selectPlayer(item, e)}>{item}</ListGroup.Item>})}
-			</ListGroup>); //1 or 2 selection
-		}
-		else if(this.props.cardPlayed=="Cardinal") {
-			list = (<ListGroup>
-	  			{Values.all_players.map((item, i) => {
-						return <ListGroup.Item action className='List-item-design' key={item} onClick={(e) => this.selectPlayer(item, e)}>{item}</ListGroup.Item>})}
-			</ListGroup>); //2 selection
-		}
+		
 		else {
-			list = (<ListGroup>
-	  			{Values.all_players.map((item, i) => {
-						return <ListGroup.Item action className='List-item-design' key={item} onClick={(e) => this.selectPlayer(item, e)}>{item}</ListGroup.Item>})}
-			</ListGroup>); //1 selection
+			var enableCurrent = (this.props.cardPlayed=="Prince" || this.props.cardPlayed=="Sycophant");
+			var choiceType = "";
+			
+			if(this.props.cardPlayed=="Baroness") //one or two choices
+				choiceType = "either";
+			else if(this.props.cardPlayed=="Cardinal") // two choices
+				choiceType = "double";
+			else // single choice
+				choiceType = "single";
+	  		
+	  		list = (<ListGroup>
+  				{Values.all_players.map((item, i) => {
+					return <ListGroup.Item className='List-item-design'
+								key={item} 
+								disabled={enableCurrent?false:(item==this.props.currentPlayer)}
+								onClick={(e) => this.selectPlayer(choiceType, item, e)}>{item}
+							</ListGroup.Item>})}
+				</ListGroup>);
 	  	}
+
 		return list;
 	}
 
 	render() {
-		return(
-			<div>
-				<Row style={{justifyContent: 'center'}}>
-					{this.getList()}
-				</Row>
-				<Row style={{width: '50vw', paddingTop: '10px'}}> 
-					<Button size="lg" block className='Confirm-button' onClick={this.endPlay}>OK</Button>
-				</Row>
-			</div>
-		);
+		const list = this.getList();
+		if(list!=null) {
+			return (
+				<div>
+					<Row style={{justifyContent: 'center'}}>
+						<Col>{list}</Col>
+						{this.props.cardPlayed=="Guard"?
+							<Col>
+								<ListGroup>
+					  				{Values.all_cards.map((item, i) => {
+										return <ListGroup.Item className='List-item-design'
+													key={item} 
+													disabled={item==this.props.cardPlayed}
+													onClick={(e) => this.selectCard(item, e)}>{item}
+													<Badge variant="secondary" style={{float: 'right'}}>{Values.card_count[item]}</Badge>
+												</ListGroup.Item>})}
+								</ListGroup>
+							</Col>:
+							<Col>
+							</Col>}
+					</Row>
+					<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
+						<Button size="lg" block className='Confirm-button' 
+						disabled={!this.state.selectionSatisfied}
+						onClick={this.endPlay}>OK</Button>
+					</Row>
+				</div>
+			);
+		}
+		else {
+			return (<div>{this.endPlay()}</div>);
+		}
 	}
 }
 
 export default PlayCard;
-
-
-
-/*<ListGroup>
-		{Values.all_players.map((item, i) => {
-			return <ListGroup.Item action className='List-item-design' key={item} onClick={(e) => this.selectPlayer(item, e)}>{item}</ListGroup.Item>})}
-</ListGroup>*/
