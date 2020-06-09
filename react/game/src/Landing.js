@@ -14,24 +14,27 @@ class Landing extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	gameOn: true
+	    	gameOn: true,
+	    	all_players: ["test"]
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
 	   	this.endGame = this.endGame.bind(this);
-	   	this.all_players = []
+	}
+	
+	componentWillMount() {
 	   	socket.onopen = () => {
 			console.log('WebSocket Client Connected');
 			socket.send(JSON.stringify({'type':'players'}))
 		};
 
 
-
 	   	socket.onmessage = (event) => {
 	   		console.log(event)
 	   		var obj = JSON.parse(event.data);
-	   		this.all_players = obj.in
-	   		console.log(obj.in)
+	   		var temp = this.state.all_players.concat(obj.in);
+	   		this.setState({all_players: temp});
+	   		console.log("temp=", temp)
 	   	}
 	}
 
@@ -53,6 +56,8 @@ class Landing extends React.Component {
 
 
 	render() {
+		console.log("list items=", this.state.all_players)
+		const testlist = ["p1", "p2"]
 		if(this.props.toStartGame) {
 			return(
 				<Container className="Game-header">
@@ -61,8 +66,10 @@ class Landing extends React.Component {
 				  	</Row>
 				  	<Row style={{margin: 'auto'}}>
 				  		<ListGroup>
-				  			{this.all_players.map((item, i) => {
-		  						return <ListGroup.Item key={item} className='List-item-design'>{item}</ListGroup.Item>})}
+			  				{this.state.all_players.map((item, i) => {
+								return <ListGroup.Item className='List-item-design' key={item}>
+											{item}
+										</ListGroup.Item>})}
 						</ListGroup>
 				  	</Row>
 				  	<Row style={{width: '50vw'}}> 
