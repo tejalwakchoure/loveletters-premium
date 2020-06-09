@@ -146,13 +146,30 @@ class Round:
         
     def player_turn(self):
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
-        
-        ################
-        self.curr_stat()
-        
         #TODO: if it's a Countess with a prince or King, has to discard the Countess
+
+
+        ################
+        #self.curr_stat()
         
-    def player_play(self, card_chosen, plyr1, plyr2, numb_given):
+    def turn_status(self):
+        obj = {}
+        obj['type'] = 'turn'
+        obj['player'] = self.turn
+        obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
+        obj['sycho'] = self.sychoTar
+        obj['immune'] = []
+        for plyr in self.order:
+            if self.players[plyr].immune:
+                obj['immune'].append(plyr)
+
+        obj['order'] = self.order
+
+        return obj
+
+        
+        
+    def player_play(self, card_chosen, plyr1, plyr2, numb_given): #TODO RETURN A PROPER RESULT HERE OF WHAT HAS HAPPENED
         if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
             card_discarded = self.players[self.turn].card
             self.players[self.turn].card = self.players[self.turn].extra
@@ -180,8 +197,7 @@ class Round:
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
         if self.players[plyr1].out or self.players[plyr2].out:
-            print("One player is out, unacceptable")
-            raise Exception("Hello Sir, what is this") 
+            raise Exception("Hello Sir, what is this, One player is out, unacceptable") 
         
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
@@ -345,8 +361,10 @@ class Game:
             
         if not user in self.players:  
             user.set_username(username)
-            self.players[user.user] = user
-            self.order.append(user)
+            self.players[user.username] = user
+            self.order.append(user.username)
+        else:
+            raise Exception("player alreay exists")
             
     def start_game(self):
         if self.state != 0:
