@@ -3,7 +3,6 @@ import './Game.css';
 import Round from './Round.js';
 import Landing from './Landing.js';
 import Results from './Results.js';
-import {Values} from '../assets/values.js';
 
 class Game extends React.Component {
 	
@@ -14,7 +13,11 @@ class Game extends React.Component {
 			toStartGame: true,
 			rounds_played: 0,
 			all_players: [],
-			points: Values.player_points,
+			points: {  //socket.player_points,
+						"p1" : 0,
+						"p2" : 0,
+						"p3" : 0
+					},
 			round_winner: " "
 		};
 		this.landingCallback = this.landingCallback.bind(this);

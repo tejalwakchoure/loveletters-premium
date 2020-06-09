@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
-import {Values} from '../assets/values.js';
 import {Container, Row, Col} from 'react-bootstrap';
 
 class PlayCard extends React.Component {
@@ -62,9 +61,14 @@ class PlayCard extends React.Component {
 	}
 
 	endPlay() {
+		const current_cards = {
+								"p1" : "Guard", 
+								"p2" : "Jester", 
+								"p3" : "Baron"
+							};
 		const valuesToSend = {};
 		this.state.selectedPlayers.map((item, i) => {
-			valuesToSend[item] = Values.current_cards[item]});
+			valuesToSend[item] = current_cards[item]});//socket.current_cards[item];
 		valuesToSend[this.props.currentPlayer] = this.props.cardRemaining;
 		
 		if(this.props.cardPlayed=="Guard")

@@ -5,8 +5,8 @@ import './Game.css';
 import Cards from './Cards.js';
 import CardCarousel from './CardCarousel.js';
 import PlayCard from './PlayCard.js';
-import {Values} from '../assets/values.js';
 import {Container, Row, Col} from 'react-bootstrap';
+import socket from './socket-context'
 
 
 class Round extends React.Component {
@@ -20,7 +20,11 @@ class Round extends React.Component {
 		    discardMode: false,
 		    currentPlayer: "p1",
 		    playStatus: "p1"+" is discarding",
-		    results: Values.player_points,
+		    results: {  //socket.player_points,
+						"p1" : 0,
+						"p2" : 0,
+						"p3" : 0
+					},
 		    winner: "p1"
 		};
 	    this.drawCard = this.drawCard.bind(this);
@@ -42,9 +46,7 @@ class Round extends React.Component {
 	}
 
 	drawCard() {
-		const drawn = Values.draw_pile[0];
-		//drawCard();
-		console.log(Values.draw_pile.splice(0, 0)); //check syntax
+		const drawn = "Assassin"; //socket.cardDrawn
 		return drawn;
 	}
 
@@ -85,7 +87,12 @@ class Round extends React.Component {
   	}
 
 	render() {
-		const currentCard = Values.current_cards[this.state.currentPlayer];
+		const current_cards = {
+								"p1" : "Guard", 
+								"p2" : "Jester", 
+								"p3" : "Baron"
+							}
+		const currentCard = current_cards[this.state.currentPlayer]; //socket.current_cards[this.state.currentPlayer];
 		const drawnCard = this.drawCard();
 		console.log('in round');
 		if(this.state.discardMode) {
