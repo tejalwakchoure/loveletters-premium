@@ -36,10 +36,10 @@ class Results extends React.Component {
 			  	<Row style={{margin: 'auto'}}>
 			  		<h4 className='Play-status'>{this.props.winner}'s letter reached the Princess!</h4>
 			  	</Row>
-			  	<Row style={{margin: 'auto'}}>
+			  	<Row style={{margin: 'auto'}}> 
 			  		<ListGroup>
 			  			{Object.entries(points_display).map(([key,value]) => {
-							return <ListGroup.Item className='List-item-design'>
+							return <ListGroup.Item key={key} className='List-item-design'>
 										<Col style={{display: 'inline'}}>{key}</Col>
 										<Col style={{display: 'inline'}}>{value}</Col>
 									</ListGroup.Item>})}
