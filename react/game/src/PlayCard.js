@@ -98,16 +98,17 @@ class PlayCard extends React.Component {
 				choiceType = "double";
 			else // single choice
 				choiceType = "single";
-	  		
+
 	  		list = (<ListGroup>
   				{Values.all_players.map((item, i) => {
 					return <ListGroup.Item className='List-item-design'
-								key={item} 
+								variant={this.state.selectedPlayers.indexOf(item)>=0?'dark':'light'}
+								key={item}
 								disabled={enableCurrent?false:(item==this.props.currentPlayer)}
 								onClick={(e) => this.selectPlayer(choiceType, item, e)}>{item}
 							</ListGroup.Item>})}
-				</ListGroup>);
-	  	}
+				</ListGroup>);  
+	  	} 
 
 		return list;
 	}
@@ -124,6 +125,7 @@ class PlayCard extends React.Component {
 								<ListGroup>
 					  				{Values.all_cards.map((item, i) => {
 										return <ListGroup.Item className='List-item-design'
+													variant={this.state.selectedCard==item?'dark':'light'}
 													key={item} 
 													disabled={item==this.props.cardPlayed}
 													onClick={(e) => this.selectCard(item, e)}>{item}
@@ -131,8 +133,8 @@ class PlayCard extends React.Component {
 												</ListGroup.Item>})}
 								</ListGroup>
 							</Col>:
-							<Col>
-							</Col>}
+							<div>
+							</div>}
 					</Row>
 					<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
 						<Button size="lg" block className='Confirm-button' 
