@@ -49,8 +49,8 @@ extCards = [Card(9, 'Bishop', ''),
 
         
 class Player:
-    def __init__(self, user):
-        self.user = user
+    def __init__(self, uid):
+        self.user = uid
         self.reset()
         self.tokens = 0
         
@@ -58,7 +58,7 @@ class Player:
 
         self.gid = -1
         
-        self.username = 'random' + user[:5]
+        self.username = 'random' + uid[:5]
         
     def set_username(self, name):
         self.username = name
@@ -122,7 +122,7 @@ class Round:
         self.cards = cards
         self.winner = None
         
-        
+        self.discard_pile = []
         
         self.sychoTar = None
         
@@ -145,7 +145,13 @@ class Round:
         self.player_turn()
         
     def player_turn(self):
+        if self.players[self.turn].immune:#If it's come back a round, you are no longer immune
+            self.players[self.turn].immune = False
+        if self.sychoTar != None and self.discard_pile[-1].card_name != 'Sycophant': #If it's been a turn after Sycophant then no more target
+            self.sychoTar = None
+        
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
+        
         #TODO: if it's a Countess with a prince or King, has to discard the Countess
 
 
@@ -170,6 +176,22 @@ class Round:
         
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given): #TODO RETURN A PROPER RESULT HERE OF WHAT HAS HAPPENED
+        
+        if plyr1 != None and self.players[plyr1].out:
+            raise Exception("Hello Sir, what is this, plyr1 is out, unacceptable") 
+
+        if plyr2 != None and self.players[plyr2].out:
+            raise Exception("Hello Sir, what is this, plyr2 is out, unacceptable") 
+        
+        if self.sychoTar != None and plyr1 != self.sychoTar:
+            raise Exception('Theres a sychoTarget which has not been taken')
+            
+        if  plyr1 != None and self.players[plyr1].immune:
+            raise Exception('Plyr1 is immune')
+            
+        if  plyr2 != None and self.players[plyr2].immune:
+            raise Exception('Plyr2 is immune')
+        
         if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
             card_discarded = self.players[self.turn].card
             self.players[self.turn].card = self.players[self.turn].extra
@@ -180,10 +202,10 @@ class Round:
             self.players[self.turn].extra = None
             
         else: #He's chosen a card that does not exist
-            print("Unknown card chosen??")
-            return
+            raise Exception("Unknown card chosen??")
             
         self.players[self.turn].discard_pile.append(card_discarded)
+        self.discard_pile.append(card_discarded)
         self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
         if self.check_win():
             self.players[self.winner].tokens += 1
@@ -196,8 +218,7 @@ class Round:
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
-        if self.players[plyr1].out or self.players[plyr2].out:
-            raise Exception("Hello Sir, what is this, One player is out, unacceptable") 
+
         
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
@@ -401,4 +422,12 @@ class Game:
         else:
             self.round = None
 
+#For testing
+if __name__ == '__main__':
+    game = Game('moi', 'name', 'pass', 0)
+    game.add_player(Player('qwe'), 'a')
+    game.add_player(Player('asd'), 'b')
+    game.add_player(Player('zxc'), 'c')
+    game.add_player(Player('rty'), 'd')
+    game.add_player(Player('fgh'), 'e')
 

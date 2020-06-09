@@ -29,6 +29,17 @@ class Round extends React.Component {
 	    this.endPlay = this.endPlay.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
 	}
+	
+	componentWillMount() {
+	   	socket.onmessage = (event) => {
+	   		var obj = JSON.parse(event.data);
+	   		//Have to deal with data depending on what obj.type is
+			console.log(obj)
+	   	}
+		
+		socket.send(JSON.stringify({'type':'ready'}))
+		//Tell server you are ready to get information now 
+	}
 
 	drawCard() {
 		const drawn = Values.draw_pile[0];

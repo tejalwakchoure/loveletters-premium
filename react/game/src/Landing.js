@@ -30,16 +30,22 @@ class Landing extends React.Component {
 
 
 	   	socket.onmessage = (event) => {
-	   		console.log(event)
 	   		var obj = JSON.parse(event.data);
-	   		this.setState({all_players: obj.in});
+			console.log(obj)
+			if(obj.type == 'playersS'){
+				this.setState({all_players: obj.plyrs});
+				//obj.uid has the my user-id
+				//obj.host has uid of host 
+				//obj.username has my username
+			}
+	   		
 	   	}
 	}
 
 	startGame = () => {
 		this.props.gameCallback(1);
 		//socket.send(JSON.stringify({'type':'startGame'}))startGame
-		//ALso have to change the onmessage function to something else
+		//ALso have to change the onmessage function to something else, done is round.js
 	}
 
 	startNewGame = () => {
