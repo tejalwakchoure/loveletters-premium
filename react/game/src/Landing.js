@@ -32,8 +32,7 @@ class Landing extends React.Component {
 	   	socket.onmessage = (event) => {
 	   		console.log(event)
 	   		var obj = JSON.parse(event.data);
-	   		var temp = this.state.all_players.concat(obj.in);
-	   		this.setState({all_players: temp});
+	   		this.setState({all_players: obj.in});
 	   	}
 	}
 
