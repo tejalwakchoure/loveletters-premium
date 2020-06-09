@@ -1,7 +1,7 @@
 import os.path
 import random 
 import hashlib
-
+import shutil 
 import json
 
 import tornado.escape
@@ -196,7 +196,14 @@ class Application(tornado.web.Application):
         self.users = Users()
 
         super(Application, self).__init__(*args, **kwargs)
+
+        react_build_dir = os.path.join(os.path.dirname(__file__), "react", "game", "build")
+        python_build_dir = os.path.join(os.path.dirname(__file__), "templates")
         
+        if os.path.exists(os.path.join(python_build_dir, "build")):
+            shutil.rmtree(os.path.join(python_build_dir, "build"))
+        shutil.move(react_build_dir, python_build_dir) 
+
 settings = dict(
         cookie_secret="SX4gE3etDbVr0vbfdsFDSMl",
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
