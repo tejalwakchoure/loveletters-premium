@@ -97,7 +97,9 @@ class Round extends React.Component {
 				  	<Row>
 				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 				  	</Row>
-				  		<PlayCard currentPlayer = {this.state.currentPlayer} cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} roundCallback={this.playCardCallback}/>
+				  		<PlayCard currentPlayer={this.state.currentPlayer} cardPlayed={this.state.cardToPlay} 
+				  		cardRemaining={this.state.cardRemaining} roundCallback={this.playCardCallback}
+				  		all_players={this.props.all_players}/>
 				</Container>
 			);
 		} 

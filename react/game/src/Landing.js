@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
-//import {Values} from '../assets/values.js';
 import {Container, Row, Col} from 'react-bootstrap';
 
 import socket from './socket-context'
@@ -15,7 +14,7 @@ class Landing extends React.Component {
 	    super(props);
 	    this.state = {
 	    	gameOn: true,
-	    	all_players: []
+	    	all_players: ["p1", "p2", "p3"]
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
@@ -43,13 +42,13 @@ class Landing extends React.Component {
 	}
 
 	startGame = () => {
-		this.props.gameCallback(1);
+		this.props.gameCallback(1, this.state.all_players);
 		//socket.send(JSON.stringify({'type':'startGame'}))startGame
 		//ALso have to change the onmessage function to something else, done is round.js
 	}
 
 	startNewGame = () => {
-		this.props.gameCallback(0);
+		this.props.gameCallback(0, this.state.all_players);
 	}
 
 	endGame = () => {
