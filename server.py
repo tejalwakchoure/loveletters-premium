@@ -198,11 +198,11 @@ class Application(tornado.web.Application):
         super(Application, self).__init__(*args, **kwargs)
 
         react_build_dir = os.path.join(os.path.dirname(__file__), "react", "game", "build")
-        python_build_dir = os.path.join(os.path.dirname(__file__), "templates")
+        python_build_dir = os.path.join(os.path.dirname(__file__), "templates", "build")
         
-        if os.path.exists(os.path.join(python_build_dir, "build")):
-            shutil.rmtree(os.path.join(python_build_dir, "build"))
-        shutil.move(react_build_dir, python_build_dir) 
+        if os.path.exists(python_build_dir):
+            shutil.rmtree(python_build_dir)
+        shutil.copytree(react_build_dir, python_build_dir) 
 
 settings = dict(
         cookie_secret="SX4gE3etDbVr0vbfdsFDSMl",
