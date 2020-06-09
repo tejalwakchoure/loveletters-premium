@@ -81,7 +81,6 @@ class PlayCard extends React.Component {
 
 	getList() {
 		//Eliminated?? ICON! Immune?? ICON!
-		//change color on select
 		var list = null;
 		if(["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"].indexOf(this.props.cardPlayed)>=0) { //no action
 			list = null;
@@ -100,7 +99,7 @@ class PlayCard extends React.Component {
 				choiceType = "single";
 
 	  		list = (<ListGroup>
-  				{Values.all_players.map((item, i) => {
+  				{this.props.all_players.map((item, i) => {
 					return <ListGroup.Item className='List-item-design'
 								variant={this.state.selectedPlayers.indexOf(item)>=0?'dark':'light'}
 								key={item}
@@ -115,6 +114,26 @@ class PlayCard extends React.Component {
 
 	render() {
 		const list = this.getList();
+		const card_count = {
+							"Assassin" : 1, 
+							"Baron" : 2,
+							"Baroness" : 2,
+							"Bishop" : 1,
+							"Cardinal" : 2,
+							"Constable" : 1,
+							"Count" : 2,
+							"Countess" : 1,
+							"Dowager Queen" : 1,
+							"Guard" : 8, 
+							"Handmaid" : 2,
+							"Jester" : 1, 
+							"King" : 1,
+							"Priest" : 2, 
+							"Prince" : 2,
+							"Princess" : 1,
+							"Sycophant" : 2
+						};
+
 		if(list!=null) {
 			return (
 				<div>
@@ -123,13 +142,13 @@ class PlayCard extends React.Component {
 						{this.props.cardPlayed=="Guard"?
 							<Col>
 								<ListGroup>
-					  				{Values.all_cards.map((item, i) => {
+					  				{Object.entries(card_count).map(([item, value]) => {
 										return <ListGroup.Item className='List-item-design'
 													variant={this.state.selectedCard==item?'dark':'light'}
 													key={item} 
 													disabled={item==this.props.cardPlayed}
 													onClick={(e) => this.selectCard(item, e)}>{item}
-													<Badge variant="secondary" style={{float: 'right'}}>{Values.card_count[item]}</Badge>
+													<Badge variant="secondary" style={{float: 'right'}}>{value}</Badge>
 												</ListGroup.Item>})}
 								</ListGroup>
 							</Col>:
