@@ -36,13 +36,16 @@ class Landing extends React.Component {
 				if(obj.uid == obj.host) {
 					this.setState({showStart: true});
 				}
+			}else if(obj.type == 'startGame'){
+				
 			}
 	   	}
 	}
 
 	startGame = () => {
-		this.props.gameCallback(1, this.state.all_players);
 		socket.send(JSON.stringify({'type':'startGame'}))
+		this.props.gameCallback(1, this.state.all_players);
+		
 	}
 
 	startNewGame = () => {
