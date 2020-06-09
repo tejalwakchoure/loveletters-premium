@@ -26,6 +26,7 @@ class Landing extends React.Component {
 		};
 
 
+
 	   	socket.onmessage = (event) => {
 	   		console.log(event)
 	   		var obj = JSON.parse(event.data);
@@ -36,6 +37,8 @@ class Landing extends React.Component {
 
 	startGame = () => {
 		this.props.gameCallback(1);
+		//socket.send(JSON.stringify({'type':'startGame'}))startGame
+		//ALso have to change the onmessage function to something else
 	}
 
 	startNewGame = () => {
