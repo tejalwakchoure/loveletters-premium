@@ -97,7 +97,7 @@ class gameLoginHandler(RequestHandler):
             else:
                 game = Game(self.user, password, roomname, totalGames)
                 
-                #self.user.gid = totalGames
+                self.user.gid = totalGames
                 
                 game.add_player(self.user, username)
                 self.application.games[totalGames] = game
@@ -132,7 +132,7 @@ class gameLoginHandler(RequestHandler):
                 #add into game given by totalGames = i
                 blob = {'game':str(notFound)}
                 
-                #self.user.gid = notFound
+                self.user.gid = notFound
                     
                 self.application.games[notFound].add_player(self.user, username)
                 
@@ -157,12 +157,19 @@ class gameBoardHandler(RequestHandler):
 
 class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
     def open(self):
-        print("WebSocket opened", self.user.user)
+        print("WebSocket opened", self.user.username)
+        self.user.addSocketHandle(self)
 
     def on_message(self, message):
         print(u"You said: " + message)
         if message == 'players':
-            self.write_message(json.dumps({'in':[1,2,3,4,5,6]}))
+            plyrs = []
+            for plyr in self.application.games[self.user.gid].players.values():
+                plyrs.append(plyr.username)
+
+            for plyr in self.application.games[self.user.gid].players.values():
+                plyr.webSocketHandle.write_message(json.dumps({'in':plyrs}))
+            
             print('playrs requested')
 
     def on_close(self):
