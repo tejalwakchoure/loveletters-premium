@@ -49,15 +49,24 @@ extCards = [Card(9, 'Bishop', ''),
 
         
 class Player:
-    def __init__(self, user, username = False):
+    def __init__(self, user):
         self.user = user
         self.reset()
         self.tokens = 0
-        if username:
-            self.username = username
-        else:
-            self.username = 'random' + user
         
+        self.webSocketHandle = None
+
+        self.gid = -1
+        
+        self.username = 'random' + user[:5]
+        
+    def set_username(self, name):
+        self.username = name
+        
+    def addSocketHandle(self, sock):
+        self.webSocketHandle = sock
+
+
     def reset(self):
         self.card = None
         
@@ -87,6 +96,24 @@ class Player:
             return self.sum < other.sum
         else:
             return self.end_count < other.end_count
+            
+class Users():
+    def __init__(self):
+        self.users = {}
+    
+    def __iter__(self):
+        return iter(self.users.values())
+    
+    def has_user(self, uid):
+        return uid in self.users
+
+    def get_user(self, uid):
+        return self.users[uid]
+        
+    def add_user(self, uid):
+        user = Player(uid)
+        self.users[uid] = user
+        return user
     
 class Round:
     def __init__(self, game_super, players, order, cards, starter):
@@ -296,10 +323,12 @@ class Round:
     
 
 class Game:
-    def __init__(self, host, password, room_name):
+    def __init__(self, host, password, room_name, gid):
         self.host = host
         self.room_name = room_name
         self.password = password
+        
+        self.gid = gid
         
         self.state = 0 #Not started
         
@@ -315,7 +344,8 @@ class Game:
             return
             
         if not user in self.players:  
-            self.players[user] = Player(user, username)
+            user.set_username(username)
+            self.players[user.user] = user
             self.order.append(user)
             
     def start_game(self):
@@ -353,15 +383,4 @@ class Game:
         else:
             self.round = None
 
-
-#This is testing part
-if __name__ == '__main__':
-    game = Game('user', 'password', 'roomname')
-
-    game.add_player('a')
-    game.add_player('b')
-    game.add_player('c')
-    game.add_player('d')
-    game.add_player('e')
-    game.start_game()
 
