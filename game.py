@@ -54,14 +54,19 @@ class Player:
         self.reset()
         self.tokens = 0
         
+        self.webSocketHandle = None
+
         self.gid = -1
         
-        self.username = 'random' + user
+        self.username = 'random' + user[:5]
         
     def set_username(self, name):
         self.username = name
         
-        
+    def addSocketHandle(self, sock):
+        self.webSocketHandle = sock
+
+
     def reset(self):
         self.card = None
         
@@ -96,6 +101,8 @@ class Users():
     def __init__(self):
         self.users = {}
     
+    def __iter__(self):
+        return iter(self.users.values())
     
     def has_user(self, uid):
         return uid in self.users
@@ -337,9 +344,8 @@ class Game:
             return
             
         if not user in self.players:  
-            self.players[user] = user
             user.set_username(username)
-            user.gid = self.gid
+            self.players[user.user] = user
             self.order.append(user)
             
     def start_game(self):
