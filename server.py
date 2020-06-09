@@ -95,7 +95,7 @@ class gameLoginHandler(RequestHandler):
                 #Room already exists
                 self.write(json.dumps({'game':'exists'}))
             else:
-                game = Game(self.user, password, roomname, totalGames)
+                game = Game(self.user.user, password, roomname, totalGames)
                 
                 self.user.gid = totalGames
                 
@@ -105,13 +105,6 @@ class gameLoginHandler(RequestHandler):
                 print("Create romm:", roomname, password, username, totalGames)
                 totalGames += 1
                 
-                #ADDING EXTRA PLAYERS TO HELP TEST
-                #x1 = self.application.users.add_user('2dfsgsdfg', '2dsgsdfg')
-                #x2 = self.application.users.add_user('3dfgsfdfg', '3dfgdfgd')
-                #x3 = self.application.users.add_user('4dsfgsdfg', '4fsfoias')
-                #game.add_player(x1, display.BunnyPalette.allColors[1])
-                #game.add_player(x2, display.BunnyPalette.allColors[2])
-                #game.add_player(x3, display.BunnyPalette.allColors[3])
                 
                 
             
@@ -170,13 +163,13 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             for plyr in self.application.games[self.user.gid].players.values():
                 plyrs.append(plyr.username)
 
-            self.sendGameAll(json.dumps({'in':plyrs}))
+            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':self.application.games[self.user.gid].host})
             
             print('playrs requested')
         elif message['type'] == 'startGame':
             #Start the game
             self.application.games[self.user.gid].start_game()
-            self.sendGameAll(json.dumps({'type': 'startGame'}))
+            self.sendGameAll({'type': 'startGame'})
             
         elif message['type'] == 'ready':
             self.write_message(json.dumps(self.application.games[self.user.gid].round.turn_status()))
@@ -191,7 +184,9 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
     def sendGameAll(self, msg):
         for plyr in self.application.games[self.user.gid].players.values():
-            plyr.webSocketHandle.write_message(msg)        
+            msg['uid'] = self.user.user
+            msg['username'] = self.user.username
+            plyr.webSocketHandle.write_message(json.dumps(msg))        
 
 
 class Application(tornado.web.Application):
