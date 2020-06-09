@@ -14,7 +14,8 @@ class Landing extends React.Component {
 	    this.state = {
 	    	gameOn: true,
 	    	all_players: ["p1", "p2", "p3"],
-	    	showStart: false
+	    	showStartButton: false,
+	    	toStart: false
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
@@ -31,25 +32,32 @@ class Landing extends React.Component {
 	   	socket.onmessage = (event) => {
 	   		var obj = JSON.parse(event.data);
 			console.log(obj)
+			
 			if(obj.type == 'playersS'){
 				this.setState({all_players: obj.plyrs});
-				if(obj.uid == obj.host) {
-					this.setState({showStart: true});
-				}
-			}else if(obj.type == 'startGame'){
-				
+				if(obj.uid == obj.host)
+					this.setState({showStartButton: true});
 			}
+			else if(obj.type == 'startGame')
+				this.setState({toStart: true});
 	   	}
 	}
 
 	startGame = () => {
 		socket.send(JSON.stringify({'type':'startGame'}))
-		this.props.gameCallback(1, this.state.all_players);
+		if(this.state.toStart) {
+			this.setState({toStart: false});
+			this.props.gameCallback(1, this.state.all_players);
+		}
 		
 	}
 
 	startNewGame = () => {
-		this.props.gameCallback(0, this.state.all_players);
+		socket.send(JSON.stringify({'type':'startGame'}))
+		if(this.state.toStart) {
+			this.setState({toStart: false});
+			this.props.gameCallback(0, this.state.all_players);
+		}
 	}
 
 	endGame = () => {
@@ -75,7 +83,7 @@ class Landing extends React.Component {
 						</ListGroup>
 				  	</Row>
 				  	<Row style={{width: '50vw'}}> 
-				  		<Button size="lg" block className='Confirm-button' disabled={!this.state.showStart} onClick={this.startGame}>Start Game</Button>
+				  		<Button size="lg" block className='Confirm-button' disabled={!this.state.showStartButton} onClick={this.startGame}>Start Game</Button>
 				  	</Row>
 				</Container>
 			);
