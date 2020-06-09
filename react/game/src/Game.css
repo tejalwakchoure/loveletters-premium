@@ -72,6 +72,10 @@
   color: #867e7e !important;
 }
 
+.list-group-item-dark {
+  background-color: #25101a !important;
+}
+
 @keyframes Game-logo-spin {
   from {
     transform: rotate(0deg);
