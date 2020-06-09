@@ -17,7 +17,7 @@ export const Values = {
 	},
 	"played_cards" : ["Guard", "Priest", "Princess"],
 	"current_cards" : {
-		"p1" : "Guard", 
+		"p1" : "Priest", 
 		"p2" : "Jester", 
 		"p3" : "Baron"
 	},
