@@ -22,8 +22,7 @@ class Landing extends React.Component {
 	   	this.all_players = []
 	   	socket.onopen = () => {
 			console.log('WebSocket Client Connected');
-			socket.send('Hello Server!');
-			socket.send('players')
+			socket.send(JSON.stringify({'type':'players'}))
 		};
 
 
