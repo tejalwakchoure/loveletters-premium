@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
-import {Values} from '../assets/values.js';
+//import {Values} from '../assets/values.js';
 import {Container, Row, Col} from 'react-bootstrap';
+
+import socket from './socket-context'
 
 
 class Landing extends React.Component {
@@ -17,6 +19,20 @@ class Landing extends React.Component {
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
 	   	this.endGame = this.endGame.bind(this);
+	   	this.all_players = []
+	   	socket.onopen = () => {
+			console.log('WebSocket Client Connected');
+			socket.send('Hello Server!');
+			socket.send('players')
+		};
+
+
+	   	socket.onmessage = (event) => {
+	   		console.log(event)
+	   		var obj = JSON.parse(event.data);
+	   		this.all_players = obj.in
+	   		console.log(obj.in)
+	   	}
 	}
 
 	startGame = () => {
@@ -33,6 +49,7 @@ class Landing extends React.Component {
 		});
 	}
 
+
 	render() {
 		if(this.props.toStartGame) {
 			return(
@@ -42,7 +59,7 @@ class Landing extends React.Component {
 				  	</Row>
 				  	<Row style={{margin: 'auto'}}>
 				  		<ListGroup>
-				  			{Values.all_players.map((item, i) => {
+				  			{this.all_players.map((item, i) => {
 		  						return <ListGroup.Item key={item} className='List-item-design'>{item}</ListGroup.Item>})}
 						</ListGroup>
 				  	</Row>
