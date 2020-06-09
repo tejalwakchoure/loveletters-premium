@@ -184,8 +184,8 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
     def sendGameAll(self, msg):
         for plyr in self.application.games[self.user.gid].players.values():
-            msg['uid'] = self.user.user
-            msg['username'] = self.user.username
+            msg['uid'] = plyr.user
+            msg['username'] = plyr.username
             plyr.webSocketHandle.write_message(json.dumps(msg))        
 
 
