@@ -14,8 +14,8 @@ class Landing extends React.Component {
 	    this.state = {
 	    	gameOn: true,
 	    	all_players: ["p1", "p2", "p3"],
-	    	showStartButton: false,
-	    	toStart: false
+	    	showStartButton: true,
+	    	toStart: true
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
@@ -45,8 +45,10 @@ class Landing extends React.Component {
 
 	startGame = () => {
 		socket.send(JSON.stringify({'type':'startGame'}))
+		console.log("sent Start")
 		if(this.state.toStart) {
 			this.setState({toStart: false});
+			console.log("received Start")
 			this.props.gameCallback(1, this.state.all_players);
 		}
 		
@@ -54,8 +56,10 @@ class Landing extends React.Component {
 
 	startNewGame = () => {
 		socket.send(JSON.stringify({'type':'startGame'}))
+		console.log("sent Start")
 		if(this.state.toStart) {
 			this.setState({toStart: false});
+			console.log("received Start")
 			this.props.gameCallback(0, this.state.all_players);
 		}
 	}

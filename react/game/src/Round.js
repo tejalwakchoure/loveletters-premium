@@ -92,7 +92,7 @@ class Round extends React.Component {
 								"p2" : "Jester", 
 								"p3" : "Baron"
 							}
-		const currentCard = current_cards[this.state.currentPlayer]; //socket.current_cards[this.state.currentPlayer];
+		const currentCard = current_cards[this.state.currentPlayer];//socket.current_cards[this.state.currentPlayer];
 		const drawnCard = this.drawCard();
 		console.log('in round');
 		if(this.state.discardMode) {
