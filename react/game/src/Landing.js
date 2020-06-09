@@ -15,7 +15,7 @@ class Landing extends React.Component {
 	    super(props);
 	    this.state = {
 	    	gameOn: true,
-	    	all_players: ["test"]
+	    	all_players: []
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
@@ -34,7 +34,6 @@ class Landing extends React.Component {
 	   		var obj = JSON.parse(event.data);
 	   		var temp = this.state.all_players.concat(obj.in);
 	   		this.setState({all_players: temp});
-	   		console.log("temp=", temp)
 	   	}
 	}
 
@@ -56,8 +55,6 @@ class Landing extends React.Component {
 
 
 	render() {
-		console.log("list items=", this.state.all_players)
-		const testlist = ["p1", "p2"]
 		if(this.props.toStartGame) {
 			return(
 				<Container className="Game-header">
