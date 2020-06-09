@@ -5,10 +5,6 @@ import Landing from './Landing.js';
 import Results from './Results.js';
 import {Values} from '../assets/values.js';
 
-
-
-
-
 class Game extends React.Component {
 	
 	constructor(props) {
@@ -17,6 +13,7 @@ class Game extends React.Component {
 	    	gameStatus: 0, /* 0-landing screen start game, 1- in round, 2- round results, 3-landing screen end game*/
 			toStartGame: true,
 			rounds_played: 0,
+			all_players: [],
 			points: Values.player_points,
 			round_winner: " "
 		};
@@ -25,9 +22,10 @@ class Game extends React.Component {
 		this.resultsCallback = this.resultsCallback.bind(this);
 	}
 
-	landingCallback = (landingData) => {
+	landingCallback = (landingData, all_players) => {
 		this.setState({
-			gameStatus: landingData
+			gameStatus: landingData,
+			all_players: all_players
 		})
 	}
 
@@ -64,7 +62,7 @@ class Game extends React.Component {
 		if (this.state.gameStatus==0)
 			return (<Landing toStartGame={this.state.toStartGame} gameCallback = {this.landingCallback}/>);
 		else if (this.state.gameStatus==1)
-		    return (<Round gameCallback={this.roundCallback}/>);
+		    return (<Round gameCallback={this.roundCallback} all_players={this.state.all_players}/>);
 		else if (this.state.gameStatus==2)
 			return(<Results points={this.state.points} winner={this.state.round_winner} gameCallback={this.resultsCallback}/>);
 		else
