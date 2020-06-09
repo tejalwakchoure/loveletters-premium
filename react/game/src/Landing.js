@@ -14,8 +14,7 @@ class Landing extends React.Component {
 	    this.state = {
 	    	gameOn: true,
 	    	all_players: ["p1", "p2", "p3"],
-	    	showStartButton: false,
-	    	toStart: false
+	    	showStartButton: false
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
@@ -39,29 +38,18 @@ class Landing extends React.Component {
 					this.setState({showStartButton: true});
 			}
 			else if(obj.type == 'startGame')
-				this.setState({toStart: true});
+				this.props.gameCallback(1, this.state.all_players);
 	   	}
 	}
 
 	startGame = () => {
-		socket.send(JSON.stringify({'type':'startGame'}))
+		socket.send(JSON.stringify({'type':'startGame'}));
 		console.log("sent Start")
-		if(this.state.toStart) {
-			this.setState({toStart: false});
-			console.log("received Start")
-			this.props.gameCallback(1, this.state.all_players);
-		}
-		
 	}
 
 	startNewGame = () => {
-		socket.send(JSON.stringify({'type':'startGame'}))
-		console.log("sent Start")
-		if(this.state.toStart) {
-			this.setState({toStart: false});
-			console.log("received Start")
-			this.props.gameCallback(0, this.state.all_players);
-		}
+		console.log("sent Start New game")
+		this.props.gameCallback(0, this.state.all_players);
 	}
 
 	endGame = () => {
@@ -69,7 +57,6 @@ class Landing extends React.Component {
 			gameOn: false //remove this player from the game metadata; it could still go on
 		});
 	}
-
 
 	render() {
 		if(this.props.toStartGame) {
