@@ -45,13 +45,12 @@ class Landing extends React.Component {
 				if(obj.uid === obj.host)
 					this.setState({showStartButton: true});
 
-			}else if(obj.type === 'startGame'){
+			} else if(obj.type === 'startGame') {
 				this.setState({gameStatus: 1})
 				console.log("Bois, we're moving ahead");
 				this.props.gameCallback(this.state);
 			}
 	   	}
-
 	   	
 	 	//   socket.on('disconnect', () => {
 		//     console.log(this.state.username + ' disconnected');
@@ -105,7 +104,7 @@ class Landing extends React.Component {
 			return(
 				<Container className="Game-header">
 				<Row style={{margin: 'auto'}}>
-				  	<h4 className='Play-status'>{this.props.final_winner} won the game!</h4>
+				  	<h3 className='Play-status'>{this.props.final_winner} won the Princess's heart!</h3>
 			  	</Row>
 			  	<Row style={{margin: 'auto'}}> 
 			  		<Col><Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.endGame}>Leave Game</Button></Col>

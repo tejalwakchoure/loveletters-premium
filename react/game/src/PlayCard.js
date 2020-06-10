@@ -16,7 +16,9 @@ class PlayCard extends React.Component {
 	    this.state = {
 	    	selectedPlayers: this.props.syco,
 	    	selectionSatisfied: false,
-	    	selectedNumber: -1
+	    	selectedNumber: -1,
+	    	playMode: true,
+	    	turnResult: {}
 	    }
 	    this.selectPlayer = this.selectPlayer.bind(this);
 	    this.selectNumber = this.selectNumber.bind(this);
@@ -29,7 +31,11 @@ class PlayCard extends React.Component {
 	   		var obj = JSON.parse(event.data);
 			console.log(obj)
 			
-			if(obj.type === 'discard') {
+			if(obj.type === 'result') {
+				this.setState({
+					playMode: false,
+					turnResult: obj
+				});
 			}
 	   	}
 	}
@@ -97,15 +103,7 @@ class PlayCard extends React.Component {
 
 		console.log(valuesToSend);
 		socket.send(JSON.stringify(valuesToSend));
-	    console.log('sent discard')
-		// getResult(valuesToSend);
-
-		const results = {} //0 : no change (ex.Priest)
-		results[this.state.selectedPlayer] = 1;//won
-		results[this.props.currentPlayer] = -1;//lost and eliminated
-		//display the result of the turn
-		
-		this.props.roundCallback(results);
+	    console.log('sent discard');
 	}
 
 	getList() {
@@ -141,9 +139,13 @@ class PlayCard extends React.Component {
 											isImmune || isEliminated}
 								onClick={(e) => this.selectPlayer(choiceType, id, e)}>{value}
 
-								{isImmune?<FontAwesomeIcon style={{float: 'right'}} icon={faShieldAlt}/>: <div></div>}
-								{isSyco?<FontAwesomeIcon style={{float: 'right'}} icon={faHandshake}/>: <div></div>}
-								{isEliminated?<FontAwesomeIcon style={{float: 'right'}} icon={faSkull}/>: <div></div>}
+								{isImmune?
+									<FontAwesomeIcon style={{float: 'right'}} icon={faShieldAlt}/>: 
+									(isSyco?
+										<FontAwesomeIcon style={{float: 'right'}} icon={faHandshake}/>: 
+										(isEliminated?
+											<FontAwesomeIcon style={{float: 'right'}} icon={faSkull}/>: 
+											<div></div>))}
 							</ListGroup.Item>})}
 				</ListGroup>);  
 	  	} 
@@ -154,37 +156,49 @@ class PlayCard extends React.Component {
 	render() {
 		const list = this.getList();
 		const card_numbers = [1,2,3,4,5,6,7,8,9];
-
-		if(list!=null) {
-			return (
-				<div>
-					<Row style={{justifyContent: 'center'}}>
-						<Col>{list}</Col>
-						{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
-							<Col>
-								<ListGroup>
-					  				{card_numbers.map((item, i) => {
-										return <ListGroup.Item className='List-item-design'
-													variant={this.state.selectedNumber===item?'dark':'light'}
-													key={item} 
-													disabled={item===1}
-													onClick={(e) => this.selectNumber(item, e)}>{item}
-												</ListGroup.Item>})}
-								</ListGroup>
-							</Col>:
-							<div>
-							</div>}
-					</Row>
-					<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
-						<Button size="lg" block className='Confirm-button' 
-						disabled={!this.state.selectionSatisfied}
-						onClick={this.endPlay}>OK</Button>
-					</Row>
-				</div>
-			);
-		}
-		else {
-			return (<div>{this.endPlay()}</div>);
+		if(this.state.playMode===true) {
+			if(list!=null) {
+				return (
+					<div>
+						<Row style={{justifyContent: 'center'}}>
+							<Col>{list}</Col>
+							{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
+								<Col>
+									<ListGroup>
+						  				{card_numbers.map((item, i) => {
+											return <ListGroup.Item className='List-item-design'
+														variant={this.state.selectedNumber===item?'dark':'light'}
+														key={item} 
+														disabled={item===1}
+														onClick={(e) => this.selectNumber(item, e)}>{item}
+													</ListGroup.Item>})}
+									</ListGroup>
+								</Col>:
+								<div>
+								</div>}
+						</Row>
+						<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
+							<Button size="lg" block className='Confirm-button' 
+							disabled={!this.state.selectionSatisfied}
+							onClick={this.endPlay}>OK</Button>
+						</Row>
+					</div>
+				);
+			}
+			else {
+				return (<div>{this.endPlay()}</div>);
+			}
+		} else {
+			<div>
+				<Row>
+					<h4 className='Play-status'>{this.state.turnResult.message}</h4>
+				</Row>
+				{/*show card of opp in baron, priest, cardinal etc*/}
+				<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
+					<Button size="lg" block className='Confirm-button'
+					onClick = () => {this.props.roundCallback(this.state.turnResult);}>OK</Button>
+				</Row>
+			</div>
 		}
 	}
 }
