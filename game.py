@@ -167,7 +167,7 @@ class Round:
         if self.turn == plyr_uid:
             obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
         else:
-            obj['card'] = self.players[plyr_uid].card.card_name
+            obj['cards'] = [self.players[plyr_uid].card.card_name]
         obj['sycho'] = self.sychoTar
         obj['immune'] = []
         for plyr in self.order:
