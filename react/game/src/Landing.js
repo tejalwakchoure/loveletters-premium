@@ -46,6 +46,7 @@ class Landing extends React.Component {
 					this.setState({showStartButton: true});
 
 			}else if(obj.type === 'startGame'){
+				this.setState({gameStatus: 1})
 				console.log("Bois, we're moving ahead");
 				this.props.gameCallback(this.state);
 			}
