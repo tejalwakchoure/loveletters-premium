@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
-import {Container, Row, Col} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 
 class PlayCard extends React.Component {
 	
@@ -24,9 +24,9 @@ class PlayCard extends React.Component {
 	selectPlayer(type, item){ 
 		let selectedPlayers = null;
 		let x = 0;
-		if(type=='single') {
+		if(type==='single') {
 			selectedPlayers = [item];
-			if(this.props.cardPlayed!="Guard")
+			if(this.props.cardPlayed!=="Guard")
 				this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
 			else
 				this.setState({selectedPlayers: selectedPlayers});
@@ -39,14 +39,14 @@ class PlayCard extends React.Component {
 				selectedPlayers = this.state.selectedPlayers.concat(item);
 			}
 			
-			if(type=='double') {
-				if(selectedPlayers.length==2) {
+			if(type==='double') {
+				if(selectedPlayers.length===2) {
 						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
 				} else {
 					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
 				}
 			} else {
-				if(selectedPlayers.length==1 || selectedPlayers.length==2) {
+				if(selectedPlayers.length===1 || selectedPlayers.length===2) {
 						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
 				} else {
 					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
@@ -71,7 +71,7 @@ class PlayCard extends React.Component {
 			valuesToSend[item] = current_cards[item]});//socket.current_cards[item];
 		valuesToSend[this.props.currentPlayer] = this.props.cardRemaining;
 		
-		if(this.props.cardPlayed=="Guard")
+		if(this.props.cardPlayed==="Guard")
 			valuesToSend["Guessed"] = this.state.selectedCard;
 		console.log(valuesToSend);
 		
@@ -92,12 +92,12 @@ class PlayCard extends React.Component {
 		}
 		
 		else {
-			var enableCurrent = (this.props.cardPlayed=="Prince" || this.props.cardPlayed=="Sycophant");
+			var enableCurrent = (this.props.cardPlayed==="Prince" || this.props.cardPlayed==="Sycophant");
 			var choiceType = "";
 			
-			if(this.props.cardPlayed=="Baroness") //one or two choices
+			if(this.props.cardPlayed==="Baroness") //one or two choices
 				choiceType = "either";
-			else if(this.props.cardPlayed=="Cardinal") // two choices
+			else if(this.props.cardPlayed==="Cardinal") // two choices
 				choiceType = "double";
 			else // single choice
 				choiceType = "single";
@@ -107,7 +107,7 @@ class PlayCard extends React.Component {
 					return <ListGroup.Item className='List-item-design'
 								variant={this.state.selectedPlayers.indexOf(item)>=0?'dark':'light'}
 								key={item}
-								disabled={enableCurrent?false:(item==this.props.currentPlayer)}
+								disabled={enableCurrent?false:(item===this.props.currentPlayer)}
 								onClick={(e) => this.selectPlayer(choiceType, item, e)}>{item}
 							</ListGroup.Item>})}
 				</ListGroup>);  
@@ -143,14 +143,14 @@ class PlayCard extends React.Component {
 				<div>
 					<Row style={{justifyContent: 'center'}}>
 						<Col>{list}</Col>
-						{this.props.cardPlayed=="Guard"?
+						{this.props.cardPlayed==="Guard"?
 							<Col>
 								<ListGroup>
 					  				{Object.entries(card_count).map(([item, value]) => {
 										return <ListGroup.Item className='List-item-design'
-													variant={this.state.selectedCard==item?'dark':'light'}
+													variant={this.state.selectedCard===item?'dark':'light'}
 													key={item} 
-													disabled={item==this.props.cardPlayed}
+													disabled={item===this.props.cardPlayed}
 													onClick={(e) => this.selectCard(item, e)}>{item}
 													<Badge variant="secondary" style={{float: 'right'}}>{value}</Badge>
 												</ListGroup.Item>})}

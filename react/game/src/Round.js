@@ -18,16 +18,16 @@ class Round extends React.Component {
 		    cardToPlay: " ",
 		    cardRemaining: " ",
 		    discardMode: false,
-		    currentPlayer: "p1",
-		    playStatus: "p1"+" is discarding",
+		    currentPlayer: " ",
+		    playStatus: "p1 is discarding",
 		    results: {  //socket.player_points,
 						"p1" : 0,
 						"p2" : 0,
 						"p3" : 0
 					},
-		    winner: "p1"
+		    winner: "p1",
+		    currentCards: {}
 		};
-	    this.drawCard = this.drawCard.bind(this);
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
 	    this.endPlay = this.endPlay.bind(this);
@@ -35,19 +35,20 @@ class Round extends React.Component {
 	}
 	
 	componentWillMount() {
-	   	socket.onmessage = (event) => {
-	   		var obj = JSON.parse(event.data);
-	   		//Have to deal with data depending on what obj.type is
-			console.log(obj)
-	   	}
-		
-		socket.send(JSON.stringify({'type':'ready'}))
-		//Tell server you are ready to get information now 
-	}
+		socket.send(JSON.stringify({'type':'ready'}));
+	    console.log('sent ready')
 
-	drawCard() {
-		const drawn = "Assassin"; //socket.cardDrawn
-		return drawn;
+		socket.onmessage = (event) => {
+	   		var obj = JSON.parse(event.data);
+			console.log(obj)
+			
+			if(obj.type === 'turn') {
+				this.setState({
+					currentPlayer: obj.player,
+					currentCards: obj.cards
+				});
+			}
+	   	}
 	}
 
 	selectCard(chosen, remaining) {
@@ -78,39 +79,68 @@ class Round extends React.Component {
   			results: playCardData, //check if round is over based on backend logic
   			winner: "p1", //check who won; if no one yet, keep blank
   		});
-  		if(this.state.winner!=" ") {
+  		if(this.state.winner!==" ") {
 			this.props.gameCallback(this.state.winner);
 		}
 		else {
 			this.endPlay();
-		}
+		} 
   	}
 
 	render() {
-		const current_cards = {
-								"p1" : "Guard", 
-								"p2" : "Jester", 
-								"p3" : "Baron"
-							}
-		const currentCard = current_cards[this.state.currentPlayer];//socket.current_cards[this.state.currentPlayer];
-		const drawnCard = this.drawCard();
-		console.log('in round');
-		if(this.state.discardMode) {
-			return(
-				<Container className="Game-header">
-				  	<Row>
-				  		<CardCarousel addCard={this.state.cardToPlay}/>
-				  	</Row>
-				  	<Row>
-				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
-				  	</Row>
-				  		<PlayCard currentPlayer={this.state.currentPlayer} cardPlayed={this.state.cardToPlay} 
-				  		cardRemaining={this.state.cardRemaining} roundCallback={this.playCardCallback}
-				  		all_players={this.props.all_players}/>
-				</Container>
-			);
-		} 
-		else {
+		console.log('username = '+this.props.username);
+		console.log('currentPlayer = '+this.state.currentPlayer);
+		console.log(this.state.currentCards);
+
+		var currentCard = this.state.currentCards[0];
+		if(currentCard===undefined)
+			currentCard="Assassin" // before first render
+		
+		if(this.props.userID === this.state.currentPlayer) {
+			console.log(this.props.username+ 'is playing');
+			var drawnCard = this.state.currentCards[1];
+			if(drawnCard===undefined)
+				drawnCard="Assassin" // before first render
+			
+			if(this.state.discardMode) {
+				return(
+					<Container className="Game-header">
+					  	<Row>
+					  		<CardCarousel addCard={this.state.cardToPlay}/>
+					  	</Row>
+					  	<Row>
+					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+					  	</Row>
+					  		<PlayCard currentPlayer={this.props.username}
+					  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
+					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}/>
+					</Container>
+				); {/*what about UserID in playCard??*/}
+			}
+			else {
+				return(
+					<Container className="Game-header">
+					  	<Row>
+					  		<CardCarousel addCard={" "}/>
+					  	</Row>
+					  	<Row>
+					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+					  	</Row>
+					  	<Row>
+					  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
+					  			<Cards cardname={currentCard}/>
+					  		</Col>
+					  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(drawnCard, currentCard, e)}>
+					  			<Cards cardname={drawnCard}/>
+					  		</Col>
+					  	</Row> 
+					  	<Row style={{width: '50vw'}}> 
+					  		<Button size="lg" block className='Confirm-button' disabled={this.state.cardToPlay===" "} onClick={this.discard}>Discard</Button>
+					  	</Row>
+					</Container>
+				);
+			}
+		} else {
 			return(
 				<Container className="Game-header">
 				  	<Row>
@@ -120,15 +150,12 @@ class Round extends React.Component {
 				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 				  	</Row>
 				  	<Row>
-				  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
+				  		<h3 className='Play-status'>It's not your turn</h3>
+				  	</Row>
+				  	<Row>
+				  		<Col style={{display: "inline-flex"}}>
 				  			<Cards cardname={currentCard}/>
 				  		</Col>
-				  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(drawnCard, currentCard, e)}>
-				  			<Cards cardname={drawnCard}/>
-				  		</Col>
-				  	</Row> 
-				  	<Row style={{width: '50vw'}}> 
-				  		<Button size="lg" block className='Confirm-button' disabled={this.state.cardToPlay==" "} onClick={this.discard}>Discard</Button>
 				  	</Row>
 				</Container>
 			);
