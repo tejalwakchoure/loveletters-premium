@@ -34,6 +34,7 @@ class Landing extends React.Component {
 	   	socket.onmessage = (event) => {
 	   		var obj = JSON.parse(event.data);
 			console.log(obj);
+			console.log(obj.type);
 			
 			if(obj.type === 'playersS'){
 				this.setState({
@@ -43,8 +44,9 @@ class Landing extends React.Component {
 				});
 				if(obj.uid === obj.host)
 					this.setState({showStartButton: true});
+
 			}else if(obj.type === 'startGame'){
-				console.log("Bois, we're moving ahead")
+				console.log("Bois, we're moving ahead");
 				this.props.gameCallback(this.state);
 			}
 	   	}
