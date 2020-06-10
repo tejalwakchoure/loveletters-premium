@@ -173,10 +173,10 @@ class Round:
             obj['sycho'].append(self.sychoTar)
         
         #THIS WAS ADDED FOR TESTING REMOVE 
-        for plyr in self.order:
-            if plyr != plyr_uid:
-                obj['sycho'].append(plyr)
-                break
+        #for plyr in self.order:
+        #    if plyr != plyr_uid:
+        #        obj['sycho'].append(plyr)
+        #        break
         
         obj['immune'] = []
         for plyr in self.order:
@@ -187,6 +187,14 @@ class Round:
         for plyr in self.players.values():
             if plyr.out:
                 obj['eliminated'].append(plyr.user)
+        
+        #TODO: Send prev results here
+        obj['prevTurn'] = None
+        if self.discard_pile:#it's not first turn
+            if self.result_blob['player'] == plyr_uid:
+                prevPlayer = 'You'
+            
+            
         
         return obj
 
