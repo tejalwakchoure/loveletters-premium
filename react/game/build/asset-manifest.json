@@ -6,14 +6,14 @@
     "runtime-main.js": "/static/js/runtime-main.ab439063.js",
     "runtime-main.js.map": "/static/js/runtime-main.ab439063.js.map",
     "static/css/2.829c9cb5.chunk.css": "/static/css/2.829c9cb5.chunk.css",
-    "static/js/2.07d86d2a.chunk.js": "/static/js/2.07d86d2a.chunk.js",
-    "static/js/2.07d86d2a.chunk.js.map": "/static/js/2.07d86d2a.chunk.js.map",
+    "static/js/2.1fbfce87.chunk.js": "/static/js/2.1fbfce87.chunk.js",
+    "static/js/2.1fbfce87.chunk.js.map": "/static/js/2.1fbfce87.chunk.js.map",
     "index.html": "/index.html",
     "precache-manifest.236e65421969853956b4eef01b5dce18.js": "/precache-manifest.236e65421969853956b4eef01b5dce18.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.829c9cb5.chunk.css.map": "/static/css/2.829c9cb5.chunk.css.map",
     "static/css/main.976fb4c2.chunk.css.map": "/static/css/main.976fb4c2.chunk.css.map",
-    "static/js/2.07d86d2a.chunk.js.LICENSE.txt": "/static/js/2.07d86d2a.chunk.js.LICENSE.txt",
+    "static/js/2.1fbfce87.chunk.js.LICENSE.txt": "/static/js/2.1fbfce87.chunk.js.LICENSE.txt",
     "static/media/Assassin.png": "/static/media/Assassin.6c7b8198.png",
     "static/media/Baron.png": "/static/media/Baron.ac315008.png",
     "static/media/Baroness.png": "/static/media/Baroness.1c5a87ee.png",
@@ -35,7 +35,7 @@
   "entrypoints": [
     "static/js/runtime-main.ab439063.js",
     "static/css/2.829c9cb5.chunk.css",
-    "static/js/2.07d86d2a.chunk.js",
+    "static/js/2.1fbfce87.chunk.js",
     "static/css/main.976fb4c2.chunk.css",
     "static/js/main.a2f89cd4.chunk.js"
   ]
