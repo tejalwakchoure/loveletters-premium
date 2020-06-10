@@ -13,49 +13,67 @@ class Landing extends React.Component {
 	    super(props);
 	    this.state = {
 	    	gameOn: true,
-	    	all_players: ["p1", "p2", "p3"],
-	    	showStartButton: false
+	    	all_players: [],
+	    	showStartButton: true, // true for local testing, false for global
+	    	userID: ' ',
+	    	username: ' ',
+	    	gameStatus: 0
 	    };
 	   	this.startGame = this.startGame.bind(this);
 	   	this.startNewGame = this.startNewGame.bind(this);
 	   	this.endGame = this.endGame.bind(this);
 	}
 	
-	componentWillMount() {
+	componentDidMount() {
 	   	socket.onopen = () => {
 			console.log('WebSocket Client Connected');
-			socket.send(JSON.stringify({'type':'players'}))
+			socket.send(JSON.stringify({'type':'players'}));
 		};
 
 
 	   	socket.onmessage = (event) => {
 	   		var obj = JSON.parse(event.data);
-			console.log(obj)
+			console.log(obj);
 			
-			if(obj.type == 'playersS'){
-				this.setState({all_players: obj.plyrs});
-				if(obj.uid == obj.host)
+			if(obj.type === 'playersS'){
+				this.setState({
+					all_players: obj.plyrs,
+					userID: obj.uid,
+					username: obj.plyrs[obj.plyrs.length-1] //???????
+				});
+				if(obj.uid === obj.host)
 					this.setState({showStartButton: true});
 			}
-			else if(obj.type == 'startGame')
-				this.props.gameCallback(1, this.state.all_players);
+			else if(obj.type === 'startGame')
+				this.props.gameCallback(this.state);
 	   	}
+
+	   	
+	 //   	socket.on('disconnect', () => {
+		//     console.log(this.state.username + ' disconnected');
+		//     const index = this.state.all_players.indexOf(this.state.username);
+		//     this.setState({all_players: all_players.splice(index, 1)});
+		// });
 	}
 
 	startGame = () => {
-		socket.send(JSON.stringify({'type':'startGame'}));
+		this.setState(
+			{gameStatus: 1},
+			socket.send(JSON.stringify({'type':'startGame'})));
 		console.log("sent Start")
 	}
 
 	startNewGame = () => {
-		console.log("sent Start New game")
-		this.props.gameCallback(0, this.state.all_players);
+		this.setState(
+			{gameStatus: 0},
+			this.props.gameCallback(this.state));
+		console.log("sent Start New game"); //nothing more to do here
 	}
 
 	endGame = () => {
-		this.setState({
-			gameOn: false //remove this player from the game metadata; it could still go on
-		});
+		// socket.send(JSON.stringify({'type':'leaveGame'})); 
+		// + call a disconnect of socket manually?
+		//remove this player from the game metadata; it could still go on
 	}
 
 	render() {

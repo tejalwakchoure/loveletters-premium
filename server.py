@@ -172,7 +172,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             self.sendGameAll({'type': 'startGame'})
             
         elif message['type'] == 'ready':
-            self.write_message(json.dumps(self.application.games[self.user.gid].round.turn_status()))
+            self.write_message(json.dumps(self.application.games[self.user.gid].round.turn_status(self.user.user)))
 
         elif message['type'] == 'discard':
             print("Has played")
