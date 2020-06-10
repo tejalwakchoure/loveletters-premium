@@ -49,8 +49,9 @@ class PlayCard extends React.Component {
 		}
 		else {
 			if(this.props.syco.length===0 || !this.props.syco.indexOf(item)>=0) { //this item is not a sycophant
-				if((x=selectedPlayers.indexOf(item))>=0) {
-					selectedPlayers.splice(x, 1);	
+				x = selectedPlayers.indexOf(item);
+				if(x!==undefined && x>=0) {
+					selectedPlayers.splice(x, 1);
 				} else {
 					selectedPlayers = selectedPlayers.concat(item);
 				}
