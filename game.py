@@ -158,11 +158,14 @@ class Round:
         ################
         #self.curr_stat()
         
-    def turn_status(self):
+    def turn_status(self, plyr_uid):
         obj = {}
         obj['type'] = 'turn'
         obj['player'] = self.turn
-        obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
+        if self.turn == plyr_uid:
+            obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
+        else:
+            obj['card'] = self.players[plyr_uid].card.card_name
         obj['sycho'] = self.sychoTar
         obj['immune'] = []
         for plyr in self.order:
