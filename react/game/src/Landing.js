@@ -14,7 +14,7 @@ class Landing extends React.Component {
 	    this.state = {
 	    	gameOn: true,
 	    	all_players: [],
-	    	showStartButton: true, // true for local testing, false for global
+	    	showStartButton: false, // true for local testing, false for global
 	    	userID: ' ',
 	    	username: ' ',
 	    	gameStatus: 0
