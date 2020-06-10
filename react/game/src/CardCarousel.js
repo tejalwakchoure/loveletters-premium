@@ -9,7 +9,7 @@ class CardCarousel extends React.Component {
 	}	
 	render() {
 		let playedCardlist = ["Guard", "Priest", "Princess"];//socket.played_cards;
-		if(this.props.addCard!= " ") {
+		if(this.props.addCard!== " ") {
 			playedCardlist = [...playedCardlist, this.props.addCard];
 		}
 		return(
