@@ -13,7 +13,7 @@ class Landing extends React.Component {
 	    super(props);
 	    this.state = {
 	    	gameOn: true,
-	    	all_players: [],
+	    	all_players: {},
 	    	showStartButton: false, // true for local testing, false for global
 	    	userID: ' ',
 	    	username: ' ',
@@ -40,7 +40,7 @@ class Landing extends React.Component {
 				this.setState({
 					all_players: obj.plyrs,
 					userID: obj.uid,
-					username: obj.username //???????
+					username: obj.username
 				});
 				if(obj.uid === obj.host)
 					this.setState({showStartButton: true});
@@ -53,7 +53,7 @@ class Landing extends React.Component {
 	   	}
 
 	   	
-	 //   	socket.on('disconnect', () => {
+	 	//   socket.on('disconnect', () => {
 		//     console.log(this.state.username + ' disconnected');
 		//     const index = this.state.all_players.indexOf(this.state.username);
 		//     this.setState({all_players: all_players.splice(index, 1)});
@@ -89,9 +89,9 @@ class Landing extends React.Component {
 				  	</Row>
 				  	<Row style={{margin: 'auto'}}>
 				  		<ListGroup>
-			  				{this.state.all_players.map((item, i) => {
-								return <ListGroup.Item className='List-item-design' key={item}>
-											{item}
+			  				{Object.entries(this.state.all_players).map(([id, value]) => {
+								return <ListGroup.Item className='List-item-design' key={id}>
+											{value}
 										</ListGroup.Item>})}
 						</ListGroup>
 				  	</Row>
