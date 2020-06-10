@@ -51,6 +51,8 @@ class Round extends React.Component {
 				    syco: obj.sycho,
 				    eliminated: obj.eliminated
 				});
+			}else if(obj.type === 'next'){//This has been added just to test going to next turn and to play a round
+				socket.send(JSON.stringify({'type':'ready'}));
 			}
 	   	}
 	   	
@@ -121,7 +123,7 @@ class Round extends React.Component {
 					  		<PlayCard currentPlayer={this.props.userID}
 					  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
 					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-					  		immune={this.state.immune} syco={this.state.syco} elim={this.state.eliminated} />
+					  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated} />
 					</Container>
 				);
 			}

@@ -168,12 +168,21 @@ class Round:
             obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
         else:
             obj['cards'] = [self.players[plyr_uid].card.card_name]
-        obj['sycho'] = [self.sychoTar]
+        obj['sycho'] = []
+        if self.sychoTar != None:
+            obj['sycho'].append(self.sychoTar)
+        
+        #THIS WAS ADDED FOR TESTING REMOVE 
+        for plyr in self.order:
+            if plyr != plyr_uid:
+                obj['sycho'].append(plyr)
+                break
+        
         obj['immune'] = []
         for plyr in self.order:
             if self.players[plyr].immune:
                 obj['immune'].append(plyr)
-
+    
         obj['eliminated'] = []
         for plyr in self.players.values():
             if plyr.out:
@@ -381,12 +390,12 @@ class Round:
         print(self.order)
         
         for plyrs in self.order:
-            print(plyrs + ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
+            print(self.players[plyrs].username + ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         
         #print(self.result_blob)
         print(self.turn_status(self.turn))
 
-        print(self.turn + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
+        print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         
 
 

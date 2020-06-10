@@ -154,10 +154,11 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         self.user.addSocketHandle(self)
 
     def on_message(self, message):
-        print(message)
+        
 
         message = json.loads(message)
-
+        print(message)
+        
         if message['type'] == 'players':
             plyrs = {}
             for plyr in self.application.games[self.user.gid].players:
@@ -175,9 +176,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
         elif message['type'] == 'discard':
             print("Has played")
-            result = self.application.games[self.user.gid].round.player_play(message['card'], message['plyr1'], message['plyr2'], message['number'])
+            result = self.application.games[self.user.gid].round.player_play(message['card'], message['player1'], message['player2'], message['number'])
             print(result)
             #self.sendGameAll(result)
+            self.sendGameAll({'type':'next'})
 
     def on_close(self):
         print("WebSocket closed")
