@@ -39,7 +39,7 @@ class Landing extends React.Component {
 				this.setState({
 					all_players: obj.plyrs,
 					userID: obj.uid,
-					username: obj.plyrs[obj.plyrs.length-1] //???????
+					username: obj.username //???????
 				});
 				if(obj.uid === obj.host)
 					this.setState({showStartButton: true});

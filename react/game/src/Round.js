@@ -35,8 +35,6 @@ class Round extends React.Component {
 	}
 	
 	componentWillMount() {
-		socket.send(JSON.stringify({'type':'ready'}));
-	    console.log('sent ready')
 
 		socket.onmessage = (event) => {
 	   		var obj = JSON.parse(event.data);
@@ -49,6 +47,9 @@ class Round extends React.Component {
 				});
 			}
 	   	}
+	   	
+		socket.send(JSON.stringify({'type':'ready'}));
+	    console.log('sent ready')
 	}
 
 	selectCard(chosen, remaining) {
