@@ -168,21 +168,24 @@ class Round:
             obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
         else:
             obj['cards'] = [self.players[plyr_uid].card.card_name]
-        obj['sycho'] = self.sychoTar
+        obj['sycho'] = [self.sychoTar]
         obj['immune'] = []
         for plyr in self.order:
             if self.players[plyr].immune:
                 obj['immune'].append(plyr)
 
-        obj['order'] = self.order
-
+        obj['eliminated'] = []
+        for plyr in self.players.values():
+            if plyr.out:
+                obj['eliminated'].append(plyr.user)
+        
         return obj
 
         
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given): #TODO RETURN A PROPER RESULT HERE OF WHAT HAS HAPPENED
         
-        self.result_blob = {} #to return this somehow
+        self.result_blob = {'roundOver': False, 'gameOver': False} #to return this somehow
 
         if plyr1 != None and self.players[plyr1].out:
             raise Exception("Hello Sir, what is this, plyr1 is out, unacceptable") 
@@ -221,6 +224,10 @@ class Round:
         self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
 
         if self.check_win():
+            self.result_blob['roundOver'] = True
+            self.result_blob['roundWinner'] = self.winner
+            
+            
             self.players[self.winner].tokens += 1
             self.super_game.end_round()
         else:
@@ -376,8 +383,8 @@ class Round:
         for plyrs in self.order:
             print(plyrs + ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         
-        print(self.result_blob)
-        #print(self.turn_status(self.turn))
+        #print(self.result_blob)
+        print(self.turn_status(self.turn))
 
         print(self.turn + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         
