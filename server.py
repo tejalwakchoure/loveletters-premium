@@ -176,7 +176,8 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
         elif message['type'] == 'discard':
             print("Has played")
-            #result = self.application.games[self.user.gid].round.player_play(message['card'], message['plyr1'], message['plyr2'], message['number'])
+            result = self.application.games[self.user.gid].round.player_play(message['card'], message['plyr1'], message['plyr2'], message['number'])
+            print(result)
             #self.sendGameAll(result)
 
     def on_close(self):
