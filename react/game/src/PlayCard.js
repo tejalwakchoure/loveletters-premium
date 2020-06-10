@@ -5,40 +5,57 @@ import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Row, Col} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faShieldAlt, faHandshake, faSkull} from '@fortawesome/free-solid-svg-icons';
+import socket from './socket-context'
 
 class PlayCard extends React.Component {
 	
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	selectedPlayers: [],
+	    	selectedPlayers: this.props.syco,
 	    	selectionSatisfied: false,
-	    	selectedCard: " "
+	    	selectedNumber: -1
 	    }
 	    this.selectPlayer = this.selectPlayer.bind(this);
-	    this.selectCard = this.selectCard.bind(this);
+	    this.selectNumber = this.selectNumber.bind(this);
 		this.endPlay = this.endPlay.bind(this);
 		this.getList = this.getList.bind(this);
 	}
 
+	componentWillMount() {
+		socket.onmessage = (event) => {
+	   		var obj = JSON.parse(event.data);
+			console.log(obj)
+			
+			if(obj.type === 'discard') {
+			}
+	   	}
+	}
+
 	selectPlayer(type, item){ 
-		let selectedPlayers = null;
+		let selectedPlayers = this.state.selectedPlayers;
 		let x = 0;
+		
 		if(type==='single') {
-			selectedPlayers = [item];
-			if(this.props.cardPlayed!=="Guard")
+			if(this.props.syco.length===0) //no sycophants; proceed as normal
+				selectedPlayers = [item];
+			
+			if(this.props.cardPlayed!=="Guard" && this.props.cardPlayed!=="Bishop")
 				this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
 			else
 				this.setState({selectedPlayers: selectedPlayers});
 		}
 		else {
-			if((x=this.state.selectedPlayers.indexOf(item))>=0) {
-				selectedPlayers = this.state.selectedPlayers;
-				selectedPlayers.splice(x, 1);	
-			} else {
-				selectedPlayers = this.state.selectedPlayers.concat(item);
+			if(this.props.syco.length===0 || !this.props.syco.indexOf(item)>=0) { //this item is not a sycophant
+				if((x=selectedPlayers.indexOf(item))>=0) {
+					selectedPlayers.splice(x, 1);	
+				} else {
+					selectedPlayers = selectedPlayers.concat(item);
+				}
 			}
-			
+
 			if(type==='double') {
 				if(selectedPlayers.length===2) {
 						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
@@ -53,38 +70,44 @@ class PlayCard extends React.Component {
 				}
 			}	
 		}
-		console.log('selected player:'+selectedPlayers)
+		console.log('selected player ids:'+selectedPlayers)
 	}
-	selectCard(item) {
-		this.setState({selectionSatisfied: true, selectedCard: item});
-		console.log('selected card:'+item);
+
+	selectNumber(item) {
+		this.setState({selectionSatisfied: true, selectedNumber: item});
+		console.log('selected number:'+item);
 	}
 
 	endPlay() {
-		const current_cards = {
-								"p1" : "Guard", 
-								"p2" : "Jester", 
-								"p3" : "Baron"
-							};
 		const valuesToSend = {};
-		this.state.selectedPlayers.map((item, i) => {
-			valuesToSend[item] = current_cards[item]});//socket.current_cards[item];
-		valuesToSend[this.props.currentPlayer] = this.props.cardRemaining;
-		
-		if(this.props.cardPlayed==="Guard")
-			valuesToSend["Guessed"] = this.state.selectedCard;
+		valuesToSend['type'] = 'discard';
+		valuesToSend['player'] = this.props.currentPlayer;
+		valuesToSend['card'] = this.props.cardPlayed;
+		valuesToSend['player1'] = null;
+		valuesToSend['player2'] = null;
+		valuesToSend['number'] = null;
+
+		if(this.state.selectedPlayers.length>0)
+			valuesToSend['player1'] = this.state.selectedPlayers[0];
+		if(this.state.selectedPlayers.length>1)
+			valuesToSend['player2'] = this.state.selectedPlayers[1];
+		if(this.state.selectedNumber!==-1)
+			valuesToSend['number'] = this.state.selectedNumber;
+
 		console.log(valuesToSend);
-		
-		//getResult(valuesToSend);
+		socket.send(JSON.stringify(valuesToSend));
+	    console.log('sent discard')
+		// getResult(valuesToSend);
+
 		const results = {} //0 : no change (ex.Priest)
 		results[this.state.selectedPlayer] = 1;//won
 		results[this.props.currentPlayer] = -1;//lost and eliminated
-		//display the result
+		//display the result of the turn
+		
 		this.props.roundCallback(results);
 	}
 
 	getList() {
-		//Eliminated?? ICON! Immune?? ICON!
 		var list = null;
 		if(["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"].indexOf(this.props.cardPlayed)>=0) { //no action
 			list = null;
@@ -94,7 +117,10 @@ class PlayCard extends React.Component {
 		else {
 			var enableCurrent = (this.props.cardPlayed==="Prince" || this.props.cardPlayed==="Sycophant");
 			var choiceType = "";
-			
+			var isImmune = false;
+  			var isSyco = false;
+  			var isEliminated = false;
+
 			if(this.props.cardPlayed==="Baroness") //one or two choices
 				choiceType = "either";
 			else if(this.props.cardPlayed==="Cardinal") // two choices
@@ -103,12 +129,20 @@ class PlayCard extends React.Component {
 				choiceType = "single";
 
 	  		list = (<ListGroup>
-  				{this.props.all_players.map((item, i) => {
+  				{Object.entries(this.props.all_players).map(([id, value]) => {
+  					isImmune = (this.props.immune.indexOf(id)>=0);
+  					isSyco = (this.props.syco.indexOf(id)>=0);
+  					isEliminated = (this.props.eliminated.indexOf(id)>=0);
 					return <ListGroup.Item className='List-item-design'
-								variant={this.state.selectedPlayers.indexOf(item)>=0?'dark':'light'}
-								key={item}
-								disabled={enableCurrent?false:(item===this.props.currentPlayer)}
-								onClick={(e) => this.selectPlayer(choiceType, item, e)}>{item}
+								variant={(this.state.selectedPlayers.indexOf(id)>=0)?'dark':'light'}
+								key={id}
+								disabled={(enableCurrent?false:(id===this.props.currentPlayer)) || 
+											isImmune || isEliminated}
+								onClick={(e) => this.selectPlayer(choiceType, id, e)}>{value}
+
+								{isImmune?<FontAwesomeIcon style={{float: 'right'}} icon={faShieldAlt}/>: <div></div>}
+								{isSyco?<FontAwesomeIcon style={{float: 'right'}} icon={faHandshake}/>: <div></div>}
+								{isEliminated?<FontAwesomeIcon style={{float: 'right'}} icon={faSkull}/>: <div></div>}
 							</ListGroup.Item>})}
 				</ListGroup>);  
 	  	} 
@@ -118,41 +152,22 @@ class PlayCard extends React.Component {
 
 	render() {
 		const list = this.getList();
-		const card_count = {
-							"Assassin" : 1, 
-							"Baron" : 2,
-							"Baroness" : 2,
-							"Bishop" : 1,
-							"Cardinal" : 2,
-							"Constable" : 1,
-							"Count" : 2,
-							"Countess" : 1,
-							"Dowager Queen" : 1,
-							"Guard" : 8, 
-							"Handmaid" : 2,
-							"Jester" : 1, 
-							"King" : 1,
-							"Priest" : 2, 
-							"Prince" : 2,
-							"Princess" : 1,
-							"Sycophant" : 2
-						};
+		const card_numbers = [1,2,3,4,5,6,7,8,9];
 
 		if(list!=null) {
 			return (
 				<div>
 					<Row style={{justifyContent: 'center'}}>
 						<Col>{list}</Col>
-						{this.props.cardPlayed==="Guard"?
+						{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
 							<Col>
 								<ListGroup>
-					  				{Object.entries(card_count).map(([item, value]) => {
+					  				{card_numbers.map((item, i) => {
 										return <ListGroup.Item className='List-item-design'
-													variant={this.state.selectedCard===item?'dark':'light'}
+													variant={this.state.selectedNumber===item?'dark':'light'}
 													key={item} 
-													disabled={item===this.props.cardPlayed}
-													onClick={(e) => this.selectCard(item, e)}>{item}
-													<Badge variant="secondary" style={{float: 'right'}}>{value}</Badge>
+													disabled={item===1}
+													onClick={(e) => this.selectNumber(item, e)}>{item}
 												</ListGroup.Item>})}
 								</ListGroup>
 							</Col>:
