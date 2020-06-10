@@ -19,7 +19,7 @@ class Round extends React.Component {
 		    cardRemaining: " ",
 		    discardMode: false,
 		    currentPlayer: " ",
-		    playStatus: "p1 is discarding",
+		    playStatus: " ",
 		    results: {  //socket.player_points,
 						"p1" : 0,
 						"p2" : 0,
@@ -29,11 +29,12 @@ class Round extends React.Component {
 		    currentCards: {},
 		    immune: [],
 		    syco: [],
-		    eliminated: []
+		    eliminated: [],
+		    prevTurnMessage: " "
 		};
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
-	    this.endPlay = this.endPlay.bind(this);
+	    this.endTurn = this.endTurn.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
 	}
 	
@@ -49,7 +50,9 @@ class Round extends React.Component {
 					currentCards: obj.cards,
 					immune: obj.immune,
 				    syco: obj.sycho,
-				    eliminated: obj.eliminated
+				    eliminated: obj.eliminated,
+				    prevTurnMessage: obj.prevTurn,
+				    playStatus: {this.props.all_players[obj.player]}+" is playing"
 				});
 			}
 	   	}
@@ -74,23 +77,24 @@ class Round extends React.Component {
   		console.log('Discarding ' + this.state.cardToPlay);
   	}
 
-  	endPlay = () => {
+  	endTurn = () => {
   		this.setState({
 			discardMode: false
-		});
-  		console.log('Ending Play');
+		},
+		socket.send(JSON.stringify({'type':'ready'})));
+  		console.log('sent ready for next turn');
   	}
 
   	playCardCallback = (playCardData) => {
-  		this.setState({
-  			results: playCardData, //check if round is over based on backend logic
-  			winner: "p1", //check who won; if no one yet, keep blank
-  		});
-  		if(this.state.winner!==" ") {
-			this.props.gameCallback(this.state.winner);
+  		// this.setState({
+  		// 	results: playCardData, //check if round is over based on backend logic
+  		// 	winner: "p1", //check who won; if no one yet, keep blank
+  		// });
+  		if(playCardData.winner!==null) {
+			this.props.gameCallback(playCardData.winner);
 		}
 		else {
-			this.endPlay();
+			this.endTurn();
 		} 
   	}
 
@@ -121,7 +125,7 @@ class Round extends React.Component {
 					  		<PlayCard currentPlayer={this.props.userID}
 					  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
 					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-					  		immune={this.state.immune} syco={this.state.syco} elim={this.state.eliminated} />
+					  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated} />
 					</Container>
 				);
 			}
@@ -130,6 +134,10 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row>
 					  		<CardCarousel addCard={" "}/>
+					  	</Row>
+					  	<Row>
+					  		{this.state.prevTurnMessage!==null?
+					  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>: <div></div>}
 					  	</Row>
 					  	<Row>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
@@ -155,12 +163,16 @@ class Round extends React.Component {
 				  		<CardCarousel addCard={" "}/>
 				  	</Row>
 				  	<Row>
+				  		{this.state.prevTurnMessage!==null?
+				  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>: <div></div>}
+				  	</Row>
+				  	<Row>
 				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 				  	</Row>
 				  	<Row>
 				  		<h3 className='Play-status'>It's not your turn</h3>
 				  	</Row>
-				  	<Row>
+				  	<Row style={{marginBottom: '20px'}}>
 				  		<Col style={{display: "inline-flex"}}>
 				  			<Cards cardname={currentCard}/>
 				  		</Col>
