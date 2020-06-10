@@ -159,11 +159,8 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         message = json.loads(message)
 
         if message['type'] == 'players':
-            plyrs = []
-            for plyr in self.application.games[self.user.gid].players.values():
-                plyrs.append(plyr.username)
-
-            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':self.application.games[self.user.gid].host})
+            
+            self.sendGameAll({'type':'playersS', 'plyrs':self.application.games[self.user.gid].players, 'host':self.application.games[self.user.gid].host})
             
             print('playrs requested')
         elif message['type'] == 'startGame':
@@ -201,9 +198,9 @@ class Application(tornado.web.Application):
         react_build_dir = os.path.join(os.path.dirname(__file__), "react", "game", "build")
         python_build_dir = os.path.join(os.path.dirname(__file__), "templates", "build")
         
-        if os.path.exists(python_build_dir):
-            shutil.rmtree(python_build_dir)
-        shutil.copytree(react_build_dir, python_build_dir) 
+        #if os.path.exists(python_build_dir):
+        #    shutil.rmtree(python_build_dir)
+        #shutil.copytree(react_build_dir, python_build_dir) 
 
 settings = dict(
         cookie_secret="SX4gE3etDbVr0vbfdsFDSMl",
