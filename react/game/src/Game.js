@@ -12,7 +12,7 @@ class Game extends React.Component {
 	    	gameStatus: 0, /* 0-landing screen start game, 1- in round, 2- round results, 3-landing screen end game*/
 			toStartGame: true,
 			rounds_played: 0,
-			all_players: [],
+			all_players: {},
 			points: {  //socket.player_points,
 						"p1" : 0,
 						"p2" : 0,

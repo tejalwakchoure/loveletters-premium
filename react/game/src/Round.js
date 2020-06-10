@@ -26,7 +26,10 @@ class Round extends React.Component {
 						"p3" : 0
 					},
 		    winner: "p1",
-		    currentCards: {}
+		    currentCards: {},
+		    immune: [],
+		    syco: [],
+		    eliminated: []
 		};
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
@@ -42,8 +45,11 @@ class Round extends React.Component {
 			
 			if(obj.type === 'turn') {
 				this.setState({
-					currentPlayer: obj.player,
-					currentCards: obj.cards
+					currentPlayer: obj.player, //player ID
+					currentCards: obj.cards,
+					immune: obj.immune,
+				    syco: obj.sycho,
+				    eliminated: obj.eliminated
 				});
 			}
 	   	}
@@ -89,19 +95,19 @@ class Round extends React.Component {
   	}
 
 	render() {
-		console.log('username = '+this.props.username);
+		console.log('user = '+this.props.userID);
 		console.log('currentPlayer = '+this.state.currentPlayer);
 		console.log(this.state.currentCards);
 
 		var currentCard = this.state.currentCards[0];
 		if(currentCard===undefined)
-			currentCard="Assassin" // before first render
+			currentCard="loading_card" // before first render
 		
 		if(this.props.userID === this.state.currentPlayer) {
 			console.log(this.props.username+ 'is playing');
 			var drawnCard = this.state.currentCards[1];
 			if(drawnCard===undefined)
-				drawnCard="Assassin" // before first render
+				drawnCard="loading_card" // before first render
 			
 			if(this.state.discardMode) {
 				return(
@@ -112,11 +118,12 @@ class Round extends React.Component {
 					  	<Row>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
-					  		<PlayCard currentPlayer={this.props.username}
+					  		<PlayCard currentPlayer={this.props.userID}
 					  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
-					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}/>
+					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
+					  		immune={this.state.immune} syco={this.state.syco} elim={this.state.eliminated} />
 					</Container>
-				); {/*what about UserID in playCard??*/}
+				);
 			}
 			else {
 				return(
