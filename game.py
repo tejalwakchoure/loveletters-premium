@@ -129,6 +129,8 @@ class Round:
         self.jesterTar = None
         self.jesterBet = None
         #TODO: Targets 
+
+        self.result_blob = {}
         
         
         self.super_game = game_super
@@ -156,13 +158,16 @@ class Round:
 
 
         ################
-        #self.curr_stat()
+        self.curr_stat()
         
-    def turn_status(self):
+    def turn_status(self, plyr_uid):
         obj = {}
         obj['type'] = 'turn'
         obj['player'] = self.turn
-        obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
+        if self.turn == plyr_uid:
+            obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
+        else:
+            obj['card'] = self.players[plyr_uid].card.card_name
         obj['sycho'] = self.sychoTar
         obj['immune'] = []
         for plyr in self.order:
@@ -177,6 +182,8 @@ class Round:
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given): #TODO RETURN A PROPER RESULT HERE OF WHAT HAS HAPPENED
         
+        self.result_blob = {} #to return this somehow
+
         if plyr1 != None and self.players[plyr1].out:
             raise Exception("Hello Sir, what is this, plyr1 is out, unacceptable") 
 
@@ -206,7 +213,13 @@ class Round:
             
         self.players[self.turn].discard_pile.append(card_discarded)
         self.discard_pile.append(card_discarded)
+        
+
+        self.result_blob['card_discarded'] = card_discarded.card_name #Which card was played
+        self.result_blob['eliminated'] = []
+
         self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
+
         if self.check_win():
             self.players[self.winner].tokens += 1
             self.super_game.end_round()
@@ -214,7 +227,8 @@ class Round:
             self.turn_no = (self.turn_no + 1) % len(self.order)
             self.turn = self.order[self.turn_no]
             self.player_turn()
-            
+        
+        return self.result_blob
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
@@ -295,11 +309,14 @@ class Round:
         
         
     def player_discard(self, plyr):#Chosen player has to discard a card, probably also take a new one
+        
+        
         if self.players[plyr].card.card_name == 'Princess':
             self.knockout_player(plyr)
-        
-        self.players[plyr].discard_pile.append(self.players[plyr].card)
-        
+        else:
+            self.players[plyr].discard_pile.append(self.players[plyr].card)
+            self.discard_pile.append(self.players[plyr].card)
+
         if not self.players[plyr].out:
             if(self.cards):
                 self.players[plyr].card = self.cards.pop()
@@ -315,9 +332,12 @@ class Round:
         self.order.remove(plyr)
         self.players[plyr].out = True
         self.players[plyr].tokens += self.players[plyr].dis_const
-        
-        
+
+        self.players[plyr].discard_pile.append(self.players[plyr].card)
+        self.discard_pile.append(self.players[plyr].card)
+
         ##################
+        self.result_blob['eliminated'].append(plyr)
         print(plyr + " HAS BEEN ELIMINATED")
 
         
@@ -356,8 +376,12 @@ class Round:
         for plyrs in self.order:
             print(plyrs + ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         
+        print(self.result_blob)
+        #print(self.turn_status(self.turn))
+
         print(self.turn + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
-    
+        
+
 
 class Game:
     def __init__(self, host, password, room_name, gid):
@@ -382,8 +406,8 @@ class Game:
             
         if not user in self.players:  
             user.set_username(username)
-            self.players[user.username] = user
-            self.order.append(user.username)
+            self.players[user.user] = user
+            self.order.append(user.user)
         else:
             raise Exception("player alreay exists")
             

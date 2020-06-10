@@ -46,7 +46,7 @@ class Results extends React.Component {
 					</ListGroup>
 			  	</Row>
 			  	<Row style={{width: '50vw'}}> 
-			  		{final_winner!=" "? <Button size="lg" block className='Confirm-button' onClick={(e) => this.sendResults(final_winner, e)}>OK</Button>
+			  		{final_winner!==" "? <Button size="lg" block className='Confirm-button' onClick={(e) => this.sendResults(final_winner, e)}>OK</Button>
 			  			:<Button size="lg" block className='Confirm-button' onClick={(e) => this.sendResults(final_winner, e)}>Start Next Round</Button>}
 			  	</Row>
 			</Container> 
