@@ -159,8 +159,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         message = json.loads(message)
 
         if message['type'] == 'players':
-            
-            self.sendGameAll({'type':'playersS', 'plyrs':self.application.games[self.user.gid].players, 'host':self.application.games[self.user.gid].host})
+            plyrs = {}
+            for plyr in self.application.games[self.user.gid].players:
+                plyrs[plyr] = self.application.games[self.user.gid].players[plyr].username
+            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':self.application.games[self.user.gid].host})
             
             print('playrs requested')
         elif message['type'] == 'startGame':
