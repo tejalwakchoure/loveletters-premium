@@ -19,6 +19,7 @@ class Game extends React.Component {
 						"p3" : 0
 					},
 			round_winner: " ",
+			game_winner: " ",
 			userID: ' ',
 			username: ' '
 		};
@@ -37,14 +38,15 @@ class Game extends React.Component {
 	}
 
 	roundCallback = (roundData) => {
-		const winner = roundData;
+		const winner = roundData.round_winner;
 		let new_points = this.state.points;
 		new_points[winner] = new_points[winner]+1;
 		this.setState({
 			rounds_played: this.state.rounds_played+1,
 			points: new_points,
 			gameStatus: 2,
-			round_winner: winner
+			round_winner: winner,
+			game_winner: roundData.gameWinner; //????
 		});
 	}
 
@@ -52,7 +54,7 @@ class Game extends React.Component {
 		if(resultsData!==" ") {
 			this.setState({
 				gameStatus: 3,
-				round_winner: resultsData
+				game_winner: resultsData
 			});
 			console.log('results='+resultsData);
 			console.log('set state=3');
@@ -72,9 +74,10 @@ class Game extends React.Component {
 		    return (<Round gameCallback={this.roundCallback} all_players={this.state.all_players}
 		    				userID={this.state.userID} username={this.state.username}/>);
 		else if (this.state.gameStatus===2)
-			return(<Results points={this.state.points} winner={this.state.round_winner} gameCallback={this.resultsCallback}/>);
+			return(<Results points={this.state.points} winner={this.state.round_winner} 
+					gameWinner={this.state.game_winner} gameCallback={this.resultsCallback}/>);
 		else
-			return (<Landing toStartGame={false} final_winner={this.state.round_winner} gameCallback = {this.landingCallback}/>);
+			return (<Landing toStartGame={false} final_winner={this.state.game_winner} gameCallback = {this.landingCallback}/>);
 	}
 }
 
