@@ -34,7 +34,7 @@ class Landing extends React.Component {
 			this.setState({showStartButton: true});
 	}
 
-	getStartGame() {
+	getStartGame(obj) {
 		this.setState({
 			gameStatus: 1
 		}, this.props.gameCallback(this.state));
