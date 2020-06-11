@@ -3,48 +3,50 @@ import copy
 
 
 class Card:
-    def __init__(self, card_number, card_name, card_desc):
+    def __init__(self, card_number, card_name, card_desc, select = 0, numb = False):
         self.card_number = card_number
         self.card_name = card_name
         self.card_desc = card_desc
         
+        self.requires_people = select
+        self.requires_numb = numb
         
 
 
 allCards = [Card(8, 'Princess', ''),
             Card(7, 'Countess', ''),
-            Card(6, 'King', ''),
-            Card(5, 'Prince', ''),
-            Card(5, 'Prince', ''),
+            Card(6, 'King', '', 1),
+            Card(5, 'Prince', '', 1),
+            Card(5, 'Prince', '', 1),
             Card(4, 'Handmaid', ''),
             Card(4, 'Handmaid', ''),
-            Card(3, 'Baron', ''),
-            Card(3, 'Baron', ''),
-            Card(2, 'Priest', ''),
-            Card(2, 'Priest', ''),
-            Card(1, 'Guard', ''),
-            Card(1, 'Guard', ''),
-            Card(1, 'Guard', ''),
-            Card(1, 'Guard', ''),
-            Card(1, 'Guard', '')
+            Card(3, 'Baron', '', 1),
+            Card(3, 'Baron', '', 1),
+            Card(2, 'Priest', '', 1),
+            Card(2, 'Priest', '', 1),
+            Card(1, 'Guard', '', 1, True),
+            Card(1, 'Guard', '', 1, True),
+            Card(1, 'Guard', '', 1, True),
+            Card(1, 'Guard', '', 1, True),
+            Card(1, 'Guard', '', 1, True)
             ]
             
-extCards = [Card(9, 'Bishop', ''),
-            Card(7, 'Dowager Queen', ''),
+extCards = [Card(9, 'Bishop', '', 1, True),
+            Card(7, 'Dowager Queen', '', 1),
             Card(6, 'Constable' , ''),
             Card(5, 'Count', ''),
             Card(5, 'Count', ''),
-            Card(4, 'Sycophant', ''),
-            Card(4, 'Sycophant', ''),
-            Card(3, 'Baroness', ''),
-            Card(3, 'Baroness', ''),
-            Card(2, 'Cardinal', ''),
-            Card(2, 'Cardinal', ''),
-            Card(1, 'Guard', ''),
-            Card(1, 'Guard', ''),
-            Card(1, 'Guard', ''),
+            Card(4, 'Sycophant', '', 1),
+            Card(4, 'Sycophant', '', 1),
+            Card(3, 'Baroness', '', 2),
+            Card(3, 'Baroness', '', 2),
+            Card(2, 'Cardinal', '', 2),
+            Card(2, 'Cardinal', '', 2),
+            Card(1, 'Guard', '', 1, True),
+            Card(1, 'Guard', '', 1, True),
+            Card(1, 'Guard', '', 1, True),
             Card(0, 'Assassin', ''),
-            Card(0, 'Jester', '')
+            Card(0, 'Jester', '', 1)
             ]
 
         
@@ -149,7 +151,7 @@ class Round:
     def player_turn(self):
         if self.players[self.turn].immune:#If it's come back a round, you are no longer immune
             self.players[self.turn].immune = False
-        if self.sychoTar != None and self.discard_pile[-1].card_name != 'Sycophant': #If it's been a turn after Sycophant then no more target
+        if self.sychoTar != None and self.discard_pile[-1] != 'Sycophant': #If it's been a turn after Sycophant then no more target
             self.sychoTar = None
         
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
@@ -193,9 +195,28 @@ class Round:
         if self.discard_pile:#it's not first turn
             if self.result_blob['player'] == plyr_uid:
                 prevPlayer = 'You'
+            else:
+                prevPlayer = self.players[plyr_uid].username
             
+            obj['prevTurn'] = prevPlayer + ' played ' + self.discard_pile[-1]
             
+                
+            if self.result_blob['plyr1'] != None:
+                obj['prevTurn'] = obj['prevTurn'] + ' on '
+                if self.result_blob['plyr1'] == plyr_uid:
+                    obj['prevTurn'] = obj['prevTurn'] + 'You'
+                else:
+                    obj['prevTurn'] = obj['prevTurn'] + self.players[self.result_blob['plyr1']].username
+            
+            if self.result_blob['plyr2'] != None:
+                obj['prevTurn'] = obj['prevTurn'] + ' and '
+                if self.result_blob['plyr2'] == plyr_uid:
+                    obj['prevTurn'] = obj['prevTurn'] + 'You'
+                else:
+                    obj['prevTurn'] = obj['prevTurn'] + self.players[self.result_blob['plyr2']].username
         
+            if self.result_blob['number'] != None:
+                obj['prevTurn'] = obj['prevTurn'] + ' and guessed ' + self.result_blob['number']
         return obj
 
         
@@ -232,10 +253,17 @@ class Round:
             raise Exception("Unknown card chosen??")
             
         self.players[self.turn].discard_pile.append(card_discarded)
-        self.discard_pile.append(card_discarded)
+        self.discard_pile.append(card_discarded.card_name)
         
 
         self.result_blob['card_discarded'] = card_discarded.card_name #Which card was played
+        
+        self.result_blob['player'] = self.turn
+        self.result_blob['plyr1'] = plyr1
+        self.result_blob['plyr2'] = plyr2
+        self.result_blob['number'] = numb_given
+        
+        
         self.result_blob['eliminated'] = []
 
         self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
@@ -339,7 +367,7 @@ class Round:
             self.knockout_player(plyr)
         else:
             self.players[plyr].discard_pile.append(self.players[plyr].card)
-            self.discard_pile.append(self.players[plyr].card)
+            self.discard_pile.append(self.players[plyr].card.card_name)
 
         if not self.players[plyr].out:
             if(self.cards):
@@ -358,7 +386,7 @@ class Round:
         self.players[plyr].tokens += self.players[plyr].dis_const
 
         self.players[plyr].discard_pile.append(self.players[plyr].card)
-        self.discard_pile.append(self.players[plyr].card)
+        self.discard_pile.append(self.players[plyr].card.card_name)
 
         ##################
         self.result_blob['eliminated'].append(plyr)
@@ -398,12 +426,12 @@ class Round:
         print(self.order)
         
         for plyrs in self.order:
-            print(self.players[plyrs].username + ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
+            print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         
+        print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         #print(self.result_blob)
         print(self.turn_status(self.turn))
 
-        print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         
 
 
