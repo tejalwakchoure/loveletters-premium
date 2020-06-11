@@ -3,6 +3,8 @@ import './Game.css';
 import Round from './Round.js';
 import Landing from './Landing.js';
 import Results from './Results.js';
+import socket from './socket-context';
+
 
 class Game extends React.Component {
 	
@@ -26,7 +28,43 @@ class Game extends React.Component {
 		this.landingCallback = this.landingCallback.bind(this);
 		this.roundCallback = this.roundCallback.bind(this);
 		this.resultsCallback = this.resultsCallback.bind(this);
+
+		this.landingRef = React.createRef();
+		this.roundRef = React.createRef();
 	}
+
+
+	componentDidMount() {
+	   	socket.onopen = () => {
+			console.log('WebSocket Client Connected');
+			socket.send(JSON.stringify({'type':'players'}));
+		};
+
+		// socket.on('disconnect', () => {
+		//     console.log(this.state.username + ' disconnected');
+		//     const index = this.state.all_players.indexOf(this.state.username);
+		//     this.setState({all_players: all_players.splice(index, 1)});
+		// });
+
+		socket.onmessage = (event) => {
+	   		var obj = JSON.parse(event.data);
+			console.log(obj);
+			console.log(obj.type);
+			
+			if(obj.type === 'playersS')
+				this.landingRef.current.getPlayers(obj);
+			else if(obj.type === 'startGame')
+				this.landingRef.current.getStartGame(obj);
+			else if(obj.type === 'turn')
+				this.roundRef.current.getTurn(obj);
+			// else if(obj.type === 'next'){ //This has been added just to test going to next turn and to play a round
+			// 	socket.send(JSON.stringify({'type':'ready'}));
+			// }
+			else if(obj.type === 'results')
+				this.roundRef.current.getResults(obj);
+		}
+	}
+
 
 	landingCallback = (landingData) => {
 		this.setState({
@@ -72,10 +110,11 @@ class Game extends React.Component {
 
 	render() {
 		if (this.state.gameStatus===0)
-			return (<Landing leavingGame={this.state.leavingGame} gameCallback = {this.landingCallback}/>);
+			return (<Landing ref={this.landingRef} leavingGame={this.state.leavingGame} 
+						gameCallback = {this.landingCallback} socket={socket}/>);
 		else if (this.state.gameStatus===1)
-		    return (<Round gameCallback={this.roundCallback} all_players={this.state.all_players}
-		    				userID={this.state.userID} username={this.state.username}/>);
+		    return (<Round ref={this.roundRef} gameCallback={this.roundCallback} all_players={this.state.all_players}
+		    				userID={this.state.userID} username={this.state.username} socket={socket}/>);
 		else if (this.state.gameStatus===2)
 			return(<Results points={this.state.tokens} winner={this.state.round_winner} 
 					gameWinner={this.state.game_winner} gameCallback={this.resultsCallback}/>);
