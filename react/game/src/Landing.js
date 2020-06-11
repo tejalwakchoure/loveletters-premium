@@ -74,7 +74,7 @@ class Landing extends React.Component {
 		if(!this.props.leavingGame) {
 			return(
 				<Container className="Game-header">
-				  	<Row style={{margin: 'auto'}}>
+				  	<Row>
 				  		<h4 className='Play-status'>Waiting For Players...</h4>
 				  	</Row>
 				  	<Row style={{margin: 'auto'}}>

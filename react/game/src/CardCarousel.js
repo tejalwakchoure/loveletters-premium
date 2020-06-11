@@ -9,8 +9,9 @@ class CardCarousel extends React.Component {
 	}	
 	render() {
 		let playedCardlist = [];
-		if(this.props.allCardsDiscarded!== []) {
+		if(this.props.allCardsDiscarded!== [])
 			playedCardlist = this.props.allCardsDiscarded;
+		
 		return(
 		  	<div className='Card-carousel'> 
 			  	{playedCardlist.map((item) => 
