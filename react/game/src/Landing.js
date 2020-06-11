@@ -35,16 +35,13 @@ class Landing extends React.Component {
 	}
 
 	getStartGame(obj) {
-		this.setState({
-			gameStatus: 1
-		}, this.props.gameCallback(this.state));
+		this.setState({gameStatus: 1}); 
+		this.props.gameCallback(this.state);
 		console.log("Bois, we're moving ahead");
 	}
 
 	startGame = () => {
-		this.setState(
-			{gameStatus: 1},
-			this.props.socket.send(JSON.stringify({'type':'startGame'})));
+		this.props.socket.send(JSON.stringify({'type':'startGame'}));
 		console.log("sent Start")
 	}
 
