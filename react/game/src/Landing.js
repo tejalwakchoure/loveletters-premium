@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Container, Row} from 'react-bootstrap';
-import socket from './socket-context';
 
 
 class Landing extends React.Component {
@@ -19,54 +18,38 @@ class Landing extends React.Component {
 	    	username: ' ',
 	    	gameStatus: 0
 	    };
+	   	this.getPlayers = this.getPlayers.bind(this);
+	   	this.getStartGame = this.getStartGame.bind(this);
 	   	this.startGame = this.startGame.bind(this);
 	   	this.leaveGame = this.leaveGame.bind(this);
 	}
-	
-	componentDidMount() {
-	   	socket.onopen = () => {
-			console.log('WebSocket Client Connected');
-			socket.send(JSON.stringify({'type':'players'}));
-		};
 
+	getPlayers(obj) {
+		this.setState({
+			all_players: obj.plyrs,
+			userID: obj.uid,
+			username: obj.username
+		});
+		if(obj.uid === obj.host)
+			this.setState({showStartButton: true});
+	}
 
-	   	socket.onmessage = (event) => {
-	   		var obj = JSON.parse(event.data);
-			console.log(obj);
-			console.log(obj.type);
-			
-			if(obj.type === 'playersS'){
-				this.setState({
-					all_players: obj.plyrs,
-					userID: obj.uid,
-					username: obj.username
-				});
-				if(obj.uid === obj.host)
-					this.setState({showStartButton: true});
-
-			} else if(obj.type === 'startGame') {
-				this.setState({gameStatus: 1})
-				console.log("Bois, we're moving ahead");
-				this.props.gameCallback(this.state);
-			}
-	   	}
-	   	
-	 	//   socket.on('disconnect', () => {
-		//     console.log(this.state.username + ' disconnected');
-		//     const index = this.state.all_players.indexOf(this.state.username);
-		//     this.setState({all_players: all_players.splice(index, 1)});
-		// });
+	getStartGame() {
+		this.setState({
+			gameStatus: 1
+		}, this.props.gameCallback(this.state));
+		console.log("Bois, we're moving ahead");
 	}
 
 	startGame = () => {
 		this.setState(
 			{gameStatus: 1},
-			socket.send(JSON.stringify({'type':'startGame'})));
+			this.props.socket.send(JSON.stringify({'type':'startGame'})));
 		console.log("sent Start")
 	}
 
 	leaveGame = () => {
-		socket.send(JSON.stringify({'type':'leaveGame'}));
+		this.props.socket.send(JSON.stringify({'type':'leaveGame'}));
 		//remove this player from the game metadata; it could still go on
 	}
 

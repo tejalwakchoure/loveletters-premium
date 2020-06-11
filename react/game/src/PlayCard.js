@@ -6,7 +6,6 @@ import './Game.css';
 import {Row, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faShieldAlt, faHandshake, faSkull} from '@fortawesome/free-solid-svg-icons';
-import socket from './socket-context'
 
 class PlayCard extends React.Component {
 	
@@ -15,26 +14,12 @@ class PlayCard extends React.Component {
 	    this.state = {
 	    	selectedPlayers: this.props.syco,
 	    	selectionSatisfied: false,
-	    	selectedNumber: -1,
-	    	turnResult: {}
+	    	selectedNumber: -1
 	    }
 	    this.selectPlayer = this.selectPlayer.bind(this);
 	    this.selectNumber = this.selectNumber.bind(this);
 		this.endPlay = this.endPlay.bind(this);
 		this.getList = this.getList.bind(this);
-	}
-
-	componentWillMount() {
-		socket.onmessage = (event) => {
-	   		var obj = JSON.parse(event.data);
-			console.log(obj)
-			
-			if(obj.type === 'results') {
-				this.setState({
-					turnResult: obj
-				}, this.props.roundCallback(obj));
-			}
-	   	}
 	}
 
 	selectPlayer(type, item){ 
@@ -99,8 +84,7 @@ class PlayCard extends React.Component {
 			valuesToSend['number'] = this.state.selectedNumber;
 
 		console.log(valuesToSend);
-		socket.send(JSON.stringify(valuesToSend));
-	    console.log('sent discard');
+		this.props.roundCallback(valuesToSend);
 	}
 
 	getList() {
