@@ -57,7 +57,10 @@ class Round extends React.Component {
 				});
 			}else if(obj.type === 'next'){//This has been added just to test going to next turn and to play a round
 				socket.send(JSON.stringify({'type':'ready'}));
+			}else if(obj.type === 'results'){
+				console.log('WE HAVE STUFF TO SHOW AND HERE IT IS ABOVE ME')
 			}
+			//ALL MESSAGE HANDLING GOES HERE
 	   	}
 	   	
 		socket.send(JSON.stringify({'type':'ready'}));

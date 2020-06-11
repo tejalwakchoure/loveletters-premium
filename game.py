@@ -215,13 +215,13 @@ class Round:
         self.result_blob['eliminated'] = []
         
         self.result_blob['gameWinner'] = None
-        if self.result_blob['player1'] != None:
+        if self.result_blob['plyr1'] != None:
             self.result_blob['card1'] = self.players[plyr1].card.card_name
         else:
             self.result_blob['card1'] = None
             
         
-        if self.result_blob['player2'] != None:
+        if self.result_blob['plyr2'] != None:
             self.result_blob['card2'] = self.players[plyr2].card.card_name
         else:
             self.result_blob['card2'] = None
@@ -247,7 +247,6 @@ class Round:
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
-
         
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
@@ -266,8 +265,12 @@ class Round:
         
         elif played_card.card_name == 'Dowager Queen': #Players have to copmare and GREATER ONE is out
             if self.players[plyr1].card.card_number > self.players[self.turn].card.card_number: #plyr1 is out
+                self.result_blob['card1'] = self.players[self.turn].card.card_name
+                self.result_blob['card2'] = self.players[plyr1].card.card_name
                 self.knockout_player(plyr1)
             elif self.players[plyr1].card.card_number < self.players[self.turn].card.card_number: #current plyr is out
+                self.result_blob['card2'] = self.players[self.turn].card.card_name
+                self.result_blob['card1'] = self.players[plyr1].card.card_name
                 self.knockout_player(self.turn)
             #Nothing on tie
             
@@ -293,8 +296,12 @@ class Round:
         
         elif played_card.card_name == 'Baron':#Players have to copmare and LESSER ONE is out
             if self.players[plyr1].card.card_number < self.players[self.turn].card.card_number: #plyr1 is out
+                self.result_blob['card1'] = self.players[self.turn].card.card_name
+                self.result_blob['card2'] = self.players[plyr1].card.card_name
                 self.knockout_player(plyr1)
             elif self.players[plyr1].card.card_number > self.players[self.turn].card.card_number: #current plyr is out
+                self.result_blob['card2'] = self.players[self.turn].card.card_name
+                self.result_blob['card1'] = self.players[plyr1].card.card_name
                 self.knockout_player(self.turn)
             #Nothing on tie
         
@@ -311,10 +318,15 @@ class Round:
         elif played_card.card_name == 'Guard': #Number and player revealed
             if self.players[plyr1].card.card_name == 'Assassin':
                 self.knockout_player(self.turn)
+                self.result_blob['result'] = 'Assassin'
                 self.player_discard(plyr1) #Discard the assassin
                 
             elif self.players[plyr1].card.card_number == numb_given:
                 self.knockout_player(plyr1)
+                self.result_blob['result'] = 'Correct'
+            
+            else:
+                self.result_blob['result'] = 'Incorrect'
         
         elif played_card.card_name == 'Jester': #A bet has been made
             self.jesterTar = plyr1
@@ -325,12 +337,7 @@ class Round:
             pass
             
         
-        
-        
-        
     def player_discard(self, plyr):#Chosen player has to discard a card, probably also take a new one
-        
-        
         if self.players[plyr].card.card_name == 'Princess':
             self.knockout_player(plyr)
         else:
@@ -454,25 +461,30 @@ class Round:
         
         #Other cases                            
         #           --Prince                      *Everyone sees discarded card
-        #           --Assassin                    *Everyone sees this card
+        #           --Guard on Assassin           *Everyone sees this card
         
         if obj['card_discarded'] in ['Cardinal', 'Priest', 'Baroness'] and plyr_uid == obj['player']:
             obj['card1'] = self.result_blob['card1']
             obj['card2'] = self.result_blob['card2']
             
-        elif obj['card_discarded'] in ['Baron', 'Dowager Queen ']:
+        elif obj['card_discarded'] in ['Baron', 'Dowager Queen']:
             obj['card1'] = self.result_blob['card2'] #Losing card to everyone
             
             if plyr_uid == obj['player'] or plyr_uid == obj['player1']: #Priveleged players 
                 obj['card2'] = self.result_blob['card1']
             
-        elif obj['card_discarded'] in ['Guard', 'Bishop'] and self.result_blob['result'] == 'Correct':
+        elif obj['card_discarded'] in ['Guard', 'Bishop']:
+            if self.result_blob['result'] == 'Correct':
+                obj['card1'] = self.result_blob['card1']
+                obj['resultMsg'] = 'Player guessed Correctly\nplyr1 has been eliminated'
+            elif self.result_blob['result'] == 'Incorrect':
+                obj['resultMsg'] = 'Player guessed Incorrectly'
+            elif self.result_blob['result'] == 'Assassin':
+                obj['card1'] = 'Assassin'
+                obj['resultMsg'] = 'Player was eliminated'
+            
+        elif obj['card_discarded'] == 'Prince':
             obj['card1'] = self.result_blob['card1']
-            
-            obj['resultMsg'] = 'FAIL'
-            
-            
-            
             
         
         obj['eliminated'] = self.result_blob['eliminated']
@@ -485,10 +497,6 @@ class Round:
         
         obj['roundWinner'] = self.result_blob['roundWinner']
         obj['gameWinner'] = self.result_blob['gameWinner']
-
-        
-        
-
         
         return obj
     
@@ -499,7 +507,7 @@ class Round:
             else:
                 prevPlayer = self.players[self.result_blob['player']].username
             
-            obj = prevPlayer + ' played ' + self.discard_pile[-1]
+            obj = prevPlayer + ' played ' + self.result_blob['card_discarded']
             
                 
             if self.result_blob['plyr1'] != None:
