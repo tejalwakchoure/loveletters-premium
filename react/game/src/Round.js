@@ -31,7 +31,7 @@ class Round extends React.Component {
 		    syco: [],
 		    eliminated: [],
 		    prevTurnMessage: " ",
-		    discard_pile: this.props.discard_pile
+		    discard_pile: []
 		};
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
