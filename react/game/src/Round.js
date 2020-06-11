@@ -6,7 +6,6 @@ import Cards from './Cards.js';
 import CardCarousel from './CardCarousel.js';
 import PlayCard from './PlayCard.js';
 import {Container, Row, Col} from 'react-bootstrap';
-import socket from './socket-context'
 
 
 class Round extends React.Component {
@@ -20,51 +19,44 @@ class Round extends React.Component {
 		    playMode: 0, // 0-choosing card, 1-playing card, 2-viewing results of turn
 		    currentPlayer: " ",
 		    playStatus: " ",
-		    results: {  //socket.player_points,
-						"p1" : 0,
-						"p2" : 0,
-						"p3" : 0
-					},
-		    winner: "p1",
-		    currentCards: {},
+		    results: {},
+		    currentCards: [],
 		    immune: [],
 		    syco: [],
 		    eliminated: [],
 		    prevTurnMessage: " ",
 		    discard_pile: []
 		};
+	    this.getTurn = this.getTurn.bind(this);
+	    this.getResults = this.getResults.bind(this);
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
 	    this.endTurn = this.endTurn.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
+
+	    this.props.socket.send(JSON.stringify({'type':'ready'}));
+	    console.log('sent ready')
 	}
 	
-	componentWillMount() {
+	getTurn(obj) {
+		this.setState({
+			currentPlayer: obj.player,
+			currentCards: obj.cards,
+			immune: obj.immune,
+		    syco: obj.sycho,
+		    eliminated: obj.eliminated,
+		    prevTurnMessage: obj.prevTurn,
+		    playStatus: this.props.all_players[obj.player]+" is playing"
+		});
+	}
 
-		socket.onmessage = (event) => {
-	   		var obj = JSON.parse(event.data);
-			console.log(obj)
-			
-			if(obj.type === 'turn') {
-				this.setState({
-					currentPlayer: obj.player, //player ID
-					currentCards: obj.cards,
-					immune: obj.immune,
-				    syco: obj.sycho,
-				    eliminated: obj.eliminated,
-				    prevTurnMessage: obj.prevTurn,
-				    playStatus: this.props.all_players[obj.player]+" is playing"
-				});
-			}else if(obj.type === 'next'){//This has been added just to test going to next turn and to play a round
-				socket.send(JSON.stringify({'type':'ready'}));
-			}else if(obj.type === 'results'){
-				console.log('WE HAVE STUFF TO SHOW AND HERE IT IS ABOVE ME')
-			}
-			//ALL MESSAGE HANDLING GOES HERE
-	   	}
-	   	
-		socket.send(JSON.stringify({'type':'ready'}));
-	    console.log('sent ready')
+
+	getResults(obj) {
+		this.setState({
+  			playMode: 2,
+  			results: obj,
+  			discard_pile: obj.discard_pile
+		});
 	}
 
 	selectCard(chosen, remaining) {
@@ -93,17 +85,14 @@ class Round extends React.Component {
   			this.setState({
 				playMode: 0 // start new turn
 			},
-			socket.send(JSON.stringify({'type':'nextTurn'})));
+			this.props.socket.send(JSON.stringify({'type':'nextTurn'})));
 	  		console.log('sent nextTurn for next turn');
   		}
   	}
 
   	playCardCallback = (playCardData) => {
-  		this.setState({
-  			playMode: 2,
-  			results: playCardData,
-  			discard_pile: this.state.discard_pile.concat(playCardData.card_discarded)
-  		});
+  		this.props.socket.send(JSON.stringify(playCardData));
+	    console.log('sent discard');
   	}
 
 	render() {
@@ -160,7 +149,7 @@ class Round extends React.Component {
 					  		<PlayCard currentPlayer={this.state.currentPlayer}
 					  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
 					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-					  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated} />
+					  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
 					</Container>
 				);
 			} 
