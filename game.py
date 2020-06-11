@@ -210,7 +210,7 @@ class Round:
         self.result_blob['plyr1'] = plyr1
         self.result_blob['plyr2'] = plyr2
         self.result_blob['number'] = numb_given
-        self.result_blob['discard_pile'] = self.discard_pile
+        
         
         self.result_blob['eliminated'] = []
         
@@ -434,6 +434,7 @@ class Round:
         
         
         obj['prevTurn'] = self.msg_status(plyr_uid)
+        obj['discard_pile'] = self.discard_pile
         
         return obj
     
@@ -449,7 +450,7 @@ class Round:
         obj['card_discarded'] = self.result_blob['card_discarded'] 
         
         obj['statusMsg'] = self.msg_status(plyr_uid)
-        obj['resultMsg'] = None
+        obj['resultMsg'] = ''
         
         obj['card1'] = None
         obj['card2'] = None
@@ -472,22 +473,34 @@ class Round:
             
             if plyr_uid == obj['player'] or plyr_uid == obj['player1']: #Priveleged players 
                 obj['card2'] = self.result_blob['card1']
-            
+        
         elif obj['card_discarded'] in ['Guard', 'Bishop']:
+            if plyr_uid == obj['player']:
+                obj['resultMsg'] = 'You'
+            else:
+                obj['resultMsg'] = self.players[obj['player']].username
+                
+            
             if self.result_blob['result'] == 'Correct':
                 obj['card1'] = self.result_blob['card1']
-                obj['resultMsg'] = 'Player guessed Correctly\nplyr1 has been eliminated'
+                obj['resultMsg'] += ' guessed Correctly. '
             elif self.result_blob['result'] == 'Incorrect':
-                obj['resultMsg'] = 'Player guessed Incorrectly'
+                obj['resultMsg'] += ' guessed Incorrectly.'
             elif self.result_blob['result'] == 'Assassin':
                 obj['card1'] = 'Assassin'
-                obj['resultMsg'] = 'Player was eliminated'
             
         elif obj['card_discarded'] == 'Prince':
             obj['card1'] = self.result_blob['card1']
             
         
         obj['eliminated'] = self.result_blob['eliminated']
+        
+        if obj['eliminated']:
+            if plyr_uid == obj['eliminated'][0]:
+                obj['resultMsg'] += 'You have'
+            else:
+                obj['resultMsg'] += self.players[obj['eliminated'][0]].username + ' has'
+            obj['resultMsg'] += ' been eliminated.'
         
         
         obj['tokens'] = {}
@@ -497,6 +510,8 @@ class Round:
         
         obj['roundWinner'] = self.result_blob['roundWinner']
         obj['gameWinner'] = self.result_blob['gameWinner']
+        
+        obj['discard_pile'] = self.discard_pile
         
         return obj
     
@@ -533,11 +548,9 @@ class Round:
             
             
     def curr_stat(self):
-        print(self.order)
-        
         for plyrs in self.order:
             #print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + '\t\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
-            print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
+            print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         #print(self.result_blob)
         print(self.turn_status(self.turn))
@@ -571,7 +584,7 @@ class Game:
             self.players[user.user] = user
             self.order.append(user.user)
         else:
-            raise Exception("player alreay exists")
+            raise Exception("player already exists")
             
     def start_game(self):
         if self.state != 0:
