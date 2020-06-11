@@ -6,7 +6,6 @@ import './Game.css';
 import {Container, Row, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeart} from '@fortawesome/free-solid-svg-icons';
-import socket from './socket-context'
 
 
 class Results extends React.Component {
@@ -17,8 +16,8 @@ class Results extends React.Component {
 	}
 
 	getResults() {
-		const points_display = this.props.points; //rounds won
-		let displayIcon = {<FontAwesomeIcon style={{float: 'right'}} icon={faHeart}/>};
+		const points_display = this.props.points; //tokens won
+		let displayIcon = <FontAwesomeIcon style={{float: 'right'}} icon={faHeart}/>;
 
 		Object.entries(points_display).map(([key,value]) => {
 			let icons = [];
@@ -30,6 +29,7 @@ class Results extends React.Component {
 		return points_display;
 	}
 
+	
 	render() {
 		const points_display = this.getResults();
 		return(
@@ -37,19 +37,25 @@ class Results extends React.Component {
 			  	<Row style={{margin: 'auto'}}>
 			  		<h3 className='Play-status'>{this.props.winner}'s letter reached the Princess!</h3>
 			  	</Row>
+			  	{this.props.gameWinner!==undefined?
+			  		<Row style={{margin: 'auto'}}><h2 className='Play-status'>{this.props.winner} won the Princess' heart!</h2></Row>: <div></div>}
 			  	<Row style={{margin: 'auto'}}> 
 			  		<ListGroup>
 			  			{Object.entries(points_display).map(([key,value]) => {
 							return <ListGroup.Item key={key} className='List-item-design'>
 										<Col style={{display: 'inline'}}>{key}</Col>
-										<Col style={{display: 'inline'}}>{value.map((item,i) => return <span>item</span>)}</Col>
+										<Col style={{display: 'inline'}}>{value.map((item,i) => {return(<span>item</span>)})}</Col>
 									</ListGroup.Item>})}
 					</ListGroup>
 			  	</Row>
-			  	<Row style={{width: '50vw'}}> 
-			  		{this.props.gameWinner!==" "? <Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(this.props.gameWinner)}>OK</Button>
-			  			:<Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(this.props.gameWinner)}>Start Next Round</Button>}
-			  	</Row>
+			  	{this.props.gameWinner!==undefined? 
+			  		<Row style={{width: '50vw'}}>
+			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(true)}>Start New Game</Button></Col>
+			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(false)}>Leave Game</Button></Col>
+			  		</Row> :
+			  		<Row style={{width: '50vw'}}>
+			  			<Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(true)}>Start Next Round</Button>}
+			  		</Row>}
 			</Container> 
 		);
 	}
