@@ -155,37 +155,54 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         
-
+        curr_game = self.application.games[self.user.gid]
         message = json.loads(message)
         print(message)
         
         if message['type'] == 'players':
             plyrs = {}
-            for plyr in self.application.games[self.user.gid].players:
-                plyrs[plyr] = self.application.games[self.user.gid].players[plyr].username
-            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':self.application.games[self.user.gid].host})
+            for plyr in curr_game.players:
+                plyrs[plyr] = curr_game.players[plyr].username
+            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
+            
+            if curr_game.state == 1:#If someone rejoins they have to go to next page directly
+                self.write_message(json.dumps({'type': 'startGame'}))
             
             print('playrs requested')
         elif message['type'] == 'startGame':
             #Start the game
-            self.application.games[self.user.gid].start_game()
-            self.sendGameAll({'type': 'startGame'})
+            curr_game.start_game()
+            self.sendGameAll({'type': 'startGame'}, curr_game)
             
         elif message['type'] == 'ready':
-            self.write_message(json.dumps(self.application.games[self.user.gid].round.turn_status(self.user.user)))
+            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
 
         elif message['type'] == 'discard':
             print("Has played")
-            result = self.application.games[self.user.gid].round.player_play(message['card'], message['player1'], message['player2'], message['number'])
-            print(result)
-            #self.sendGameAll(result)
-            self.sendGameAll({'type':'next'})
+            curr_game.round.player_play(message['card'], message['player1'], message['player2'], message['number'])
+            
+            for plyr in curr_game.players:
+                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone status
+            
+            ################## --------------------- COMMENT --------------------- ##################
+            #self.sendGameAll({'type':'next'}, curr_game)
+        elif message['type'] == 'nextTurn':
+            self.sendGameAll({'type':'next'}, curr_game)
+        
+        elif message['type'] == 'newRound':
+            self.super_game.end_round() #Start the next round for everyone
+            self.sendGameAll({'type':'next'}, curr_game)
+
+        elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
+            curr_game.round.player_discard(self.user.user)
+            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
+            
 
     def on_close(self):
         print("WebSocket closed")
 
-    def sendGameAll(self, msg):
-        for plyr in self.application.games[self.user.gid].players.values():
+    def sendGameAll(self, msg, curr_game):
+        for plyr in curr_game.players.values():
             msg['uid'] = plyr.user
             msg['username'] = plyr.username
             plyr.webSocketHandle.write_message(json.dumps(msg))        
