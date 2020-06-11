@@ -83,7 +83,7 @@ class Player:
         self.dis_count = 0
         
         self.end_count = 0
-        self.sum = 0
+        self.dis_sum = 0
         
     def discard_sum(self):
         sum = 0
@@ -91,11 +91,11 @@ class Player:
         for card in self.discard_pile:
             sum += card.card_number
             
-        self.sum = sum
+        self.dis_sum = sum
 
     def __lt__(self, other):
         if self.end_count == other.end_count:
-            return self.sum < other.sum
+            return self.dis_sum < other.dis_sum
         else:
             return self.end_count < other.end_count
             
@@ -196,7 +196,7 @@ class Round:
             if self.result_blob['player'] == plyr_uid:
                 prevPlayer = 'You'
             else:
-                prevPlayer = self.players[plyr_uid].username
+                prevPlayer = self.players[self.result_blob['player']].username
             
             obj['prevTurn'] = prevPlayer + ' played ' + self.discard_pile[-1]
             
@@ -216,7 +216,7 @@ class Round:
                     obj['prevTurn'] = obj['prevTurn'] + self.players[self.result_blob['plyr2']].username
         
             if self.result_blob['number'] != None:
-                obj['prevTurn'] = obj['prevTurn'] + ' and guessed ' + self.result_blob['number']
+                obj['prevTurn'] = obj['prevTurn'] + ' and guessed ' + str(self.result_blob['number'])
         return obj
 
         
@@ -262,7 +262,7 @@ class Round:
         self.result_blob['plyr1'] = plyr1
         self.result_blob['plyr2'] = plyr2
         self.result_blob['number'] = numb_given
-        
+        self.result_blob['discard_pile'] = self.discard_pile
         
         self.result_blob['eliminated'] = []
 
@@ -407,8 +407,13 @@ class Round:
                 self.players[plyr].discard_sum()
                 fin_players.append(self.players[plyr])
             
-            fin_players.sort() #Sort the players
-            if fin_players[0].card_name == 'Bishop' and fin_players[1].card_name == "Princess":
+            fin_players = sorted(fin_players, reverse=True) #Sort the players
+            
+            #############
+            print("FINAL STANDINGS")
+            print([(plyr.username,plyr.card.card_name, plyr.end_count, plyr.dis_sum) for plyr in fin_players]) 
+            
+            if fin_players[0].card.card_name == 'Bishop' and fin_players[1].card.card_name == "Princess":
                 # 1 is the winner not zero 
                 self.winner = fin_players[1].user
             else:
@@ -426,8 +431,8 @@ class Round:
         print(self.order)
         
         for plyrs in self.order:
-            print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + '\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
-        
+            #print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + '\t\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
+            print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         #print(self.result_blob)
         print(self.turn_status(self.turn))
