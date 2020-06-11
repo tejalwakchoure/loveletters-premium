@@ -73,6 +73,7 @@ class Game extends React.Component {
 			userID: landingData.userID,
 			username: landingData.username
 		});
+		console.log("landingData=", landingData)
 	}
 
 	roundCallback = (roundData) => {
