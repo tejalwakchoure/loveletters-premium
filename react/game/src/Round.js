@@ -99,7 +99,7 @@ class Round extends React.Component {
   		this.setState({
   			playMode: 2,
   			results: playCardData,
-  			discard_pile: playCardData.discard_pile;
+  			discard_pile: playCardData.discard_pile
   		});
   	}
 

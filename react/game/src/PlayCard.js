@@ -189,21 +189,3 @@ class PlayCard extends React.Component {
 }
 
 export default PlayCard;
-
-
-// else (playmode!=0) { return (<div>
-// 				<Row>
-// 					<h4 className='Play-status'>{this.state.turnResult.statusMsg}</h4>
-// 				</Row>
-// 				<Row>
-// 					<h3 className='Play-status'>{this.state.turnResult.resultMsg}</h3>
-// 				</Row>
-// 				<Row>
-// 					{this.state.turnResult.card1!==null?<Col style={{display: "inline-flex"}}<Cards cardname={this.state.turnResult.card1}/></Col>: <div></div>}
-// 					{this.state.turnResult.card2!==null?<Col style={{display: "inline-flex"}}<Cards cardname={this.state.turnResult.card2}/></Col>: <div></div>}
-// 				</Row>
-// 				<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
-// 					<Button size="lg" block className='Confirm-button'
-// 					onClick={(e) => this.props.roundCallback(this.state.turnResult)}>OK</Button>
-// 				</Row>
-// 			</div>);}
