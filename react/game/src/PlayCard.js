@@ -1,7 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
-import Badge from 'react-bootstrap/Badge';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Row, Col} from 'react-bootstrap';
@@ -17,7 +16,6 @@ class PlayCard extends React.Component {
 	    	selectedPlayers: this.props.syco,
 	    	selectionSatisfied: false,
 	    	selectedNumber: -1,
-	    	playMode: true,
 	    	turnResult: {}
 	    }
 	    this.selectPlayer = this.selectPlayer.bind(this);
@@ -31,11 +29,10 @@ class PlayCard extends React.Component {
 	   		var obj = JSON.parse(event.data);
 			console.log(obj)
 			
-			if(obj.type === 'result') {
+			if(obj.type === 'results') {
 				this.setState({
-					playMode: false,
 					turnResult: obj
-				});
+				}, this.props.roundCallback(obj));
 			}
 	   	}
 	}
@@ -114,7 +111,8 @@ class PlayCard extends React.Component {
 		}
 		
 		else {
-			var enableCurrent = (this.props.cardPlayed==="Prince" || this.props.cardPlayed==="Sycophant");
+			var enableCurrent = (this.props.cardPlayed==="Prince" || this.props.cardPlayed==="Sycophant"
+									|| this.props.cardPlayed==="Cardinal");
 			var choiceType = "";
 			var isImmune = false;
   			var isSyco = false;
@@ -156,51 +154,56 @@ class PlayCard extends React.Component {
 	render() {
 		const list = this.getList();
 		const card_numbers = [1,2,3,4,5,6,7,8,9];
-		if(this.state.playMode===true) {
-			if(list!=null) {
-				return (
-					<div>
-						<Row style={{justifyContent: 'center'}}>
-							<Col>{list}</Col>
-							{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
-								<Col>
-									<ListGroup>
-						  				{card_numbers.map((item, i) => {
-											return <ListGroup.Item className='List-item-design'
-														variant={this.state.selectedNumber===item?'dark':'light'}
-														key={item} 
-														disabled={item===1}
-														onClick={(e) => this.selectNumber(item, e)}>{item}
-													</ListGroup.Item>})}
-									</ListGroup>
-								</Col>:
-								<div>
-								</div>}
-						</Row>
-						<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
-							<Button size="lg" block className='Confirm-button' 
-							disabled={!this.state.selectionSatisfied}
-							onClick={this.endPlay}>OK</Button>
-						</Row>
-					</div>
-				);
-			}
-			else {
-				return (<div>{this.endPlay()}</div>);
-			}
-		} else {
-			<div>
-				<Row>
-					<h4 className='Play-status'>{this.state.turnResult.message}</h4>
-				</Row>
-				{/*show card of opp in baron, priest, cardinal etc*/}
-				<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
-					<Button size="lg" block className='Confirm-button'
-					onClick = () => {this.props.roundCallback(this.state.turnResult);}>OK</Button>
-				</Row>
-			</div>
+		if(list!=null) {
+			return (
+				<div>
+					<Row style={{justifyContent: 'center'}}>
+						<Col>{list}</Col>
+						{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
+							<Col>
+								<ListGroup>
+					  				{card_numbers.map((item, i) => {
+										return <ListGroup.Item className='List-item-design'
+													variant={this.state.selectedNumber===item?'dark':'light'}
+													key={item} 
+													disabled={item===1}
+													onClick={(e) => this.selectNumber(item, e)}>{item}
+												</ListGroup.Item>})}
+								</ListGroup>
+							</Col>:
+							<div>
+							</div>}
+					</Row>
+					<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
+						<Button size="lg" block className='Confirm-button' 
+						disabled={!this.state.selectionSatisfied}
+						onClick={this.endPlay}>OK</Button>
+					</Row>
+				</div>
+			);
+		}
+		else {
+			return (<div>{this.endPlay()}</div>);
 		}
 	}
 }
 
 export default PlayCard;
+
+
+// else (playmode!=0) { return (<div>
+// 				<Row>
+// 					<h4 className='Play-status'>{this.state.turnResult.statusMsg}</h4>
+// 				</Row>
+// 				<Row>
+// 					<h3 className='Play-status'>{this.state.turnResult.resultMsg}</h3>
+// 				</Row>
+// 				<Row>
+// 					{this.state.turnResult.card1!==null?<Col style={{display: "inline-flex"}}<Cards cardname={this.state.turnResult.card1}/></Col>: <div></div>}
+// 					{this.state.turnResult.card2!==null?<Col style={{display: "inline-flex"}}<Cards cardname={this.state.turnResult.card2}/></Col>: <div></div>}
+// 				</Row>
+// 				<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
+// 					<Button size="lg" block className='Confirm-button'
+// 					onClick={(e) => this.props.roundCallback(this.state.turnResult)}>OK</Button>
+// 				</Row>
+// 			</div>);}
