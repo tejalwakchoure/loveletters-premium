@@ -183,6 +183,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
             for plyr in curr_game.players:
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone status
+                curr_game.players[plyr].username
             
             ################## --------------------- COMMENT --------------------- ##################
             #self.sendGameAll({'type':'next'}, curr_game)
