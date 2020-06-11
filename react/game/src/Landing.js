@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
-import {Container, Row, Col} from 'react-bootstrap';
+import {Container, Row} from 'react-bootstrap';
 import socket from './socket-context';
 
 
@@ -20,8 +20,7 @@ class Landing extends React.Component {
 	    	gameStatus: 0
 	    };
 	   	this.startGame = this.startGame.bind(this);
-	   	this.startNewGame = this.startNewGame.bind(this);
-	   	this.endGame = this.endGame.bind(this);
+	   	this.leaveGame = this.leaveGame.bind(this);
 	}
 	
 	componentDidMount() {
@@ -66,21 +65,13 @@ class Landing extends React.Component {
 		console.log("sent Start")
 	}
 
-	startNewGame = () => {
-		this.setState(
-			{gameStatus: 0},
-			this.props.gameCallback(this.state));
-		console.log("sent Start New game"); //nothing more to do here
-	}
-
-	endGame = () => {
-		// socket.send(JSON.stringify({'type':'leaveGame'})); 
-		// + call a disconnect of socket manually?
+	leaveGame = () => {
+		socket.send(JSON.stringify({'type':'leaveGame'}));
 		//remove this player from the game metadata; it could still go on
 	}
 
 	render() {
-		if(this.props.toStartGame) {
+		if(!this.props.leavingGame) {
 			return(
 				<Container className="Game-header">
 				  	<Row style={{margin: 'auto'}}>
@@ -100,19 +91,7 @@ class Landing extends React.Component {
 				</Container>
 			);
 		} 
-		else {
-			return(
-				<Container className="Game-header">
-				<Row style={{margin: 'auto'}}>
-				  	<h3 className='Play-status'>{this.props.final_winner} won the Princess's heart!</h3>
-			  	</Row>
-			  	<Row style={{margin: 'auto'}}> 
-			  		<Col><Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.endGame}>Leave Game</Button></Col>
-			  		<Col><Button size="lg" style={{width: '30vw'}} block className='Confirm-button' onClick={this.startNewGame}>Start New Game</Button></Col>
-			  	</Row>
-				</Container>
-			);
-		}
+		{/*else{}: What to show for someone who has left the game??*/}
 	}
 }
 

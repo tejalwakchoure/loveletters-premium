@@ -10,10 +10,10 @@ class Game extends React.Component {
 	    super(props);
 	    this.state = {
 	    	gameStatus: 0, /* 0-landing screen start game, 1- in round, 2- round results, 3-landing screen end game*/
-			toStartGame: true,
+			leavingGame: false,
 			rounds_played: 0,
 			all_players: {},
-			points: {  //socket.player_points,
+			tokens: {
 						"p1" : 0,
 						"p2" : 0,
 						"p3" : 0
@@ -38,46 +38,47 @@ class Game extends React.Component {
 	}
 
 	roundCallback = (roundData) => {
-		const winner = roundData.round_winner;
-		let new_points = this.state.points;
-		new_points[winner] = new_points[winner]+1;
 		this.setState({
 			rounds_played: this.state.rounds_played+1,
-			points: new_points,
+			tokens: roundData.tokens,
 			gameStatus: 2,
-			round_winner: winner,
-			game_winner: roundData.gameWinner; //????
+			round_winner: roundData.roundWinner,
+			game_winner: roundData.gameWinner
 		});
 	}
 
 	resultsCallback = (resultsData) => {
-		if(resultsData!==" ") {
+		if(this.state.gameWinner!==undefined && resultsData===true) {
 			this.setState({
-				gameStatus: 3,
-				game_winner: resultsData
+				gameStatus: 0,
+				leavingGame: false
 			});
-			console.log('results='+resultsData);
-			console.log('set state=3');
+			console.log('set state=0');
 		}
-		else {
+		else if(this.state.gameWinner===undefined && resultsData===true) {
 			this.setState({
 				gameStatus: 1
 			});
 			console.log('set state=1');
 		}
+		else {
+			this.setState({
+				gameStatus: 0,
+				leavingGame: true
+			});
+			console.log('set state=0 and this player is leaving the game');
+		}
 	}
 
 	render() {
 		if (this.state.gameStatus===0)
-			return (<Landing toStartGame={this.state.toStartGame} gameCallback = {this.landingCallback}/>);
+			return (<Landing leavingGame={this.state.leavingGame} gameCallback = {this.landingCallback}/>);
 		else if (this.state.gameStatus===1)
 		    return (<Round gameCallback={this.roundCallback} all_players={this.state.all_players}
 		    				userID={this.state.userID} username={this.state.username}/>);
 		else if (this.state.gameStatus===2)
-			return(<Results points={this.state.points} winner={this.state.round_winner} 
+			return(<Results points={this.state.tokens} winner={this.state.round_winner} 
 					gameWinner={this.state.game_winner} gameCallback={this.resultsCallback}/>);
-		else
-			return (<Landing toStartGame={false} final_winner={this.state.game_winner} gameCallback = {this.landingCallback}/>);
 	}
 }
 
