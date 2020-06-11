@@ -8,6 +8,7 @@ class Card:
         self.card_name = card_name
         self.card_desc = card_desc
         
+        
         self.requires_people = select
         self.requires_numb = numb
         
@@ -130,7 +131,6 @@ class Round:
         
         self.jesterTar = None
         self.jesterBet = None
-        #TODO: Targets 
 
         self.result_blob = {}
         
@@ -159,72 +159,14 @@ class Round:
         #TODO: if it's a Countess with a prince or King, has to discard the Countess
 
 
-        ################
+        ################## --------------------- COMMENT --------------------- ##################
         self.curr_stat()
         
-    def turn_status(self, plyr_uid):
-        obj = {}
-        obj['type'] = 'turn'
-        obj['player'] = self.turn
-        if self.turn == plyr_uid:
-            obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
-        else:
-            obj['cards'] = [self.players[plyr_uid].card.card_name]
-        obj['sycho'] = []
-        if self.sychoTar != None:
-            obj['sycho'].append(self.sychoTar)
+    def player_play(self, card_chosen, plyr1, plyr2, numb_given):
         
-        #THIS WAS ADDED FOR TESTING REMOVE 
-        #for plyr in self.order:
-        #    if plyr != plyr_uid:
-        #        obj['sycho'].append(plyr)
-        #        break
         
-        obj['immune'] = []
-        for plyr in self.order:
-            if self.players[plyr].immune:
-                obj['immune'].append(plyr)
-    
-        obj['eliminated'] = []
-        for plyr in self.players.values():
-            if plyr.out:
-                obj['eliminated'].append(plyr.user)
-        
-        #TODO: Send prev results here
-        obj['prevTurn'] = None
-        if self.discard_pile:#it's not first turn
-            if self.result_blob['player'] == plyr_uid:
-                prevPlayer = 'You'
-            else:
-                prevPlayer = self.players[self.result_blob['player']].username
-            
-            obj['prevTurn'] = prevPlayer + ' played ' + self.discard_pile[-1]
-            
-                
-            if self.result_blob['plyr1'] != None:
-                obj['prevTurn'] = obj['prevTurn'] + ' on '
-                if self.result_blob['plyr1'] == plyr_uid:
-                    obj['prevTurn'] = obj['prevTurn'] + 'You'
-                else:
-                    obj['prevTurn'] = obj['prevTurn'] + self.players[self.result_blob['plyr1']].username
-            
-            if self.result_blob['plyr2'] != None:
-                obj['prevTurn'] = obj['prevTurn'] + ' and '
-                if self.result_blob['plyr2'] == plyr_uid:
-                    obj['prevTurn'] = obj['prevTurn'] + 'You'
-                else:
-                    obj['prevTurn'] = obj['prevTurn'] + self.players[self.result_blob['plyr2']].username
-        
-            if self.result_blob['number'] != None:
-                obj['prevTurn'] = obj['prevTurn'] + ' and guessed ' + str(self.result_blob['number'])
-        return obj
 
-        
-        
-    def player_play(self, card_chosen, plyr1, plyr2, numb_given): #TODO RETURN A PROPER RESULT HERE OF WHAT HAS HAPPENED
-        
-        self.result_blob = {'roundOver': False, 'gameOver': False} #to return this somehow
-
+        #Raise exceptions if something is wrong
         if plyr1 != None and self.players[plyr1].out:
             raise Exception("Hello Sir, what is this, plyr1 is out, unacceptable") 
 
@@ -240,6 +182,11 @@ class Round:
         if  plyr2 != None and self.players[plyr2].immune:
             raise Exception('Plyr2 is immune')
         
+        
+        self.result_blob = {} 
+        
+        
+        #Discard card and make the other card available as 'card' attribute
         if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
             card_discarded = self.players[self.turn].card
             self.players[self.turn].card = self.players[self.turn].extra
@@ -252,6 +199,7 @@ class Round:
         else: #He's chosen a card that does not exist
             raise Exception("Unknown card chosen??")
             
+        #Add to discard piles
         self.players[self.turn].discard_pile.append(card_discarded)
         self.discard_pile.append(card_discarded.card_name)
         
@@ -265,22 +213,37 @@ class Round:
         self.result_blob['discard_pile'] = self.discard_pile
         
         self.result_blob['eliminated'] = []
-
+        
+        self.result_blob['gameWinner'] = None
+        if self.result_blob['player1'] != None:
+            self.result_blob['card1'] = self.players[plyr1].card.card_name
+        else:
+            self.result_blob['card1'] = None
+            
+        
+        if self.result_blob['player2'] != None:
+            self.result_blob['card2'] = self.players[plyr2].card.card_name
+        else:
+            self.result_blob['card2'] = None
+        
+        self.result_blob['result'] = None
+        
+        
+        #Play the cards
         self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
 
         if self.check_win():
-            self.result_blob['roundOver'] = True
+            #Round is over, wait for next round to start
             self.result_blob['roundWinner'] = self.winner
-            
-            
             self.players[self.winner].tokens += 1
-            self.super_game.end_round()
-        else:
+            
+        else:#Play next turn
+            self.result_blob['roundWinner'] = None
             self.turn_no = (self.turn_no + 1) % len(self.order)
             self.turn = self.order[self.turn_no]
             self.player_turn()
         
-        return self.result_blob
+        
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
@@ -290,6 +253,9 @@ class Round:
             if self.players[plyr1].card.card_number == numb_given:
                 self.players[self.turn].tokens += 1
                 self.super_game.check_winner()
+                self.result_blob['result'] = 'Correct'
+            else:
+                self.result_blob['result'] = 'Incorrect'
                 #TODO: Give player option to discard
         
         elif played_card.card_name == 'Princess': #Player is knocked out immediately
@@ -323,6 +289,7 @@ class Round:
         elif played_card.card_name == 'Sycophant':
             self.players[plyr1].sycho = True
             self.sychoTar = plyr1
+            self.result_blob['result'] = 'sychoTar'
         
         elif played_card.card_name == 'Baron':#Players have to copmare and LESSER ONE is out
             if self.players[plyr1].card.card_number < self.players[self.turn].card.card_number: #plyr1 is out
@@ -352,6 +319,7 @@ class Round:
         elif played_card.card_name == 'Jester': #A bet has been made
             self.jesterTar = plyr1
             self.jesterBet = self.turn
+            self.result_blob['result'] = 'jesterBet'
             
         elif played_card.card_name == 'Assassin': #Nothing to do here
             pass
@@ -387,9 +355,11 @@ class Round:
 
         self.players[plyr].discard_pile.append(self.players[plyr].card)
         self.discard_pile.append(self.players[plyr].card.card_name)
-
-        ##################
+        
         self.result_blob['eliminated'].append(plyr)
+        
+        ################## --------------------- COMMENT --------------------- ##################
+        
         print(plyr + " HAS BEEN ELIMINATED")
 
         
@@ -426,7 +396,134 @@ class Round:
             if self.winner == self.jesterTar: #If the bet made by the joker was correct, give the token
                 self.players[self.jesterBet].tokens += 1
         return win
+    
+    def turn_status(self, plyr_uid):
+        obj = {}
+        obj['type'] = 'turn'
+        obj['player'] = self.turn
+        if self.turn == plyr_uid:
+            obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
+        else:
+            obj['cards'] = [self.players[plyr_uid].card.card_name]
+        obj['sycho'] = []
+        if self.sychoTar != None:
+            obj['sycho'].append(self.sychoTar)
         
+        ################## --------------------- COMMENT --------------------- ##################
+        #for plyr in self.order:
+        #    if plyr != plyr_uid:
+        #        obj['sycho'].append(plyr)
+        #        break
+        
+        obj['immune'] = []
+        for plyr in self.order:
+            if self.players[plyr].immune:
+                obj['immune'].append(plyr)
+    
+        obj['eliminated'] = []
+        for plyr in self.players.values():
+            if plyr.out:
+                obj['eliminated'].append(plyr.user)
+        
+        
+        obj['prevTurn'] = self.msg_status(plyr_uid)
+        
+        return obj
+    
+    def result_status(self, plyr_uid):
+        obj = {}
+        
+        #Stuff the front end needs
+        obj['type'] = 'results'
+        
+        obj['player'] = self.result_blob['player']
+        obj['player1'] = self.result_blob['plyr1']
+        obj['player2'] = self.result_blob['plyr2']
+        obj['card_discarded'] = self.result_blob['card_discarded'] 
+        
+        obj['statusMsg'] = self.msg_status(plyr_uid)
+        obj['resultMsg'] = None
+        
+        obj['card1'] = None
+        obj['card2'] = None
+        #We show these cards only in some cases
+        
+        #When there's a reveal card             --Cardinal, Priest, Baroness  *Only current player sees
+        #When there has to be a compare         --Baron, Dowager Queen        *Current player and plyr1 see both, losing card shown to everyone
+        #When a guess is made and it's correct  --Guard, Bishop               *Everyone sees the card    
+        
+        #Other cases                            
+        #           --Prince                      *Everyone sees discarded card
+        #           --Assassin                    *Everyone sees this card
+        
+        if obj['card_discarded'] in ['Cardinal', 'Priest', 'Baroness'] and plyr_uid == obj['player']:
+            obj['card1'] = self.result_blob['card1']
+            obj['card2'] = self.result_blob['card2']
+            
+        elif obj['card_discarded'] in ['Baron', 'Dowager Queen ']:
+            obj['card1'] = self.result_blob['card2'] #Losing card to everyone
+            
+            if plyr_uid == obj['player'] or plyr_uid == obj['player1']: #Priveleged players 
+                obj['card2'] = self.result_blob['card1']
+            
+        elif obj['card_discarded'] in ['Guard', 'Bishop'] and self.result_blob['result'] == 'Correct':
+            obj['card1'] = self.result_blob['card1']
+            
+            obj['resultMsg'] = 'FAIL'
+            
+            
+            
+            
+        
+        obj['eliminated'] = self.result_blob['eliminated']
+        
+        
+        obj['tokens'] = {}
+        for plyr in self.players:
+            obj['tokens'][plyr] = self.players[plyr].tokens
+            
+        
+        obj['roundWinner'] = self.result_blob['roundWinner']
+        obj['gameWinner'] = self.result_blob['gameWinner']
+
+        
+        
+
+        
+        return obj
+    
+    def msg_status(self, plyr_uid):
+        if self.discard_pile:#it's not first turn
+            if self.result_blob['player'] == plyr_uid:
+                prevPlayer = 'You'
+            else:
+                prevPlayer = self.players[self.result_blob['player']].username
+            
+            obj = prevPlayer + ' played ' + self.discard_pile[-1]
+            
+                
+            if self.result_blob['plyr1'] != None:
+                obj = obj + ' on '
+                if self.result_blob['plyr1'] == plyr_uid:
+                    obj = obj + 'You'
+                else:
+                    obj = obj + self.players[self.result_blob['plyr1']].username
+            
+            if self.result_blob['plyr2'] != None:
+                obj = obj + ' and '
+                if self.result_blob['plyr2'] == plyr_uid:
+                    obj = obj + 'You'
+                else:
+                    obj = obj + self.players[self.result_blob['plyr2']].username
+        
+            if self.result_blob['number'] != None:
+                obj = obj + ' and guessed ' + str(self.result_blob['number'])
+            
+            return obj
+        else:
+            return None
+            
+            
     def curr_stat(self):
         print(self.order)
         
