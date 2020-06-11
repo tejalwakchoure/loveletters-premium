@@ -50,6 +50,7 @@ class Round extends React.Component {
 		});
 	}
 
+
 	getResults(obj) {
 		this.setState({
   			playMode: 2,
