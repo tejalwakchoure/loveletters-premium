@@ -17,15 +17,14 @@ class Results extends React.Component {
 
 	getResults() {
 		const points_display = this.props.points; //tokens won
-		let displayIcon = <FontAwesomeIcon style={{float: 'right'}} icon={faHeart}/>;
-
+		let displayIcon = <FontAwesomeIcon icon={faHeart}/>;
+    	let spaceIcon = <span>&nbsp;&nbsp;</span>;
 		Object.entries(points_display).map(([key,value]) => {
 			let icons = [];
 			for(let i=0;i<value;i++)
-				icons.concat(displayIcon);
+				icons = icons.concat(displayIcon).concat(spaceIcon);
 			points_display[key] = icons;
 		});
-
 		return points_display;
 	}
 
@@ -44,7 +43,7 @@ class Results extends React.Component {
 			  			{Object.entries(points_display).map(([key,value]) => {
 							return <ListGroup.Item key={key} className='List-item-design'>
 										<Col style={{display: 'inline'}}>{key}</Col>
-										<Col style={{display: 'inline'}}>{value.map((item,i) => {return(<span>item</span>)})}</Col>
+										<Col style={{display: 'inline'}}>{value.map((item,i) => {return(<span style={{float: 'right'}}>{item}</span>);})}</Col>
 									</ListGroup.Item>})}
 					</ListGroup>
 			  	</Row>

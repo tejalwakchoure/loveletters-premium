@@ -8,13 +8,9 @@ class CardCarousel extends React.Component {
 		return require('../assets/cards/'+name+'.png');
 	}	
 	render() {
-		// let playedCardlist = ["Guard", "Priest", "Princess"];
-		// if(this.props.addCard!== " ") {
-		// 	playedCardlist = [...playedCardlist, this.props.addCard];
-		// }
-		// if(this.props.allCardsDiscarded!== []) {
-		let playedCardlist = this.props.allCardsDiscarded;
-		// }
+		let playedCardlist = [];
+		if(this.props.allCardsDiscarded!== []) {
+			playedCardlist = this.props.allCardsDiscarded;
 		return(
 		  	<div className='Card-carousel'> 
 			  	{playedCardlist.map((item) => 
