@@ -31,7 +31,7 @@ class Round extends React.Component {
 		    syco: [],
 		    eliminated: [],
 		    prevTurnMessage: " ",
-		    discard_pile: this.props.discard_pile
+		    discard_pile: []
 		};
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
@@ -99,7 +99,7 @@ class Round extends React.Component {
   		this.setState({
   			playMode: 2,
   			results: playCardData,
-  			discard_pile: playCardData.discard_pile
+  			discard_pile: playCardData.discard_pile;
   		});
   	}
 
