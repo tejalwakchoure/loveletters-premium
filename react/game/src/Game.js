@@ -57,8 +57,6 @@ class Game extends React.Component {
 				this.landingRef.current.getStartGame(obj);
 			else if(obj.type === 'turn')
 				this.roundRef.current.getTurn(obj);
-			else if(obj.type === 'next') //This has been added just to test going to next turn and to play a round
-				socket.send(JSON.stringify({'type':'ready'}));
 			else if(obj.type === 'results')
 				this.roundRef.current.getResults(obj);
 		}
@@ -72,10 +70,6 @@ class Game extends React.Component {
 			userID: landingData.userID,
 			username: landingData.username
 		});
-		if(landingData.gameStatus==1) {
-			socket.send(JSON.stringify({'type':'ready'}));
-	    	console.log('sent ready')
-		}
 		console.log("landingData=", landingData)
 	}
 
@@ -101,8 +95,6 @@ class Game extends React.Component {
 			this.setState({
 				gameStatus: 1
 			});
-			socket.send(JSON.stringify({'type':'nextRound'}));
-	    	console.log('sent nextRound')
 			console.log('set state=1');
 		}
 		else {

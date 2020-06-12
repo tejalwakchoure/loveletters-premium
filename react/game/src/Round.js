@@ -33,6 +33,9 @@ class Round extends React.Component {
 	    this.discard = this.discard.bind(this);
 	    this.endTurn = this.endTurn.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
+    	
+		socket.send(JSON.stringify({'type':'nextRound'}));
+    	console.log('sent nextRound')
 	}
 	
 	getTurn(obj) {
@@ -118,7 +121,7 @@ class Round extends React.Component {
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
-					  	<Row>
+					  	<Row style={{margin: 'auto'}}>
 					  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
 					  			<Cards cardname={currentCard}/>
 					  		</Col>
@@ -187,7 +190,7 @@ class Round extends React.Component {
 						<Row style={{margin: 'auto'}}>
 							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
 						</Row>
-						<Row>
+						<Row style={{margin: 'auto'}}>
 							{this.state.results.card1!==null?
 								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
 							{this.state.results.card2!==null?
@@ -225,7 +228,7 @@ class Round extends React.Component {
 						  	<Row style={{margin: 'auto'}} >
 						  		<h3 className='Play-status'>It's not your turn</h3>
 						  	</Row>
-						  	<Row style={{marginBottom: '20px'}}>
+						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex"}}>
 						  			<Cards cardname={currentCard}/>
 						  		</Col>
