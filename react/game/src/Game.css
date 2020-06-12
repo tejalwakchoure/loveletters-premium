@@ -63,6 +63,13 @@
   margin: auto;
 }
 
+hr {
+  border: 0;
+  width: 50vw;
+  height: 1px !important; 
+  background-image: -webkit-linear-gradient(left, #3e3e3e, #888585, #3e3e3e);
+}
+
 .List-item-design {
   background-color: #421d2e !important; /*#231212*/
   color: #f1e4d7 !important;
