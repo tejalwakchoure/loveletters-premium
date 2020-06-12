@@ -36,8 +36,16 @@ class Results extends React.Component {
 			  	<Row style={{margin: 'auto'}}>
 			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess!</h3>
 			  	</Row>
+			  	<hr/>
+			  
 			  	{this.props.gameWinner!==null?
-			  		<Row style={{margin: 'auto'}}><h2 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' heart!</h2></Row>: <div></div>}
+			  		<div style={{margin: 'auto'}}>
+			  			<Row style={{margin: 'auto'}}>
+			  				<h2 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' heart!</h2>
+			  			</Row>
+			  			<hr/>
+			  		</div>: <div></div>}
+			  	
 			  	<Row style={{margin: 'auto'}}> 
 			  		<ListGroup>
 			  			{Object.entries(points_display).map(([key,value]) => {

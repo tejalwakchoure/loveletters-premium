@@ -24,13 +24,15 @@ class Round extends React.Component {
 		    syco: [],
 		    eliminated: [],
 		    prevTurnMessage: " ",
-		    discard_pile: []
+		    discard_pile: [],
+		    turnEnded: false
 		};
 	    this.getTurn = this.getTurn.bind(this);
 	    this.getResults = this.getResults.bind(this);
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
 	    this.endTurn = this.endTurn.bind(this);
+	    this.endTurnByButton = this.endTurnByButton.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
 
 		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
@@ -52,6 +54,9 @@ class Round extends React.Component {
 
 
 	getResults(obj) {
+		if(obj.roundWinner!==null && obj.discard_pile===[])
+			this.setState({turnEnded: true});
+		
 		this.setState({
   			playMode: 2,
   			results: obj,
@@ -87,6 +92,11 @@ class Round extends React.Component {
   		}
   	}
 
+  	endTurnByButton = () => {
+  		this.setState({turnEnded: true});
+  		this.endTurn();
+  	}
+
   	playCardCallback = (playCardData) => {
   		this.props.socket.send(JSON.stringify(playCardData));
 	    console.log('sent played values from Round for @'+this.props.username);
@@ -97,6 +107,9 @@ class Round extends React.Component {
 		console.log('currentPlayer = '+this.state.currentPlayer);
 		console.log(this.state.currentCards);
 
+		if(this.state.turnEnded)
+			this.endTurn();
+
 		var currentCard = this.state.currentCards[0];
 		if(currentCard===undefined)
 			currentCard="loading_card" // before first render
@@ -106,7 +119,7 @@ class Round extends React.Component {
 			var drawnCard = this.state.currentCards[1];
 			if(drawnCard===undefined)
 				drawnCard="loading_card" // before first render
-			
+
 			if(this.state.playMode===0) {
 				console.log('RENDER MODE: current player x choosing card')
 				return(
@@ -118,9 +131,11 @@ class Round extends React.Component {
 					  		{this.state.prevTurnMessage!==null?
 					  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>: <div></div>}
 					  	</Row>
+					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
+					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
 					  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
 					  			<Cards cardname={currentCard}/>
@@ -145,10 +160,11 @@ class Round extends React.Component {
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
-					  		<PlayCard currentPlayer={this.state.currentPlayer}
-					  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
-					  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-					  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
+					  	<hr/>
+				  		<PlayCard currentPlayer={this.state.currentPlayer}
+				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
+				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
+				  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
 					</Container>
 				);
 			} 
@@ -162,9 +178,11 @@ class Round extends React.Component {
 						<Row style={{margin: 'auto'}}>
 							<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
 						</Row>
+						<hr/>
 						<Row style={{margin: 'auto'}}>
 							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
 						</Row>
+						<hr/>
 						<Row>
 							{this.state.results.card1!==null?
 								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
@@ -173,7 +191,7 @@ class Round extends React.Component {
 						</Row>
 						<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
 							<Button size="lg" block className='Confirm-button'
-							onClick={this.endTurn}>OK</Button>
+							onClick={this.endTurnByButton}>OK</Button>
 						</Row>
 					</Container>);
 			}
@@ -188,9 +206,11 @@ class Round extends React.Component {
 					<Row style={{margin: 'auto'}}>
 						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
 					</Row>
+					<hr/>
 					<Row style={{margin: 'auto'}}>
 						<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
 					</Row>
+					<hr/>
 					<Row style={{margin: 'auto'}}>
 						{this.state.results.card1!==null?
 							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
@@ -207,28 +227,37 @@ class Round extends React.Component {
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
 			  		{this.state.playMode===2?
-			  				(<Row style={{margin: 'auto'}}>
+			  				(<div style={{margin: 'auto'}}>
 					  			<Row style={{margin: 'auto'}}>
 									<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
 								</Row>
+								<hr/>
 								<Row style={{margin: 'auto'}}>
 									<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
 								</Row>
-							</Row>):
+								<hr/>
+							</div>):
 							(this.state.prevTurnMessage!==null?
-					  			(<Row style={{margin: 'auto'}}>
-					  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
-					  			</Row>): <div></div>)}
-				  	
+					  			(<div style={{margin: 'auto'}}>
+						  			<Row style={{margin: 'auto'}}>
+						  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
+						  			</Row>
+						  			<hr/>
+						  		</div>): <div></div>)}
+					  	
 
 				  	{this.state.eliminated.indexOf(this.props.userID)>=0?
-				  		(<Row style={{margin: 'auto'}}>
-					  		<h3 className='Play-status'>You have been eliminated</h3>
-					  	</Row>):
+				  		(<div style={{margin: 'auto'}}>
+				  			<Row style={{margin: 'auto'}}>
+					  			<h3 className='Play-status'>You have been eliminated</h3>
+					  		</Row>
+					  		<hr/>
+					  	</div>):
 					  	(<div style={{margin: 'auto'}}>
 						  	<Row style={{margin: 'auto'}} >
 						  		<h3 className='Play-status'>It's not your turn</h3>
 						  	</Row>
+						  	<hr/>
 						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex"}}>
 						  			<Cards cardname={currentCard}/>
