@@ -72,6 +72,10 @@ class Game extends React.Component {
 			userID: landingData.userID,
 			username: landingData.username
 		});
+		if(landingData.gameStatus==1) {
+			socket.send(JSON.stringify({'type':'ready'}));
+	    	console.log('sent ready')
+		}
 		console.log("landingData=", landingData)
 	}
 
@@ -97,6 +101,8 @@ class Game extends React.Component {
 			this.setState({
 				gameStatus: 1
 			});
+			socket.send(JSON.stringify({'type':'nextRound'}));
+	    	console.log('sent nextRound')
 			console.log('set state=1');
 		}
 		else {
@@ -116,7 +122,7 @@ class Game extends React.Component {
 		    return (<Round ref={this.roundRef} gameCallback={this.roundCallback} all_players={this.state.all_players}
 		    				userID={this.state.userID} username={this.state.username} socket={socket}/>);
 		else if (this.state.gameStatus===2)
-			return(<Results points={this.state.tokens} winner={this.state.roundWinner} 
+			return(<Results points={this.state.tokens} allPlayers={this.state.all_players} winner={this.state.roundWinner} 
 					gameWinner={this.state.gameWinner} gameCallback={this.resultsCallback}/>);
 	}
 }
