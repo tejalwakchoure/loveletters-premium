@@ -14,7 +14,9 @@ class PlayCard extends React.Component {
 	    this.state = {
 	    	selectedPlayers: this.props.syco,
 	    	selectionSatisfied: false,
-	    	selectedNumber: -1
+	    	selectedNumber: -1,
+	    	num_disabled_players: this.props.immune.length + this.props.eliminated.length,
+	    	num_players: Object.keys(this.props.all_players).length
 	    }
 	    this.selectPlayer = this.selectPlayer.bind(this);
 	    this.selectNumber = this.selectNumber.bind(this);
@@ -27,13 +29,18 @@ class PlayCard extends React.Component {
 		let x = 0;
 		
 		if(type==='single') {
-			if(this.props.syco.length===0) //no sycophants; proceed as normal
-				selectedPlayers = [item];
-			
-			if(this.props.cardPlayed!=="Guard" && this.props.cardPlayed!=="Bishop")
-				this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
-			else
-				this.setState({selectedPlayers: selectedPlayers});
+			if(this.state.num_disabled_players === this.state.num_players-1 //only current player is eligible
+				 && this.props.cardPlayed!=="Prince" && this.props.cardPlayed!=="Sycophant") {
+					this.setState({selectionSatisfied: true});
+			} else {
+				if(this.props.syco.length===0) //no sycophants; proceed as normal
+					selectedPlayers = [item];
+				
+				if(this.props.cardPlayed!=="Guard" && this.props.cardPlayed!=="Bishop")
+					this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+				else
+					this.setState({selectedPlayers: selectedPlayers});
+			}
 		}
 		else {
 			if(this.props.syco.length===0 || !this.props.syco.indexOf(item)>=0) { //this item is not a sycophant
@@ -46,16 +53,28 @@ class PlayCard extends React.Component {
 			}
 
 			if(type==='double') {
-				if(selectedPlayers.length===2) {
-						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+				if(this.state.num_disabled_players === this.state.num_players-1) { //only current player is eligible but 2 to choose
+					this.setState({selectionSatisfied: true});
+				} else if(this.state.num_disabled_players >= this.state.num_players-2 //only 2 players are eligible including current
+						&& this.props.cardPlayed!=="Cardinal") { 
+							this.setState({selectionSatisfied: true});
 				} else {
-					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
+					if(selectedPlayers.length===2) {
+							this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+					} else {
+						this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
+					}
 				}
-			} else {
-				if(selectedPlayers.length===1 || selectedPlayers.length===2) {
-						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+				
+			} else { // type is 'either'
+				if(this.state.num_disabled_players === this.state.num_players-1) {//only current player is eligible
+						this.setState({selectionSatisfied: true});
 				} else {
-					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
+					if(selectedPlayers.length===1 || selectedPlayers.length===2) {
+						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
+					} else {
+						this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
+					}
 				}
 			}	
 		}

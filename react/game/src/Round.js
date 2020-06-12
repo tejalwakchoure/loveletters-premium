@@ -33,13 +33,11 @@ class Round extends React.Component {
 	    this.discard = this.discard.bind(this);
 	    this.endTurn = this.endTurn.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
-
-	    this.props.socket.send(JSON.stringify({'type':'ready'}));
-	    console.log('sent ready')
 	}
 	
 	getTurn(obj) {
 		this.setState({
+			playMode: 0, // start new turn
 			currentPlayer: obj.player,
 			currentCards: obj.cards,
 			immune: obj.immune,
@@ -82,10 +80,7 @@ class Round extends React.Component {
 			console.log('sent results to Game.js');
 		}
   		else {
-  			this.setState({
-				playMode: 0 // start new turn
-			},
-			this.props.socket.send(JSON.stringify({'type':'nextTurn'})));
+			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
 	  		console.log('sent nextTurn for next turn');
   		}
   	}
