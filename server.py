@@ -197,6 +197,15 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             curr_game.round.player_discard(self.user.user)
             self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
+        elif message['type'] == 'leaveGame': #For player to leave the game    
+            del cur_game.players[self.user.user]
+            self.user.gid = -1
+            plyrs = {}
+            for plyr in curr_game.players:
+                plyrs[plyr] = curr_game.players[plyr].username
+            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
+            
+            
 
     def on_close(self):
         print("WebSocket closed")
