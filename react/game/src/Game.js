@@ -57,9 +57,8 @@ class Game extends React.Component {
 				this.landingRef.current.getStartGame(obj);
 			else if(obj.type === 'turn')
 				this.roundRef.current.getTurn(obj);
-			// else if(obj.type === 'next'){ //This has been added just to test going to next turn and to play a round
-			// 	socket.send(JSON.stringify({'type':'ready'}));
-			// }
+			else if(obj.type === 'next') //This has been added just to test going to next turn and to play a round
+				socket.send(JSON.stringify({'type':'ready'}));
 			else if(obj.type === 'results')
 				this.roundRef.current.getResults(obj);
 		}
@@ -87,14 +86,14 @@ class Game extends React.Component {
 	}
 
 	resultsCallback = (resultsData) => {
-		if(this.state.gameWinner!==undefined && resultsData===true) {
+		if(this.state.gameWinner!==null && resultsData===true) {
 			this.setState({
 				gameStatus: 0,
 				leavingGame: false
 			});
 			console.log('set state=0');
 		}
-		else if(this.state.gameWinner===undefined && resultsData===true) {
+		else if(this.state.gameWinner===null && resultsData===true) {
 			this.setState({
 				gameStatus: 1
 			});

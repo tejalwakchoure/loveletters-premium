@@ -77,7 +77,7 @@ class Round extends React.Component {
   	}
 
   	endTurn = () => {
-  		if(this.state.results.round_winner!==undefined) {
+  		if(this.state.results.round_winner!==null) {
 			this.props.gameCallback(this.state.results); //end round
 			console.log('sent results to Game.js');
 		}
