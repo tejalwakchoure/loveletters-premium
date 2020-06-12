@@ -57,8 +57,8 @@ class Game extends React.Component {
 				this.landingRef.current.getStartGame(obj);
 			else if(obj.type === 'turn')
 				this.roundRef.current.getTurn(obj);
-			else if(obj.type === 'next') //This has been added just to test going to next turn and to play a round
-				socket.send(JSON.stringify({'type':'ready'}));
+			//else if(obj.type === 'next') //This has been added just to test going to next turn and to play a round
+			//	socket.send(JSON.stringify({'type':'ready'}));
 			else if(obj.type === 'results')
 				this.roundRef.current.getResults(obj);
 		}

@@ -184,12 +184,13 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
             for plyr in curr_game.players:
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone status
-                curr_game.players[plyr].username
             
             ################## --------------------- COMMENT --------------------- ##################
             #self.sendGameAll({'type':'next'}, curr_game)
         elif message['type'] == 'nextTurn':
-            self.sendGameAll({'type':'next'}, curr_game)
+            #self.sendGameAll({'type':'next'}, curr_game)
+            for plyr in curr_game.players:
+                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
         
         elif message['type'] == 'nextRound':
             curr_game.end_round() #Start the next round for everyone
