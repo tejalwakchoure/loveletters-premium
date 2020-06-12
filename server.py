@@ -178,11 +178,11 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
 
         elif message['type'] == 'discard':
-            print("Has played")
             curr_game.round.player_play(message['card'], message['player1'], message['player2'], message['number'])
             
             for plyr in curr_game.players:
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone status
+                curr_game.players[plyr].username
             
             ################## --------------------- COMMENT --------------------- ##################
             #self.sendGameAll({'type':'next'}, curr_game)
