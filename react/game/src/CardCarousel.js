@@ -9,7 +9,7 @@ class CardCarousel extends React.Component {
 	}	
 	render() {
 		let playedCardlist = [];
-		if(this.props.allCardsDiscarded!== undefined)
+		if(this.props.allCardsDiscarded!==undefined)
 			playedCardlist = this.props.allCardsDiscarded;
 		
 		return(

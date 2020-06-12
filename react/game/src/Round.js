@@ -116,11 +116,11 @@ class Round extends React.Component {
 					  	<Row>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
-					  	<Row>
+					  	<Row style={{margin: 'auto'}}>
 					  		{this.state.prevTurnMessage!==null?
 					  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>: <div></div>}
 					  	</Row>
-					  	<Row>
+					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
 					  	<Row>
@@ -143,7 +143,7 @@ class Round extends React.Component {
 					  	<Row>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
-					  	<Row>
+					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
 					  		<PlayCard currentPlayer={this.state.currentPlayer}
@@ -159,10 +159,10 @@ class Round extends React.Component {
 					  	<Row>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
-						<Row>
+						<Row style={{margin: 'auto'}}>
 							<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
 						</Row>
-						<Row>
+						<Row style={{margin: 'auto'}}>
 							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
 						</Row>
 						<Row>
@@ -178,27 +178,28 @@ class Round extends React.Component {
 					</Container>);
 			}
 		} 
-		else if (this.state.playMode===2 &&
-					(this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2)) {
-			return (
-				<Container className="Game-header">
-				  	<Row>
-				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
-				  	</Row>
-					<Row>
-						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-					</Row>
-					<Row>
-						<h3 className='Play-status'>{this.state.results.resultMsg}</h3> {/*what to show if eliminated??*/}
-					</Row>
-					<Row>
-						{this.state.results.card1!==null?
-							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
-						{this.state.results.card2!==null?
-							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
-					</Row>
-				</Container>);
-
+		else if(this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) {
+			
+			if(this.state.playMode===2) {
+				return (
+					<Container className="Game-header">
+					  	<Row>
+					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					  	</Row>
+						<Row style={{margin: 'auto'}}>
+							<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
+						</Row>
+						<Row style={{margin: 'auto'}}>
+							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
+						</Row>
+						<Row>
+							{this.state.results.card1!==null?
+								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+							{this.state.results.card2!==null?
+								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+						</Row>
+					</Container>);
+			}
 		} 
 		else {
 			return(
@@ -206,26 +207,35 @@ class Round extends React.Component {
 				  	<Row>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
-				  	<Row>
-				  		{this.state.prevTurnMessage!==null?
-				  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>: <div></div>}
-				  	</Row>
-				  	<Row>
-				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
-				  	</Row>
+			  		{this.state.playMode===2?
+			  				(<Row style={{margin: 'auto'}}>
+					  			<Row style={{margin: 'auto'}}>
+									<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
+								</Row>
+								<Row style={{margin: 'auto'}}>
+									<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
+								</Row>
+							</Row>):
+							(this.state.prevTurnMessage!==null?
+					  			(<Row style={{margin: 'auto'}}>
+					  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
+					  			</Row>): <div></div>)}
+				  	
 
 				  	{this.state.eliminated.indexOf(this.props.userID)>=0?
-				  		(<Row>
+				  		(<Row style={{margin: 'auto'}}>
 					  		<h3 className='Play-status'>You have been eliminated</h3>
 					  	</Row>):
-					  	(<div><Row>
-					  		<h3 className='Play-status'>It's not your turn</h3>
-					  	</Row>
-					  	<Row style={{marginBottom: '20px'}}>
-					  		<Col style={{display: "inline-flex"}}>
-					  			<Cards cardname={currentCard}/>
-					  		</Col>
-					  	</Row></div>)}
+					  	(<div>
+						  	<Row style={{margin: 'auto'}} >
+						  		<h3 className='Play-status'>It's not your turn</h3>
+						  	</Row>
+						  	<Row style={{marginBottom: '20px'}}>
+						  		<Col style={{display: "inline-flex"}}>
+						  			<Cards cardname={currentCard}/>
+						  		</Col>
+						  	</Row>
+					  	</div>)}
 				</Container>
 			);
 		}
