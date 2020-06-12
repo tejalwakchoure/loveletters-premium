@@ -20,8 +20,8 @@ class Game extends React.Component {
 						"p2" : 0,
 						"p3" : 0
 					},
-			round_winner: " ",
-			game_winner: " ",
+			roundWinner: " ",
+			gameWinner: " ",
 			userID: ' ',
 			username: ' '
 		};
@@ -80,8 +80,8 @@ class Game extends React.Component {
 			rounds_played: this.state.rounds_played+1,
 			tokens: roundData.tokens,
 			gameStatus: 2,
-			round_winner: roundData.roundWinner,
-			game_winner: roundData.gameWinner
+			roundWinner: roundData.roundWinner,
+			gameWinner: roundData.gameWinner
 		});
 	}
 
@@ -116,8 +116,8 @@ class Game extends React.Component {
 		    return (<Round ref={this.roundRef} gameCallback={this.roundCallback} all_players={this.state.all_players}
 		    				userID={this.state.userID} username={this.state.username} socket={socket}/>);
 		else if (this.state.gameStatus===2)
-			return(<Results points={this.state.tokens} winner={this.state.round_winner} 
-					gameWinner={this.state.game_winner} gameCallback={this.resultsCallback}/>);
+			return(<Results points={this.state.tokens} winner={this.state.roundWinner} 
+					gameWinner={this.state.gameWinner} gameCallback={this.resultsCallback}/>);
 	}
 }
 
