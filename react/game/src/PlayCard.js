@@ -102,7 +102,7 @@ class PlayCard extends React.Component {
 		if(this.state.selectedNumber!==-1)
 			valuesToSend['number'] = this.state.selectedNumber;
 
-		console.log(valuesToSend);
+		console.log("sending to round=", valuesToSend);
 		this.props.roundCallback(valuesToSend);
 	}
 
@@ -158,8 +158,9 @@ class PlayCard extends React.Component {
 		const list = this.getList();
 		const card_numbers = [1,2,3,4,5,6,7,8,9];
 		if(list!=null) {
+			console.log('RENDER: PlayCard for @'+this.props.currentPlayer)
 			return (
-				<div>
+				<div style={{margin: 'auto'}}>
 					<Row style={{justifyContent: 'center'}}>
 						<Col>{list}</Col>
 						{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
@@ -186,6 +187,7 @@ class PlayCard extends React.Component {
 			);
 		}
 		else {
+			console.log('RENDER: PlayCard for a non-choice card for @'+this.props.currentPlayer)
 			return (<div>{this.endPlay()}</div>);
 		}
 	}
