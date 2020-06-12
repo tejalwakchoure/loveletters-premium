@@ -247,7 +247,7 @@ class Round:
             self.result_blob['roundWinner'] = self.winner
             self.players[self.winner].tokens += 1
             self.super_game.roundOver = True
-            self.super_game.prev_winner_no = self.order.index(self.winner)
+            self.super_game.prev_winner_no = self.super_game.order.index(self.winner)
             self.super_game.check_winner()
             
         else:#Play next turn
@@ -422,6 +422,8 @@ class Round:
         if win:
             if self.winner == self.jesterTar: #If the bet made by the joker was correct, give the token
                 self.players[self.jesterBet].tokens += 1
+                
+            
         return win
     
     def turn_status(self, plyr_uid):
