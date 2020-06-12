@@ -34,17 +34,16 @@ class Landing extends React.Component {
 			this.setState({showStartButton: true});
 	}
 
-	getStartGame() {
+	getStartGame(obj) {
 		this.setState({
 			gameStatus: 1
-		}, this.props.gameCallback(this.state));
+		});
+		this.props.gameCallback(this.state);
 		console.log("Bois, we're moving ahead");
 	}
 
-	startGame = () => {
-		this.setState(
-			{gameStatus: 1},
-			this.props.socket.send(JSON.stringify({'type':'startGame'})));
+	startGame = () => {			
+		this.props.socket.send(JSON.stringify({'type':'startGame'}));
 		console.log("sent Start")
 	}
 
@@ -57,7 +56,7 @@ class Landing extends React.Component {
 		if(!this.props.leavingGame) {
 			return(
 				<Container className="Game-header">
-				  	<Row>
+				  	<Row style={{margin: 'auto'}}>
 				  		<h4 className='Play-status'>Waiting For Players...</h4>
 				  	</Row>
 				  	<Row style={{margin: 'auto'}}>
