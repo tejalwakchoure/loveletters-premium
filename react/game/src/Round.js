@@ -178,29 +178,26 @@ class Round extends React.Component {
 					</Container>);
 			}
 		} 
-		else if(this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) {
-			
-			if(this.state.playMode===2) {
-				console.log('RENDER MODE: one of the players involved in the turn x results')
-				return (
-					<Container className="Game-header">
-					  	<Row>
-					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
-					  	</Row>
-						<Row style={{margin: 'auto'}}>
-							<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-						</Row>
-						<Row style={{margin: 'auto'}}>
-							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
-						</Row>
-						<Row style={{margin: 'auto'}}>
-							{this.state.results.card1!==null?
-								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
-							{this.state.results.card2!==null?
-								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
-						</Row>
-					</Container>);
-			}
+		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
+			console.log('RENDER MODE: one of the players involved in the turn x results')
+			return (
+				<Container className="Game-header">
+				  	<Row>
+				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+				  	</Row>
+					<Row style={{margin: 'auto'}}>
+						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
+					</Row>
+					<Row style={{margin: 'auto'}}>
+						<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
+					</Row>
+					<Row style={{margin: 'auto'}}>
+						{this.state.results.card1!==null?
+							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+						{this.state.results.card2!==null?
+							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+					</Row>
+				</Container>);
 		} 
 		else {
 			console.log('RENDER MODE: other players')
