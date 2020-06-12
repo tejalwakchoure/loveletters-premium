@@ -1,6 +1,9 @@
 import random
 import copy
 
+class APIException(Exception):
+    pass
+
 
 class Card:
     def __init__(self, card_number, card_name, card_desc, select = 0, numb = False):
@@ -168,19 +171,19 @@ class Round:
 
         #Raise exceptions if something is wrong
         if plyr1 != None and self.players[plyr1].out:
-            raise Exception("Hello Sir, what is this, plyr1 is out, unacceptable") 
+            raise APIException("Hello Sir, what is this, plyr1 is out, unacceptable") 
 
         if plyr2 != None and self.players[plyr2].out:
-            raise Exception("Hello Sir, what is this, plyr2 is out, unacceptable") 
+            raise APIException("Hello Sir, what is this, plyr2 is out, unacceptable") 
         
         if self.sychoTar != None and plyr1 != self.sychoTar:
-            raise Exception('Theres a sychoTarget which has not been taken')
+            raise APIException('Theres a sychoTarget which has not been taken')
             
         if  plyr1 != None and self.players[plyr1].immune:
-            raise Exception('Plyr1 is immune')
+            raise APIException('Plyr1 is immune')
             
         if  plyr2 != None and self.players[plyr2].immune:
-            raise Exception('Plyr2 is immune')
+            raise APIException('Plyr2 is immune')
         
         
         self.result_blob = {} 
@@ -197,7 +200,7 @@ class Round:
             self.players[self.turn].extra = None
             
         else: #He's chosen a card that does not exist
-            raise Exception("Unknown card chosen??")
+            raise APIException("Unknown card chosen??")
             
         #Add to discard piles
         self.players[self.turn].discard_pile.append(card_discarded)
@@ -232,7 +235,7 @@ class Round:
         #Play the cards
         try:
             self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
-        except Exception as e:
+        except APIException as e:
             print("Card was discard without effect")
             self.result_blob['result'] = 'x'
             print(e)
@@ -257,14 +260,14 @@ class Round:
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
-        if card.requires_numb and numb_given == None:
-            raise Exception("Number required was not given")
+        if played_card.requires_numb and numb_given == None:
+            raise APIException("Number required was not given")
 
-        if card.requires_people == 1 and plyr1 == None:
-            raise Exception("Player 1 was required not given")
+        if played_card.requires_people == 1 and plyr1 == None:
+            raise APIException("Player 1 was required not given")
         
-        if card.requires_people == 2 and plyr2 == None:
-            raise Exception("Player 2 was required not given")
+        if played_card.requires_people == 2 and plyr2 == None:
+            raise APIException("Player 2 was required not given")
 
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
@@ -509,7 +512,7 @@ class Round:
         elif obj['card_discarded'] == 'Prince':
             obj['card1'] = self.result_blob['card1']
             
-        if self.result_blob['result'] = 'x':
+        if self.result_blob['result'] == 'x':
             obj['resultMsg'] = 'Card discarded without effect'
         
         obj['eliminated'] = self.result_blob['eliminated']
@@ -606,7 +609,7 @@ class Game:
         if self.state != 0:
             
             #Add as spectator?
-            raise Exception('Can\'t add already started')
+            raise APIException('Can\'t add already started')
             
             
         if not user in self.players:  
@@ -614,11 +617,11 @@ class Game:
             self.players[user.user] = user
             self.order.append(user.user)
         else:
-            raise Exception("player already exists")
+            raise APIException("player already exists")
             
     def start_game(self, win = 4):
         if self.state != 0:
-            raise Exception("Already started")
+            raise APIException("Already started")
         
         self.state = 1
         self.win_tokens = win
@@ -644,7 +647,7 @@ class Game:
     
     def new_round(self):
         if self.state == 0:
-            raise Exception("Game hasn't started yet")
+            raise APIException("Game hasn't started yet")
         self.roundOver = False
         del self.round
         self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), self.prev_winner_no)

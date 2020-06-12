@@ -191,7 +191,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             if curr_game.roundOver: 
                 curr_game.new_round() #Start the next round for everyone
             
-            self.write_message(json.dumps(curr_game.round.turn_status(self.user.username)))
+            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
 
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             curr_game.round.player_discard(self.user.user)
