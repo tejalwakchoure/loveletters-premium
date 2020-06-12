@@ -160,7 +160,7 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        self.curr_stat()
+        #self.curr_stat()
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given):
         
@@ -570,8 +570,13 @@ class Game:
         self.gid = gid
         
         self.state = 0 #Not started
+
+        self.win_tokens = 4
         
         self.players = {}
+
+        
+
         self.order = []
         self.round = None
         self.cards = allCards
@@ -579,8 +584,10 @@ class Game:
         
     def add_player(self, user, username):
         if self.state != 0:
-            print('Can\'t add already started')
-            return
+            
+            #Add as spectator?
+            raise Exception('Can\'t add already started')
+            
             
         if not user in self.players:  
             user.set_username(username)
@@ -589,12 +596,13 @@ class Game:
         else:
             raise Exception("player already exists")
             
-    def start_game(self):
+    def start_game(self, win = 4):
         if self.state != 0:
-            print("Already started")
-            return
+            raise Exception("Already started")
         
         self.state = 1
+        self.win_tokens = win
+
         random.shuffle(self.order)
         if len(self.order) > 4:
             self.cards.extend(extCards)
@@ -604,7 +612,7 @@ class Game:
         
     def check_winner(self):
         for plyr in self.players:
-            if self.players[plyr].tokens == 4:
+            if self.players[plyr].tokens == self.win_tokens:
                 self.end_round(False)
                 self.overall_winner = plyr
                 self.state = 0
