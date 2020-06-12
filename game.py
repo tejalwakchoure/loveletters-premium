@@ -160,7 +160,7 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        self.curr_stat()
+        #self.curr_stat()
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given):
         
@@ -579,8 +579,10 @@ class Game:
         
     def add_player(self, user, username):
         if self.state != 0:
-            print('Can\'t add already started')
-            return
+            
+            #Add as spectator?
+            raise Exception('Can\'t add already started')
+            
             
         if not user in self.players:  
             user.set_username(username)

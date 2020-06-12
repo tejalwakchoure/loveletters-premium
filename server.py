@@ -115,7 +115,7 @@ class gameLoginHandler(RequestHandler):
             notFound = -1
             for i, gm in self.application.games.items():
                 if gm.room_name == roomname and gm.password == password:
-                    print('game exists, add him in', i, gm.room_name, gm.password)
+                    print('game exists, add him in')
                     notFound = i
                     break
                     
@@ -160,13 +160,15 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         print(message)
         
         if message['type'] == 'players':
-            plyrs = {}
-            for plyr in curr_game.players:
-                plyrs[plyr] = curr_game.players[plyr].username
-            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
-            
             if curr_game.state == 1:#If someone rejoins they have to go to next page directly
-                self.write_message(json.dumps({'type': 'startGame'}))
+                self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
+                #self.write_message(json.dumps({'type': 'startGame'}))
+            else:
+                plyrs = {}
+                for plyr in curr_game.players:
+                    plyrs[plyr] = curr_game.players[plyr].username
+                self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
+            
             
             print('playrs requested')
         elif message['type'] == 'startGame':
@@ -208,7 +210,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
 
     def on_close(self):
-        print("WebSocket closed")
+        print("WebSocket closed:", self.user.username)
 
     def sendGameAll(self, msg, curr_game):
         for plyr in curr_game.players.values():
