@@ -15,7 +15,7 @@ class Cards extends React.Component {
 	}
 
 	getCard() {
-		return require('../assets/cards/'+this.props.cardname+'.png');
+		return require('../assets/cards/'+this.props.cardname+'.jpeg');
 	}
 
 	clickCard = () => {

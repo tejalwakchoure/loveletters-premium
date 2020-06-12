@@ -33,8 +33,8 @@ class Round extends React.Component {
 	    this.discard = this.discard.bind(this);
 	    this.endTurn = this.endTurn.bind(this);
 	    this.playCardCallback = this.playCardCallback.bind(this);
-    	
-		socket.send(JSON.stringify({'type':'nextRound'}));
+
+		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
     	console.log('sent nextRound')
 	}
 	
