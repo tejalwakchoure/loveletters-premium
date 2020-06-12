@@ -37,16 +37,18 @@ class Landing extends React.Component {
 	getStartGame(obj) {
 		this.setState({gameStatus: 1}); 
 		this.props.gameCallback(this.state);
-		console.log("Bois, we're moving ahead");
+		//console.log("Bois, we're moving ahead");
+		console.log('starting game for @'+this.props.username)
 	}
 
 	startGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'startGame'}));
-		console.log("sent Start")
+		console.log("@"+this.props.username+" sent startGame")
 	}
 
 	leaveGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'leaveGame'}));
+		console.log("@"+this.props.username+" sent leaveGame")
 		//remove this player from the game metadata; it could still go on
 	}
 

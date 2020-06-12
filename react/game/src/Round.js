@@ -13,7 +13,6 @@ class Round extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	opacity: 1,
 		    cardToPlay: " ",
 		    cardRemaining: " ",
 		    playMode: 0, // 0-choosing card, 1-playing card, 2-viewing results of turn
@@ -35,7 +34,7 @@ class Round extends React.Component {
 	    this.playCardCallback = this.playCardCallback.bind(this);
 
 		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
-    	console.log('sent nextRound')
+    	console.log('sent nextRound for @'+this.props.username)
 	}
 	
 	getTurn(obj) {
@@ -64,9 +63,7 @@ class Round extends React.Component {
 		this.setState({
 			cardToPlay: chosen,
 			cardRemaining: remaining,
-			opacity: 0.9
 		});
-    	console.log('Clicked ' + this.state.cardToPlay);
   	}
 
   	discard = () => {
@@ -74,23 +71,25 @@ class Round extends React.Component {
 			playMode: 1,
 			discard_pile: this.state.discard_pile.concat(this.state.cardToPlay)
 		});
-  		console.log('Discarding ' + this.state.cardToPlay);
+  		console.log(this.props.all_players[this.state.currentPlayer]+' is discarding ' + this.state.cardToPlay);
   	}
 
   	endTurn = () => {
   		if(this.state.results.roundWinner!==null) {
+  			console.log('We have a round winner');
 			this.props.gameCallback(this.state.results); //end round
-			console.log('sent results to Game.js');
+			console.log('Round winner sent to Game');
 		}
   		else {
+  			console.log('No round winner yet')
 			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
-	  		console.log('sent nextTurn for next turn');
+	  		console.log('sent nextTurn for @'+this.props.username);
   		}
   	}
 
   	playCardCallback = (playCardData) => {
   		this.props.socket.send(JSON.stringify(playCardData));
-	    console.log('sent discard');
+	    console.log('sent played values from Round for @'+this.props.username);
   	}
 
 	render() {
@@ -109,6 +108,7 @@ class Round extends React.Component {
 				drawnCard="loading_card" // before first render
 			
 			if(this.state.playMode===0) {
+				console.log('RENDER MODE: current player x choosing card')
 				return(
 					<Container className="Game-header">
 					  	<Row>
@@ -136,6 +136,7 @@ class Round extends React.Component {
 				);
 			}
 			else if(this.state.playMode===1) {
+				console.log('RENDER MODE: current player x playing card')
 				return(
 					<Container className="Game-header">
 					  	<Row>
@@ -152,6 +153,7 @@ class Round extends React.Component {
 				);
 			} 
 			else {
+				console.log('RENDER MODE: current player x results')
 				return (
 					<Container className="Game-header">
 					  	<Row>
@@ -179,6 +181,7 @@ class Round extends React.Component {
 		else if(this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) {
 			
 			if(this.state.playMode===2) {
+				console.log('RENDER MODE: one of the players involved in the turn x results')
 				return (
 					<Container className="Game-header">
 					  	<Row>
@@ -200,6 +203,7 @@ class Round extends React.Component {
 			}
 		} 
 		else {
+			console.log('RENDER MODE: other players')
 			return(
 				<Container className="Game-header">
 				  	<Row>
@@ -224,7 +228,7 @@ class Round extends React.Component {
 				  		(<Row style={{margin: 'auto'}}>
 					  		<h3 className='Play-status'>You have been eliminated</h3>
 					  	</Row>):
-					  	(<div>
+					  	(<div style={{margin: 'auto'}}>
 						  	<Row style={{margin: 'auto'}} >
 						  		<h3 className='Play-status'>It's not your turn</h3>
 						  	</Row>
