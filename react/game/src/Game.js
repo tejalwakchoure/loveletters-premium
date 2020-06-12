@@ -53,25 +53,25 @@ class Game extends React.Component {
 			
 			if(obj.type === 'playersS'){
 				this.landingRef.current.getPlayers(obj);
-				console.log('playersS received @'+this.username)
+				console.log('playersS received @'+this.state.username)
 			}
 			else if(obj.type === 'startGame'){
 				this.landingRef.current.getStartGame(obj);
-				console.log('startGame received @'+this.username)
+				console.log('startGame received @'+this.state.username)
 			}
 			else if(obj.type === 'turn'){
-				console.log('turn received @'+this.username)
+				console.log('turn received @'+this.state.username)
 				this.roundRef.current.getTurn(obj);
-				console.log('turn sent back to round @'+this.username)
+				console.log('turn sent back to round @'+this.state.username)
 			}
 
 			//else if(obj.type === 'next') //This has been added just to test going to next turn and to play a round
 			//	socket.send(JSON.stringify({'type':'ready'}));
 
 			else if(obj.type === 'results'){
-				console.log('results received @'+this.username)
+				console.log('results received @'+this.state.username)
 				this.roundRef.current.getResults(obj);
-				console.log('results sent back to round @'+this.username)
+				console.log('results sent back to round @'+this.state.username)
 			}
 		}
 	}
@@ -96,7 +96,7 @@ class Game extends React.Component {
 			roundWinner: roundData.roundWinner,
 			gameWinner: roundData.gameWinner
 		});
-		console.log("results received from Round @"+ this.username)
+		console.log("results received from Round @"+ this.state.username)
 		console.log("set gameStatus to 2")
 	}
 
@@ -106,20 +106,20 @@ class Game extends React.Component {
 				gameStatus: 0,
 				leavingGame: false
 			});
-			console.log('We have a game winner; set state=0 to start new game @'+ this.username);
+			console.log('We have a game winner; set state=0 to start new game @'+ this.state.username);
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
 			this.setState({
 				gameStatus: 1
 			});
-			console.log('No game winner yet; set state=1 to start next round @'+ this.username);
+			console.log('No game winner yet; set state=1 to start next round @'+ this.state.username);
 		}
 		else {
 			this.setState({
 				gameStatus: 0,
 				leavingGame: true
 			});
-			console.log('set state=0 and @'+ this.username+' is leaving the game');
+			console.log('set state=0 and @'+ this.state.username+' is leaving the game');
 		}
 	}
 
