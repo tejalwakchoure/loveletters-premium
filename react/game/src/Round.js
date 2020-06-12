@@ -200,7 +200,7 @@ class Round extends React.Component {
 				</Container>);
 		} 
 		else {
-			console.log('RENDER MODE: other players')
+			console.log('RENDER MODE: other players/one of the players involved in the turn x playmode!=2')
 			return(
 				<Container className="Game-header">
 				  	<Row>
