@@ -168,16 +168,13 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 for plyr in curr_game.players:
                     plyrs[plyr] = curr_game.players[plyr].username
                 self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
-            
-            
             print('playrs requested')
+            
+            
         elif message['type'] == 'startGame':
             #Start the game
             curr_game.start_game()
             self.sendGameAll({'type': 'startGame'}, curr_game)
-            
-        elif message['type'] == 'ready':
-            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
 
         elif message['type'] == 'discard':
             curr_game.round.player_play(message['card'], message['player1'], message['player2'], message['number'])
@@ -185,16 +182,16 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             for plyr in curr_game.players:
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone status
             
-            ################## --------------------- COMMENT --------------------- ##################
-            #self.sendGameAll({'type':'next'}, curr_game)
+        
         elif message['type'] == 'nextTurn':
-            #self.sendGameAll({'type':'next'}, curr_game)
             for plyr in curr_game.players:
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
         
         elif message['type'] == 'nextRound':
-            curr_game.end_round() #Start the next round for everyone
-            self.sendGameAll({'type':'next'}, curr_game)
+            if curr_game.roundOver: 
+                curr_game.new_round() #Start the next round for everyone
+            
+            self.webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
 
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             curr_game.round.player_discard(self.user.user)

@@ -236,6 +236,9 @@ class Round:
             #Round is over, wait for next round to start
             self.result_blob['roundWinner'] = self.winner
             self.players[self.winner].tokens += 1
+            self.super_game.roundOver = True
+            self.super_game.prev_winner_no = self.order.index(self.winner)
+            self.super_game.check_winner()
             
         else:#Play next turn
             self.result_blob['roundWinner'] = None
@@ -251,8 +254,8 @@ class Round:
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
                 self.players[self.turn].tokens += 1
-                self.super_game.check_winner()
                 self.result_blob['result'] = 'Correct'
+                self.super_game.check_winner()
             else:
                 self.result_blob['result'] = 'Incorrect'
                 #TODO: Give player option to discard
@@ -576,7 +579,8 @@ class Game:
         self.players = {}
 
         
-
+        self.roundOver = True
+        
         self.order = []
         self.round = None
         self.cards = allCards
@@ -606,32 +610,30 @@ class Game:
         random.shuffle(self.order)
         if len(self.order) > 4:
             self.cards.extend(extCards)
-            
-        self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), random.randint(0, len(self.order)-1))
-            
+        
+        self.prev_winner_no = random.randint(0, len(self.order)-1)
+        #self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), random.randint(0, len(self.order)-1))
+        #Will be started with new_round() somehow
         
     def check_winner(self):
         for plyr in self.players:
             if self.players[plyr].tokens == self.win_tokens:
-                self.end_round(False)
+                self.roundOver = True
+                self.round.result_blob['gameWinner'] = plyr
                 self.overall_winner = plyr
                 self.state = 0
                 return True
         return False
         
-    def end_round(self, new = True):
-        if new and not self.check_winner():
-            
-            winner_no = 0
-            for x in self.order:
-                if self.round.winner == x:
-                    break
-                winner_no += 1
-                
-            self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), winner_no)
-        else:
-            self.round = None
-
+    
+    def new_round(self):
+        if self.state == 0:
+            raise Exception("Game hasn't started yet")
+        self.roundOver = False
+        del self.round
+        self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), self.prev_winner_no)
+        
+    
 #For testing
 if __name__ == '__main__':
     game = Game('moi', 'name', 'pass', 0)
