@@ -191,8 +191,8 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         elif message['type'] == 'nextTurn':
             self.sendGameAll({'type':'next'}, curr_game)
         
-        elif message['type'] == 'newRound':
-            self.super_game.end_round() #Start the next round for everyone
+        elif message['type'] == 'nextRound':
+            curr_game.end_round() #Start the next round for everyone
             self.sendGameAll({'type':'next'}, curr_game)
 
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
