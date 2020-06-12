@@ -59,6 +59,7 @@ class Landing extends React.Component {
 				  	<Row style={{margin: 'auto'}}>
 				  		<h4 className='Play-status'>Waiting For Players...</h4>
 				  	</Row>
+				  	<hr/>
 				  	<Row style={{margin: 'auto'}}>
 				  		<ListGroup>
 			  				{Object.entries(this.state.all_players).map(([id, value]) => {
