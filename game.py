@@ -39,8 +39,8 @@ extCards = [Card(9, 'Bishop', '', 1, True),
             Card(5, 'Count', ''),
             Card(4, 'Sycophant', '', 1),
             Card(4, 'Sycophant', '', 1),
-            Card(3, 'Baroness', '', 2),
-            Card(3, 'Baroness', '', 2),
+            Card(3, 'Baroness', '', 1),
+            Card(3, 'Baroness', '', 1),
             Card(2, 'Cardinal', '', 2),
             Card(2, 'Cardinal', '', 2),
             Card(1, 'Guard', '', 1, True),
@@ -230,7 +230,14 @@ class Round:
         
         
         #Play the cards
-        self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
+        try:
+            self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
+        except Exception as e:
+            print("Card was discard without effect")
+            self.result_blob['result'] = 'x'
+            print(e)
+        
+
 
         if self.check_win():
             #Round is over, wait for next round to start
@@ -250,7 +257,15 @@ class Round:
         
     def player_play_card(self, played_card, plyr1, plyr2, numb_given):
         #Check each condition and do acordingly
+        if card.requires_numb and numb_given == None:
+            raise Exception("Number required was not given")
+
+        if card.requires_people == 1 and plyr1 == None:
+            raise Exception("Player 1 was required not given")
         
+        if card.requires_people == 2 and plyr2 == None:
+            raise Exception("Player 2 was required not given")
+
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
                 self.players[self.turn].tokens += 1
@@ -369,8 +384,7 @@ class Round:
         self.result_blob['eliminated'].append(plyr)
         
         ################## --------------------- COMMENT --------------------- ##################
-        
-        print(plyr + " HAS BEEN ELIMINATED")
+        #print(plyr + " HAS BEEN ELIMINATED")
 
         
     def check_win(self):
@@ -495,6 +509,8 @@ class Round:
         elif obj['card_discarded'] == 'Prince':
             obj['card1'] = self.result_blob['card1']
             
+        if self.result_blob['result'] = 'x':
+            obj['resultMsg'] = 'Card discarded without effect'
         
         obj['eliminated'] = self.result_blob['eliminated']
         
