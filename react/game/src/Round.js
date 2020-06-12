@@ -179,9 +179,9 @@ class Round extends React.Component {
 			}
 		} 
 		else if(this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) {
-			
+			console.log('RENDER MODE: one of the players involved in the turn x results')
+			console.log(this.state.playMode)
 			if(this.state.playMode===2) {
-				console.log('RENDER MODE: one of the players involved in the turn x results')
 				return (
 					<Container className="Game-header">
 					  	<Row>
