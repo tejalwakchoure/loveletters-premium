@@ -5,7 +5,7 @@ import './Game.css';
 
 class CardCarousel extends React.Component {
 	getCard(name) {
-		return require('../assets/cards/'+name+'.png');
+		return require('../assets/cards/'+name+'.jpeg');
 	}	
 	render() {
 		let playedCardlist = [];
