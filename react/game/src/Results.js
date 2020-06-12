@@ -36,7 +36,7 @@ class Results extends React.Component {
 			  	<Row style={{margin: 'auto'}}>
 			  		<h3 className='Play-status'>{this.props.winner}'s letter reached the Princess!</h3>
 			  	</Row>
-			  	{this.props.gameWinner!==undefined?
+			  	{this.props.gameWinner!==null?
 			  		<Row style={{margin: 'auto'}}><h2 className='Play-status'>{this.props.winner} won the Princess' heart!</h2></Row>: <div></div>}
 			  	<Row style={{margin: 'auto'}}> 
 			  		<ListGroup>
@@ -49,7 +49,7 @@ class Results extends React.Component {
 									</ListGroup.Item>)})}
 					</ListGroup>
 			  	</Row>
-			  	{this.props.gameWinner!==undefined? 
+			  	{this.props.gameWinner!==null? 
 			  		<Row style={{width: '50vw'}}>
 			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(true)}>Start New Game</Button></Col>
 			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(false)}>Leave Game</Button></Col>
