@@ -86,14 +86,14 @@ class Game extends React.Component {
 	}
 
 	resultsCallback = (resultsData) => {
-		if(this.state.gameWinner!==undefined && resultsData===true) {
+		if(this.state.gameWinner!==null && resultsData===true) {
 			this.setState({
 				gameStatus: 0,
 				leavingGame: false
 			});
 			console.log('set state=0');
 		}
-		else if(this.state.gameWinner===undefined && resultsData===true) {
+		else if(this.state.gameWinner===null && resultsData===true) {
 			this.setState({
 				gameStatus: 1
 			});
