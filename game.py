@@ -503,6 +503,9 @@ class Round:
             obj['resultMsg'] += ' been eliminated.'
         
         
+        obj['bishopGuess'] = obj['card_discarded'] == 'Bishop' and self.result_blob['result'] == 'Correct' and plyr_uid == obj['player1']
+
+        
         obj['tokens'] = {}
         for plyr in self.players:
             obj['tokens'][plyr] = self.players[plyr].tokens
