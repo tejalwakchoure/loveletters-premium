@@ -163,12 +163,9 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        #self.curr_stat()
+        self.curr_stat()
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given):
-        
-        
-
         #Raise exceptions if something is wrong
         if plyr1 != None and self.players[plyr1].out:
             raise APIException("Hello Sir, what is this, plyr1 is out, unacceptable") 
@@ -184,8 +181,7 @@ class Round:
             
         if  plyr2 != None and self.players[plyr2].immune:
             raise APIException('Plyr2 is immune')
-        
-        
+            
         self.result_blob = {} 
         
         
@@ -236,9 +232,9 @@ class Round:
         try:
             self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
         except APIException as e:
-            print("Card was discard without effect")
+            print("Card was discarded without effect")
             self.result_blob['result'] = 'x'
-            print(e)
+            print("ERROR: ", e, " ---------------------------------------------------")
         
 
 
@@ -252,7 +248,16 @@ class Round:
             
         else:#Play next turn
             self.result_blob['roundWinner'] = None
-            self.turn_no = (self.turn_no + 1) % len(self.order)
+            #Have to check some conditions here
+            #When someone is outed they can be either before or after current player in order or the current player himself
+            #If before or current player is puted then turn_no should remain same
+            #else it should go ahead
+            
+            if self.turn_no == len(self.order):
+                self.turn_no = 0
+            elif self.order[self.turn_no] == self.turn: 
+                self.turn_no = (self.turn_no + 1) % len(self.order)
+                
             self.turn = self.order[self.turn_no]
             self.player_turn()
         
@@ -576,11 +581,12 @@ class Round:
             
     def curr_stat(self):
         for plyrs in self.order:
-            #print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + '\t\t\t' + str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
             print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         #print(self.result_blob)
-        print(self.turn_status(self.turn))
+        #print(self.turn_status(self.turn))
+        
+        
 
         
 
@@ -631,8 +637,14 @@ class Game:
         random.shuffle(self.order)
         if len(self.order) > 4:
             self.cards.extend(extCards)
+            
+        ################## --------------------- COMMENT --------------------- ##################
+        for plyr in self.order:
+            print(self.players[plyr].username)
         
         self.prev_winner_no = random.randint(0, len(self.order)-1)
+        
+        
         #self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), random.randint(0, len(self.order)-1))
         #Will be started with new_round() somehow
         
