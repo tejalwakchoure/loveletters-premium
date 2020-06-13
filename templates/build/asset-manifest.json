@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/static/css/main.16d092f3.chunk.css",
-    "main.js": "/static/js/main.eb755573.chunk.js",
-    "main.js.map": "/static/js/main.eb755573.chunk.js.map",
+    "main.js": "/static/js/main.cda5d6a4.chunk.js",
+    "main.js.map": "/static/js/main.cda5d6a4.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.ab439063.js",
     "runtime-main.js.map": "/static/js/runtime-main.ab439063.js.map",
     "static/css/2.829c9cb5.chunk.css": "/static/css/2.829c9cb5.chunk.css",
-    "static/js/2.4b3a2a52.chunk.js": "/static/js/2.4b3a2a52.chunk.js",
-    "static/js/2.4b3a2a52.chunk.js.map": "/static/js/2.4b3a2a52.chunk.js.map",
+    "static/js/2.895c68a8.chunk.js": "/static/js/2.895c68a8.chunk.js",
+    "static/js/2.895c68a8.chunk.js.map": "/static/js/2.895c68a8.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.9b0a822fc2fa5f54a645a7d39a6d14c4.js": "/precache-manifest.9b0a822fc2fa5f54a645a7d39a6d14c4.js",
+    "precache-manifest.361f648cb0decc9489f373068f4af05d.js": "/precache-manifest.361f648cb0decc9489f373068f4af05d.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.829c9cb5.chunk.css.map": "/static/css/2.829c9cb5.chunk.css.map",
     "static/css/main.16d092f3.chunk.css.map": "/static/css/main.16d092f3.chunk.css.map",
-    "static/js/2.4b3a2a52.chunk.js.LICENSE.txt": "/static/js/2.4b3a2a52.chunk.js.LICENSE.txt",
+    "static/js/2.895c68a8.chunk.js.LICENSE.txt": "/static/js/2.895c68a8.chunk.js.LICENSE.txt",
     "static/media/Assassin.jpeg": "/static/media/Assassin.378bfb5f.jpeg",
     "static/media/Baron.jpeg": "/static/media/Baron.746fcb29.jpeg",
     "static/media/Baroness.jpeg": "/static/media/Baroness.9412a60f.jpeg",
@@ -31,13 +31,21 @@
     "static/media/Prince.jpeg": "/static/media/Prince.84d1cfb6.jpeg",
     "static/media/Princess.jpeg": "/static/media/Princess.dbe5ffb7.jpeg",
     "static/media/Sycophant.jpeg": "/static/media/Sycophant.67d055f9.jpeg",
-    "static/media/loading_card.jpeg": "/static/media/loading_card.e650822c.jpeg"
+    "static/media/loading_card.jpeg": "/static/media/loading_card.e650822c.jpeg",
+    "static/media/miniBaron.png": "/static/media/miniBaron.217154a0.png",
+    "static/media/miniCountess.png": "/static/media/miniCountess.87d662b7.png",
+    "static/media/miniGuard.png": "/static/media/miniGuard.5318a67c.png",
+    "static/media/miniHandmaid.png": "/static/media/miniHandmaid.945a33e6.png",
+    "static/media/miniKing.png": "/static/media/miniKing.cda67455.png",
+    "static/media/miniPriest.png": "/static/media/miniPriest.d17f0b1d.png",
+    "static/media/miniPrince.png": "/static/media/miniPrince.2b6e6ec9.png",
+    "static/media/miniPrincess.png": "/static/media/miniPrincess.93bd96ef.png"
   },
   "entrypoints": [
     "static/js/runtime-main.ab439063.js",
     "static/css/2.829c9cb5.chunk.css",
-    "static/js/2.4b3a2a52.chunk.js",
+    "static/js/2.895c68a8.chunk.js",
     "static/css/main.16d092f3.chunk.css",
-    "static/js/main.eb755573.chunk.js"
+    "static/js/main.cda5d6a4.chunk.js"
   ]
 }

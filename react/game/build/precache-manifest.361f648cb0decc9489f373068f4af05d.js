@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "278303036531be9195d059536fd61ba6",
+    "revision": "4d427ceea94858c757d9abcf10d5efc5",
     "url": "/index.html"
   },
   {
-    "revision": "6ada64acb032f07a9d22",
+    "revision": "5c40e66dd37a483eb264",
     "url": "/static/css/2.829c9cb5.chunk.css"
   },
   {
-    "revision": "f9d2e5535b1943bda81a",
+    "revision": "eb0a967430bf61c5b079",
     "url": "/static/css/main.16d092f3.chunk.css"
   },
   {
-    "revision": "6ada64acb032f07a9d22",
-    "url": "/static/js/2.4b3a2a52.chunk.js"
+    "revision": "5c40e66dd37a483eb264",
+    "url": "/static/js/2.895c68a8.chunk.js"
   },
   {
-    "revision": "2d5f1c8f28d5cef3b9c9f86603fb89b9",
-    "url": "/static/js/2.4b3a2a52.chunk.js.LICENSE.txt"
+    "revision": "5ac48c47bb3912b14c2d8de4f56d5ae8",
+    "url": "/static/js/2.895c68a8.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f9d2e5535b1943bda81a",
-    "url": "/static/js/main.eb755573.chunk.js"
+    "revision": "eb0a967430bf61c5b079",
+    "url": "/static/js/main.cda5d6a4.chunk.js"
   },
   {
     "revision": "fa9e55b41a00fc59679a",
@@ -98,5 +98,37 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "e650822c5e522e3b87c8744dd581c103",
     "url": "/static/media/loading_card.e650822c.jpeg"
+  },
+  {
+    "revision": "217154a08abc1358c8932548e82b5b82",
+    "url": "/static/media/miniBaron.217154a0.png"
+  },
+  {
+    "revision": "87d662b72311cc5891a0009b382c035c",
+    "url": "/static/media/miniCountess.87d662b7.png"
+  },
+  {
+    "revision": "5318a67cf450d42759aec058e0bf7bcc",
+    "url": "/static/media/miniGuard.5318a67c.png"
+  },
+  {
+    "revision": "945a33e6bd8d93e8f88945aaf864d622",
+    "url": "/static/media/miniHandmaid.945a33e6.png"
+  },
+  {
+    "revision": "cda674553b926cfd5823e1b84121635b",
+    "url": "/static/media/miniKing.cda67455.png"
+  },
+  {
+    "revision": "d17f0b1dd52a4d4201619d338361b146",
+    "url": "/static/media/miniPriest.d17f0b1d.png"
+  },
+  {
+    "revision": "2b6e6ec9700a7145bbe8890097d19406",
+    "url": "/static/media/miniPrince.2b6e6ec9.png"
+  },
+  {
+    "revision": "93bd96ef6867eb46ec9d1c10c2e1f1cc",
+    "url": "/static/media/miniPrincess.93bd96ef.png"
   }
 ]);
