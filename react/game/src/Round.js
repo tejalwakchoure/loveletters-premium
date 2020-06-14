@@ -107,9 +107,6 @@ class Round extends React.Component {
 		console.log('currentPlayer = '+this.state.currentPlayer);
 		console.log(this.state.currentCards);
 
-		if(this.state.turnEnded)
-			this.endTurn();
-
 		var currentCard = this.state.currentCards[0];
 		if(currentCard===undefined)
 			currentCard="loading_card" // before first render
@@ -137,10 +134,10 @@ class Round extends React.Component {
 					  	</Row>
 					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
-					  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
+					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
 					  			<Cards cardname={currentCard}/>
 					  		</Col>
-					  		<Col style={{display: "inline-flex"}} onClick={(e) => this.selectCard(drawnCard, currentCard, e)}>
+					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(drawnCard, currentCard, e)}>
 					  			<Cards cardname={drawnCard}/>
 					  		</Col>
 					  	</Row> 
@@ -185,9 +182,9 @@ class Round extends React.Component {
 						<hr/>
 						<Row>
 							{this.state.results.card1!==null?
-								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
 							{this.state.results.card2!==null?
-								<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
 						</Row>
 						<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
 							<Button size="lg" block className='Confirm-button'
@@ -198,6 +195,8 @@ class Round extends React.Component {
 		}
 		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
 			console.log('RENDER MODE: one of the players involved in the turn x results')
+			if(this.state.turnEnded)
+				this.endTurn();
 			return (
 				<Container className="Game-header">
 				  	<Row>
@@ -213,14 +212,16 @@ class Round extends React.Component {
 					<hr/>
 					<Row style={{margin: 'auto'}}>
 						{this.state.results.card1!==null?
-							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
 						{this.state.results.card2!==null?
-							<Col style={{display: "inline-flex"}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
 					</Row>
 				</Container>);
 		} 
 		else {
 			console.log('RENDER MODE: other players/one of the players involved in the turn x playmode!=2')
+			if(this.state.turnEnded)
+				this.endTurn();
 			return(
 				<Container className="Game-header">
 				  	<Row>
@@ -259,7 +260,7 @@ class Round extends React.Component {
 						  	</Row>
 						  	<hr/>
 						  	<Row style={{margin: 'auto'}}>
-						  		<Col style={{display: "inline-flex"}}>
+						  		<Col style={{display: "inline-flex", justifyContent: 'center'}}>
 						  			<Cards cardname={currentCard}/>
 						  		</Col>
 						  	</Row>
