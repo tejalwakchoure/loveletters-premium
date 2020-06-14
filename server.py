@@ -157,19 +157,17 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         
         curr_game = self.application.games[self.user.gid]
         message = json.loads(message)
-        print(message)
+        print(self.user.username, ':', message)
         
         if message['type'] == 'players':
-            if curr_game.state == 1:#If someone rejoins they have to go to next page directly
-                self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
-                #self.write_message(json.dumps({'type': 'startGame'}))
-            else:
-                plyrs = {}
-                for plyr in curr_game.players:
-                    plyrs[plyr] = curr_game.players[plyr].username
-                self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
-            print('playrs requested')
+            plyrs = {}
+            for plyr in curr_game.players:
+                plyrs[plyr] = curr_game.players[plyr].username
+            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
             
+            if curr_game.state == 1:#If someone rejoins they have to go to next page directly
+                self.write_message(json.dumps({'type': 'startGame'}))
+                #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'startGame':
             #Start the game
