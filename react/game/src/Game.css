@@ -24,8 +24,7 @@
    justify-content: flex-start;
    background-color: #421d2e; /*#231212*/
    padding: 5px 5px 5px 3px;
-   min-width: 80vw;
-   max-width: 100vw;
+   min-width: 60vw;
    border-radius: 5px;
 }
 

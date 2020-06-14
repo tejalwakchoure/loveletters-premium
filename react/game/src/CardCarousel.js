@@ -14,9 +14,9 @@ class CardCarousel extends React.Component {
 		
 		return(
 		  	<div className='Card-carousel'> 
-			  	{playedCardlist.map((item) => 
+			  	{playedCardlist.map((item, index) => 
 			  		<div key={item}>
-			  			<Card style={{ width: '3rem', marginLeft: '2px' }}>
+			  			<Card style={index===0?{ width: '3rem', marginLeft: '1px' }:{ width: '3rem', marginLeft: '-2px' }}>
 					      <Card.Body style={{ padding: 0 }}>
 					        <Card.Img src={this.getCard(item)}/>
 					      </Card.Body>

@@ -82,7 +82,9 @@ class Round extends React.Component {
   	endTurn = () => {
   		if(this.state.results.roundWinner!==null) {
   			console.log('We have a round winner');
-			this.props.gameCallback(this.state.results); //end round
+  			let toSend = this.state.results;
+  			toSend['currentCards'][this.props.userID] = this.state.currentCards[0];
+			this.props.gameCallback(toSend); //end round
 			console.log('Round winner sent to Game');
 		}
   		else {
