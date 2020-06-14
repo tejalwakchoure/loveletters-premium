@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Container, Row, Col} from 'react-bootstrap';
@@ -13,6 +14,14 @@ class Results extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.getResults = this.getResults.bind(this);
+	    this.getCard = this.getCard.bind(this);
+	}
+
+	getCard(name) {
+		const card =  require('../assets/cards/mini'+name+'.png');
+		if(card===undefined)
+			return require('../assets/cards/newBlank.png');
+		return card;
 	}
 
 	getResults() {
@@ -51,6 +60,13 @@ class Results extends React.Component {
 			  			{Object.entries(points_display).map(([key,value]) => {
 							return (<ListGroup.Item key={key} className='List-item-design Container'>
 									<Row>
+										<Col style={{display: 'inline'}}>
+					                        <Card style={{ width: '3rem'}}>
+					                          <Card.Body style={{ padding: 0 }}>
+					                            <Card.Img src={this.getCard(this.props.cardsAtRoundEnd[key])}/>
+					                          </Card.Body>
+					                        </Card>
+					                     </Col>
 										<Col style={{display: 'inline'}}>{this.props.allPlayers[key]}</Col>
 										<Col style={{display: 'inline'}}>{value.map((item,i) => {return(<span style={{float: 'right'}}>{item}</span>);})}</Col>
 									</Row>
