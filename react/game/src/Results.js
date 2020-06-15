@@ -18,10 +18,11 @@ class Results extends React.Component {
 	}
 
 	getCard(name) {
-		const card =  require('../assets/cards/mini'+name+'.png');
-		if(card===undefined)
+		if(name===undefined)
 			return require('../assets/cards/newBlank.png');
-		return card;
+		else
+			return require('../assets/cards/mini'+name+'.png');
+
 	}
 
 	getResults() {
