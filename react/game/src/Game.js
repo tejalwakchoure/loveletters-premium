@@ -24,7 +24,8 @@ class Game extends React.Component {
 			gameWinner: " ",
 			cardsAtRoundEnd: [],
 			userID: ' ',
-			username: ' '
+			username: ' ',
+			host: ' '
 		};
 		this.landingCallback = this.landingCallback.bind(this);
 		this.roundCallback = this.roundCallback.bind(this);
@@ -83,22 +84,23 @@ class Game extends React.Component {
 			gameStatus: landingData.gameStatus,
 			all_players: landingData.all_players,
 			userID: landingData.userID,
-			username: landingData.username
+			username: landingData.username,
+			host: landingData.host
 		});
 		console.log("player info received from landing:", landingData)
 		console.log("set gameStatus to 1")
 	}
 
 	roundCallback = (roundData) => {
-		const tempCards = this.state.cardsAtRoundEnd;
-		tempCards.push(roundData.currentCards);
+		// const tempCards = this.state.cardsAtRoundEnd;
+		// tempCards.push(roundData.currentCards);
 		this.setState({
 			rounds_played: this.state.rounds_played+1,
 			tokens: roundData.tokens,
 			gameStatus: 2,
 			roundWinner: roundData.roundWinner,
 			gameWinner: roundData.gameWinner,
-			cardsAtRoundEnd: tempCards
+			cardsAtRoundEnd: roundData.finalCards //tempCards
 		});
 		console.log("results received from Round @"+ this.state.username)
 		console.log("set gameStatus to 2")
@@ -112,6 +114,8 @@ class Game extends React.Component {
 				leavingGame: false
 			});
 			console.log('We have a game winner; set state=0 to start new game @'+ this.state.username);
+			console.log('WebSocket Client Connected');
+			socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
 			this.setState({
@@ -138,7 +142,8 @@ class Game extends React.Component {
 		    				userID={this.state.userID} username={this.state.username} socket={socket}/>);
 		else if (this.state.gameStatus===2)
 			return(<Results points={this.state.tokens} allPlayers={this.state.all_players} winner={this.state.roundWinner} 
-					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} gameCallback={this.resultsCallback}/>);
+					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} userID={this.state.userID}
+					host={this.state.host} gameCallback={this.resultsCallback}/>);
 	}
 }
 
