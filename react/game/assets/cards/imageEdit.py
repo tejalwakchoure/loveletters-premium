@@ -39,7 +39,7 @@ for card in allCards:
 
 
     #Put background
-    mini = Image.open('newBlank.png').convert('RGBA')
+    mini = Image.open('miniBlank.png').convert('RGBA')
     mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
     #Add text
@@ -62,7 +62,7 @@ for card in allCards:
 #FOR GUARD ------------------------------------------------------------
 card = allCards[7]
 #Put background
-mini = Image.open('newBlank.png').convert('RGBA')
+mini = Image.open('miniBlank.png').convert('RGBA')
 mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
 #Add text
@@ -85,7 +85,7 @@ final.save('mini' + card.card_name + '.png')
 #FOR PRIEST ------------------------------------------------------------
 card = allCards[6]
 #Put background
-mini = Image.open('newBlank.png').convert('RGBA')
+mini = Image.open('miniBlank.png').convert('RGBA')
 mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
 #Add text
@@ -131,7 +131,7 @@ for card in extCards:
         new_ht = 600
     #Put background
     
-    mini = Image.open('newBlank.png').convert('RGBA')
+    mini = Image.open('miniBlank.png').convert('RGBA')
     mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
     #Add text
@@ -155,7 +155,7 @@ for card in extCards:
 card = extCards[0]
 new_ht = 650
 #Put background
-mini = Image.open('newBlank.png').convert('RGBA')
+mini = Image.open('miniBlank.png').convert('RGBA')
 mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
 #Add text
@@ -178,7 +178,7 @@ final.save('mini' + card.card_name + '.png')
 card = extCards[2]
 new_ht = 650
 #Put background
-mini = Image.open('newBlank.png').convert('RGBA')
+mini = Image.open('miniBlank.png').convert('RGBA')
 mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
 #Add text
@@ -202,7 +202,7 @@ card = extCards[7]
 new_alp = 240
 new_ht = 600
 #Put background(Black background)
-mini = Image.open('newBlank.png').convert('RGBA')
+mini = Image.open('miniBlank.png').convert('RGBA')
 mini.paste(card.color, (0, 0, mini.size[0], mini.size[1]))
 
 #Add text(white text)

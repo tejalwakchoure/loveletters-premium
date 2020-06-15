@@ -42,8 +42,10 @@ class Results extends React.Component {
 	}
 
 	sendNewRound() {
-		if(this.state.newRound===true)
+		if(this.state.newRound===true){
 			this.props.gameCallback(true);
+			this.setState({newRound: false});
+		}
 	}
 
 	sendNewRoundButton = () => {

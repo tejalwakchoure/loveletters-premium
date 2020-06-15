@@ -241,6 +241,13 @@ class Round:
         if self.check_win():
             #Round is over, wait for next round to start
             self.result_blob['roundWinner'] = self.winner
+            self.result_blob['finalCards'] = {}
+            for plyr in self.players:
+                if plyr in self.order:
+                    self.result_blob['finalCards'][plyr] = self.players[plyr].card.card_name
+                else:
+                    self.result_blob['finalCards'][plyr] = None
+
             self.players[self.winner].tokens += 1
             self.super_game.roundOver = True
             self.super_game.prev_winner_no = self.super_game.order.index(self.winner)
@@ -388,7 +395,7 @@ class Round:
 
         self.players[plyr].discard_pile.append(self.players[plyr].card)
         self.discard_pile.append(self.players[plyr].card.card_name)
-        
+
         self.result_blob['eliminated'].append(plyr)
         
         ################## --------------------- COMMENT --------------------- ##################
@@ -541,6 +548,9 @@ class Round:
             
         
         obj['roundWinner'] = self.result_blob['roundWinner']
+        if 'finalCards' in self.result_blob:
+            obj['finalCards'] = self.result_blob['finalCards']
+
         obj['gameWinner'] = self.result_blob['gameWinner']
         
         obj['discard_pile'] = self.discard_pile
@@ -627,7 +637,7 @@ class Game:
         else:
             raise APIException("player already exists")
             
-    def start_game(self, win = 4):
+    def start_game(self, win = 4,extraCardsWanted = False):
         if self.state != 0:
             raise APIException("Already started")
         
@@ -635,12 +645,12 @@ class Game:
         self.win_tokens = win
 
         random.shuffle(self.order)
-        if len(self.order) > 4:
+        if len(self.order) > 4 or extraCardsWanted:
             self.cards.extend(extCards)
             
         ################## --------------------- COMMENT --------------------- ##################
-        for plyr in self.order:
-            print(self.players[plyr].username)
+        #for plyr in self.order:
+        #    print(self.players[plyr].username)
         
         self.prev_winner_no = random.randint(0, len(self.order)-1)
         
