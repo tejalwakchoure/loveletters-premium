@@ -18,8 +18,8 @@ class Results extends React.Component {
 	}
 
 	getCard(name) {
-		if(name===undefined)
-			return require('../assets/cards/newBlank.png');
+		if(name===null || name===undefined)
+			return require('../assets/cards/displayBlank.png');
 		else
 			return require('../assets/cards/mini'+name+'.png');
 
@@ -59,12 +59,13 @@ class Results extends React.Component {
 			  	<Row style={{margin: 'auto'}}> 
 			  		<ListGroup>
 			  			{Object.entries(points_display).map(([key,value]) => {
+			  				const cardToShow = this.props.cardsAtRoundEnd[key];
 							return (<ListGroup.Item key={key} className='List-item-design Container'>
 									<Row>
 										<Col style={{display: 'inline'}}>
-					                        <Card style={{ width: '3rem'}}>
+					                        <Card style={{ width: '3rem' , height: (cardToShow===null?'4rem':'auto')}}>
 					                          <Card.Body style={{ padding: 0 }}>
-					                            <Card.Img src={this.getCard(this.props.cardsAtRoundEnd[key])}/>
+					                            <Card.Img src={this.getCard(cardToShow)}/>
 					                          </Card.Body>
 					                        </Card>
 					                     </Col>
@@ -80,7 +81,8 @@ class Results extends React.Component {
 			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(false)}>Leave Game</Button></Col>
 			  		</Row> :
 			  		<Row style={{width: '50vw'}}>
-			  			<Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(true)}>Start Next Round</Button>
+			  			<Button size="lg" block className='Confirm-button' disabled={this.props.userID !== this.props.host} 
+			  					onClick={(e) => this.props.gameCallback(true)}>Start Next Round</Button>
 			  		</Row>}
 			</Container> 
 		);

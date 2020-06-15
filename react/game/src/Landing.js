@@ -11,11 +11,11 @@ class Landing extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	gameOn: true,
 	    	all_players: {},
 	    	showStartButton: false, // true for local testing, false for global
 	    	userID: ' ',
 	    	username: ' ',
+	    	host: ' ',
 	    	gameStatus: 0
 	    };
 	   	this.getPlayers = this.getPlayers.bind(this);
@@ -28,7 +28,8 @@ class Landing extends React.Component {
 		this.setState({
 			all_players: obj.plyrs,
 			userID: obj.uid,
-			username: obj.username
+			username: obj.username,
+			host: obj.host
 		});
 		if(obj.uid === obj.host)
 			this.setState({showStartButton: true});
