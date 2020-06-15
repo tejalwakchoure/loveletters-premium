@@ -13,8 +13,11 @@ class Results extends React.Component {
 
 	constructor(props) {
 	    super(props);
+	    this.state = {newRound: false};
 	    this.getResults = this.getResults.bind(this);
 	    this.getCard = this.getCard.bind(this);
+	    this.sendNewRound = this.sendNewRound.bind(this);
+	    this.sendNewRoundButton = this.sendNewRoundButton.bind(this);
 	}
 
 	getCard(name) {
@@ -38,9 +41,20 @@ class Results extends React.Component {
 		return points_display;
 	}
 
+	sendNewRound() {
+		if(this.state.newRound===true)
+			this.props.gameCallback(true);
+	}
+
+	sendNewRoundButton = () => {
+		this.setState({newRound: true});
+	}
+
 	
 	render() {
 		const points_display = this.getResults();
+		if(this.state.newRound)
+			this.sendNewRound();
 		return(
 			<Container className="Game-header">
 			  	<Row style={{margin: 'auto'}}>
@@ -81,8 +95,8 @@ class Results extends React.Component {
 			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(false)}>Leave Game</Button></Col>
 			  		</Row> :
 			  		<Row style={{width: '50vw'}}>
-			  			<Button size="lg" block className='Confirm-button' disabled={this.props.userID !== this.props.host} 
-			  					onClick={(e) => this.props.gameCallback(true)}>Start Next Round</Button>
+			  				<Button size="lg" block className='Confirm-button' disabled={this.props.userID !== this.props.host} 
+			  						onClick={this.sendNewRoundButton}>Start Next Round</Button>:
 			  		</Row>}
 			</Container> 
 		);
