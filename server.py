@@ -171,7 +171,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
         elif message['type'] == 'startGame':
             #Start the game
-            curr_game.start_game()
+            curr_game.start_game(2)
             self.sendGameAll({'type': 'startGame'}, curr_game)
 
         elif message['type'] == 'discard':
@@ -189,7 +189,9 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             if curr_game.roundOver: 
                 curr_game.new_round() #Start the next round for everyone
             
-            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
+            #And send everyone the turn status
+            for plyr in curr_game.players:
+                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
 
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             curr_game.round.player_discard(self.user.user)
@@ -202,6 +204,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             for plyr in curr_game.players:
                 plyrs[plyr] = curr_game.players[plyr].username
             self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
+            self.close()
             
             
 

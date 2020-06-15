@@ -38,7 +38,6 @@ class Results extends React.Component {
 		return points_display;
 	}
 
-	
 	render() {
 		const points_display = this.getResults();
 		return(
