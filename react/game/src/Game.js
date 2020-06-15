@@ -24,8 +24,7 @@ class Game extends React.Component {
 			gameWinner: " ",
 			cardsAtRoundEnd: [],
 			userID: ' ',
-			username: ' ',
-			host: ' '
+			username: ' '
 		};
 		this.landingCallback = this.landingCallback.bind(this);
 		this.roundCallback = this.roundCallback.bind(this);
@@ -84,8 +83,7 @@ class Game extends React.Component {
 			gameStatus: landingData.gameStatus,
 			all_players: landingData.all_players,
 			userID: landingData.userID,
-			username: landingData.username,
-			host: landingData.host
+			username: landingData.username
 		});
 		console.log("player info received from landing:", landingData)
 		console.log("set gameStatus to 1")
@@ -114,7 +112,7 @@ class Game extends React.Component {
 				leavingGame: false
 			});
 			console.log('We have a game winner; set state=0 to start new game @'+ this.state.username);
-			console.log('WebSocket Client Connected');
+			console.log('WebSocket Client reconnected');
 			socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
@@ -142,8 +140,7 @@ class Game extends React.Component {
 		    				userID={this.state.userID} username={this.state.username} socket={socket}/>);
 		else if (this.state.gameStatus===2)
 			return(<Results points={this.state.tokens} allPlayers={this.state.all_players} winner={this.state.roundWinner} 
-					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} userID={this.state.userID}
-					host={this.state.host} gameCallback={this.resultsCallback}/>);
+					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} gameCallback={this.resultsCallback}/>);
 	}
 }
 
