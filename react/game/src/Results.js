@@ -38,21 +38,6 @@ class Results extends React.Component {
 		return points_display;
 	}
 
-<<<<<<< HEAD
-	sendNewRound() {
-		if(this.state.newRound===true){
-			this.props.gameCallback(true);
-			this.setState({newRound: false});
-		}
-	}
-
-	sendNewRoundButton = () => {
-		this.setState({newRound: true});
-	}
-
-=======
->>>>>>> 51d584e89d2d41c3ee1a91b9c448691794e45695
-	
 	render() {
 		const points_display = this.getResults();
 		return(
