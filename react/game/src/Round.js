@@ -87,15 +87,15 @@ class Round extends React.Component {
 			this.props.gameCallback(toSend); //end round
 			console.log('Round winner sent to Game');
 		}
-  		else {
-  			console.log('No round winner yet')
-			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
-	  		console.log('sent nextTurn for @'+this.props.username);
-  		}
   	}
 
   	endTurnByButton = () => {
   		this.setState({turnEnded: true});
+  		if(this.state.results.roundWinner===null) {
+  			console.log('No round winner yet')
+			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
+	  		console.log('sent nextTurn for @'+this.props.username);
+  		}
   		this.endTurn();
   	}
 
