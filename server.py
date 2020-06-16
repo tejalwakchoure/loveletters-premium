@@ -165,7 +165,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 plyrs[plyr] = curr_game.players[plyr].username
             
             if curr_game.state == 1:#If someone rejoins they have to go to next page directly
-                self.write_message({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host, 'uid' :plyr.user, 'username':plyr.username})
+                self.write_message({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host, 'uid' :self.user.user, 'username':self.user.username})
                 self.write_message(json.dumps({'type': 'startGame'}))
                 #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             else:
@@ -196,7 +196,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             #And send everyone the turn status
             #for plyr in curr_game.players:
             #    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
-            self.write_message(json.dumps(curr_game.round.turn_status(plyr)))
+            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             curr_game.round.player_discard(self.user.user)
