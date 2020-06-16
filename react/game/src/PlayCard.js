@@ -14,7 +14,7 @@ class PlayCard extends React.Component {
 	    this.state = {
 	    	selectedPlayers: this.props.syco,
 	    	selectionSatisfied: false,
-	    	selectedNumber: -1,
+	    	selectedNumber: 0,
 	    	num_disabled_players: this.props.immune.length + this.props.eliminated.length,
 	    	num_players: Object.keys(this.props.all_players).length
 	    }
@@ -28,11 +28,17 @@ class PlayCard extends React.Component {
 		let selectedPlayers = this.state.selectedPlayers;
 		let x = 0;
 		
+		console.log("num_players= ", this.state.num_players)
+		console.log("num_disabled_players= ", this.state.num_disabled_players)
+		console.log("cardPlayed= ", this.props.cardPlayed)
+		console.log("type= ", type)
+		
 		if(type==='single') {
-			if(this.state.num_disabled_players === this.state.num_players-1 //only current player is eligible
+			if(this.state.num_players - this.state.num_disabled_players <= 1 //only current player is eligible
 				 && this.props.cardPlayed!=="Prince" && this.props.cardPlayed!=="Sycophant") {
 					this.setState({selectionSatisfied: true});
-			} else {
+			} 
+			else {
 				if(this.props.syco.length===0) //no sycophants; proceed as normal
 					selectedPlayers = [item];
 				
@@ -53,12 +59,14 @@ class PlayCard extends React.Component {
 			}
 
 			if(type==='double') {
-				if(this.state.num_disabled_players === this.state.num_players-1) { //only current player is eligible but 2 to choose
+				if(this.state.num_players - this.state.num_disabled_players <= 1) { //only current player is eligible but 2 to choose
 					this.setState({selectionSatisfied: true});
-				} else if(this.state.num_disabled_players >= this.state.num_players-2 //only 2 players are eligible including current
+				} 
+				else if(this.state.num_players - this.state.num_disabled_players <= 2 //only 2 players are eligible including current
 						&& this.props.cardPlayed!=="Cardinal") { 
 							this.setState({selectionSatisfied: true});
-				} else {
+				} 
+				else {
 					if(selectedPlayers.length===2) {
 							this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
 					} else {
@@ -67,9 +75,10 @@ class PlayCard extends React.Component {
 				}
 				
 			} else { // type is 'either'
-				if(this.state.num_disabled_players === this.state.num_players-1) {//only current player is eligible
+				if(this.state.num_players - this.state.num_disabled_players <= 1) {//only current player is eligible
 						this.setState({selectionSatisfied: true});
-				} else {
+				} 
+				else {
 					if(selectedPlayers.length===1 || selectedPlayers.length===2) {
 						this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
 					} else {
