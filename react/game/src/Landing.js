@@ -48,7 +48,6 @@ class Landing extends React.Component {
 	leaveGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'leaveGame'}));
 		console.log("@"+this.props.username+" sent leaveGame")
-		//remove this player from the game metadata; it could still go on
 	}
 
 	render() {

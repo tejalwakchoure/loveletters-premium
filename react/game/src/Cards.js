@@ -15,7 +15,10 @@ class Cards extends React.Component {
 	}
 
 	getCard() {
-		return require('../assets/cards/'+this.props.cardname+'.jpeg');
+		if(this.props.cardname===null || this.props.cardname===undefined)
+			return require('../assets/cards/loading_card.jpeg');
+		else
+			return require('../assets/cards/'+this.props.cardname+'.jpeg');
 	}
 
 	clickCard = () => {
