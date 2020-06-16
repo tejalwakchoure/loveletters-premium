@@ -659,14 +659,22 @@ class Game:
         #Will be started with new_round() somehow
         
     def check_winner(self):
-        for plyr in self.players:
-            if self.players[plyr].tokens == self.win_tokens:
-                self.roundOver = True
-                self.round.result_blob['gameWinner'] = plyr
-                self.overall_winner = plyr
-                self.state = 0
-                return True
-        return False
+        winnerList = []
+        for plyr in self.order:
+            if self.players[plyr].tokens >= self.win_tokens:
+                winnerList.append(plyr)
+
+        if len(winnerList) == 1: #Only one winner yay
+            self.roundOver = True
+            self.round.result_blob['gameWinner'] = plyr
+            self.overall_winner = plyr
+            self.state = 0
+            return True
+        elif len(winnerList) > 1: #multiple winners, start a new round with only ths people
+            self.order = winnerList
+            self.new_round() #Start a new round with only tied players
+        else
+            return False
         
     
     def new_round(self):
