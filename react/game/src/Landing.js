@@ -73,7 +73,9 @@ class Landing extends React.Component {
 				</Container>
 			);
 		} 
-		{/*else{}: What to show for someone who has left the game??*/}
+		else{
+			return (<div>{this.leaveGame()}</div>);
+		}
 	}
 }
 
