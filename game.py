@@ -671,7 +671,7 @@ class Game:
     
     def new_round(self):
         if self.state == 0:
-            raise APIException("Game hasn't started yet")
+            raise APIException("Game is not in progress yet")
         self.roundOver = False
         del self.round
         self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), self.prev_winner_no)
