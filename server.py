@@ -163,36 +163,41 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             plyrs = {}
             for plyr in curr_game.players:
                 plyrs[plyr] = curr_game.players[plyr].username
-            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
             
             if curr_game.state == 1:#If someone rejoins they have to go to next page directly
+                self.write_message({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host, 'uid' :plyr.user, 'username':plyr.username})
                 self.write_message(json.dumps({'type': 'startGame'}))
                 #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
+            else:
+                self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
+            
             
         elif message['type'] == 'startGame':
             #Start the game
-            curr_game.start_game(2)
+            curr_game.start_game(2) #Options are number of hearts to win and if extraCards are wanted
+            
             self.sendGameAll({'type': 'startGame'}, curr_game)
 
         elif message['type'] == 'discard':
             curr_game.round.player_play(message['card'], message['player1'], message['player2'], message['number'])
             
             for plyr in curr_game.players:
-                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone status
+                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.result_status(plyr)))#Send everyone results 
             
         
         elif message['type'] == 'nextTurn':
             for plyr in curr_game.players:
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
         
-        elif message['type'] == 'nextRound':
+        elif message['type'] == 'nextRound': #TODO: Wait for everyone to click at all times except start
             if curr_game.roundOver: 
                 curr_game.new_round() #Start the next round for everyone
             
             #And send everyone the turn status
-            for plyr in curr_game.players:
-                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
-
+            #for plyr in curr_game.players:
+            #    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
+            self.write_message(json.dumps(curr_game.round.turn_status(plyr)))
+            
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             curr_game.round.player_discard(self.user.user)
             self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
