@@ -190,7 +190,7 @@ class Round extends React.Component {
 			else if(this.state.playMode===1) {
 				console.log('RENDER MODE: current player x playing card')
 				
-				const playCard = (<PlayCard currentPlayer={this.state.currentPlayer}
+				let playCard = (<PlayCard currentPlayer={this.state.currentPlayer}
 				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
 				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
 				  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>);
