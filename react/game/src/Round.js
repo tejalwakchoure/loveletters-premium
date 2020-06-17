@@ -54,7 +54,8 @@ class Round extends React.Component {
 		    syco: obj.sycho,
 		    eliminated: obj.eliminated,
 		    prevTurnMessage: obj.prevTurn,
-		    playStatus: this.props.all_players[obj.player]+" is playing"
+		    playStatus: this.props.all_players[obj.player]+" is playing",
+		    disableButton: false
 		});
 	}
 
@@ -102,7 +103,6 @@ class Round extends React.Component {
 	}
 
   	endTurn = () => {
-  		this.setState({disableButton: false});
   		if(this.state.results.roundWinner!==null) {
   			console.log('We have a round winner');
 			this.props.gameCallback(this.state.results); //end round
