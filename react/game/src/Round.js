@@ -150,7 +150,7 @@ class Round extends React.Component {
 				console.log('RENDER MODE: current player x choosing card')
 				return(
 					<Container className="Game-header">
-					  	<Row>
+					  	<Row style={{margin: '0px 0px auto 0px'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
@@ -180,7 +180,7 @@ class Round extends React.Component {
 				console.log('RENDER MODE: current player x playing card')
 				return(
 					<Container className="Game-header">
-					  	<Row>
+					  	<Row style={{margin: '0px 0px auto 0px'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
@@ -198,7 +198,7 @@ class Round extends React.Component {
 				console.log('RENDER MODE: current player x results')
 				return (
 					<Container className="Game-header">
-					  	<Row>
+					  	<Row style={{margin: '0px 0px auto 0px'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 						<Row style={{margin: 'auto'}}>
@@ -249,7 +249,7 @@ class Round extends React.Component {
 			if(!this.state.results.bishopGuess) {
 				return (
 				<Container className="Game-header">
-				  	<Row>
+				  	<Row style={{margin: '0px 0px auto 0px'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
 					<Row style={{margin: 'auto'}}>
@@ -270,7 +270,7 @@ class Round extends React.Component {
 			} else {
 				return (
 				<Container className="Game-header">
-				  	<Row>
+				  	<Row style={{margin: '0px 0px auto 0px'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
 					<Row style={{margin: 'auto'}}>
@@ -299,7 +299,7 @@ class Round extends React.Component {
 				this.endTurn();
 			return(
 				<Container className="Game-header">
-				  	<Row>
+				  	<Row style={{margin: '0px 0px auto 0px'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
 			  		{this.state.playMode===2?
