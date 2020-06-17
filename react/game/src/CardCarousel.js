@@ -13,7 +13,7 @@ class CardCarousel extends React.Component {
 		if(this.props.allCardsDiscarded!==undefined)
 			playedCardlist = this.props.allCardsDiscarded;
 		const { width, height } = this.props.size;
-		const cardWidth = (width<window.innerWidth)?'3.7vw': '3.2vw';
+		const cardWidth = (width<window.innerWidth)?'3.7vw': '3.1vw';
 		return(
 		  	<div className='Card-carousel'> 
 			  	{playedCardlist.map((item, index) => 
