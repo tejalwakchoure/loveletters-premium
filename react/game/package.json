@@ -15,6 +15,7 @@
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
+    "react-sizeme": "^2.6.12",
     "typescript": "^3.9.5",
     "websocket": "^1.0.31"
   },

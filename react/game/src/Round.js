@@ -29,9 +29,12 @@ class Round extends React.Component {
 		    discard_pile: [],
 		    cardinalChosen: null,
 		    disableButton: false,
-		    turnEnded: false
+		    turnEnded: false,
+		    othersPlayCard: {},
+		    othersPlayMode: -1
 		};
 	    this.getTurn = this.getTurn.bind(this);
+	    this.getPlay = this.getPlay.bind(this);
 	    this.getResults = this.getResults.bind(this);
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
@@ -58,6 +61,12 @@ class Round extends React.Component {
 		});
 	}
 
+	getPlay(obj) {
+		this.setState({
+			othersPlayCard: obj.playCard,
+			othersPlayMode: obj.playMode
+		});
+	}
 
 	getResults(obj) {
 		if(obj.roundWinner!==null && obj.discard_pile===[])
@@ -66,6 +75,7 @@ class Round extends React.Component {
 			this.setState({turnEnded: true});
 		this.setState({
   			playMode: 2,
+  			othersPlayMode: -1,
   			results: obj,
   			discard_pile: obj.discard_pile
 		});
@@ -122,6 +132,7 @@ class Round extends React.Component {
 			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
 	  		console.log('sent nextTurn for @'+this.props.username);
   		}
+  		this.endTurn()
   	}
 
   	playCardCallback = (playCardData) => {
@@ -139,8 +150,8 @@ class Round extends React.Component {
 			currentCard="loading_card" // before first render
 		
 		if(this.props.userID === this.state.currentPlayer) {
-			if(this.state.turnEnded)
-				this.endTurn();
+			// if(this.state.turnEnded)
+			// 	this.endTurn();
 			console.log(this.props.username+ 'is playing');
 			var drawnCard = this.state.currentCards[1];
 			if(drawnCard===undefined)
@@ -178,6 +189,19 @@ class Round extends React.Component {
 			}
 			else if(this.state.playMode===1) {
 				console.log('RENDER MODE: current player x playing card')
+				
+				const playCard = (<PlayCard currentPlayer={this.state.currentPlayer}
+				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
+				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
+				  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>);
+				
+				var sendPlay = {};
+				sendPlay['type'] = 'playComponent';
+				sendPlay['playMode'] = 1;
+				sendPlay['playCard'] = playCard;
+				this.props.socket.send(JSON.stringify(sendPlay));
+				console.log('sent playCard');
+
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
@@ -187,10 +211,7 @@ class Round extends React.Component {
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
 					  	<hr/>
-				  		<PlayCard currentPlayer={this.state.currentPlayer}
-				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
-				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-				  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
+				  		{playCard}
 					</Container>
 				);
 			} 
@@ -242,24 +263,42 @@ class Round extends React.Component {
 					</Container>);
 			}
 		}
-		else if(this.state.playMode===1) {
+		else if(this.state.othersPlayMode===1) {
 			console.log('RENDER MODE: other player x viewing play card')
-			return(
-				<Container className="Game-header">
-					<Row style={{margin: '0px 0px auto 0px'}}>
-						<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
-					</Row>
-					<Row style={{margin: 'auto'}}>
-						<h4 className='Play-status'>{this.state.playStatus}</h4>
-					</Row>
-					<hr/>
-					<PlayCard currentPlayer={this.state.currentPlayer}
-					cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
-					roundCallback={this.playCardCallback} all_players={this.props.all_players}
-					immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
-				</Container>
-			);
+			console.log('*********NSYNC*********')
+				return(
+					<Container className="Game-header">
+					  	<Row style={{margin: '0px 0px auto 0px'}}>
+					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					  	</Row>
+					  	<Row style={{margin: 'auto'}}>
+					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+					  	</Row>
+					  	<hr/>
+				  		{this.state.othersPlayCard}
+					</Container>
+				);
 		}
+
+					// else if((this.props.userID !== this.state.currentPlayer) && this.state.playMode===1) {
+					// 	console.log('RENDER MODE: other player x viewing play card')
+					// 	console.log('*********NSYNC*********')
+					// 	return(
+					// 		<Container className="Game-header">
+					// 			<Row style={{margin: '0px 0px auto 0px'}}>
+					// 				<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					// 			</Row>
+					// 			<Row style={{margin: 'auto'}}>
+					// 				<h4 className='Play-status'>{this.state.playStatus}</h4>
+					// 			</Row>
+					// 			<hr/>
+					// 			<PlayCard currentPlayer={this.state.currentPlayer}
+					// 			cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
+					// 			roundCallback={this.playCardCallback} all_players={this.props.all_players}
+					// 			immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
+					// 		</Container>
+					// 	);
+					// }
 		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
 			console.log('RENDER MODE: one of the players involved in the turn x results')
 			if(this.state.turnEnded)
