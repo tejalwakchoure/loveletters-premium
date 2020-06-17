@@ -40,13 +40,7 @@ class Game extends React.Component {
 			console.log('WebSocket Client Connected');
 			socket.send(JSON.stringify({'type':'players'}));
 		};
-
-		// socket.on('disconnect', () => {
-		//     console.log(this.state.username + ' disconnected');
-		//     const index = this.state.all_players.indexOf(this.state.username);
-		//     this.setState({all_players: all_players.splice(index, 1)});
-		// });
-
+		
 		socket.onmessage = (event) => {
 	   		var obj = JSON.parse(event.data);
 			console.log(obj);
@@ -65,10 +59,6 @@ class Game extends React.Component {
 				this.roundRef.current.getTurn(obj);
 				console.log('turn sent back to round @'+this.state.username)
 			}
-
-			//else if(obj.type === 'next') //This has been added just to test going to next turn and to play a round
-			//	socket.send(JSON.stringify({'type':'ready'}));
-
 			else if(obj.type === 'results'){
 				console.log('results received @'+this.state.username)
 				this.roundRef.current.getResults(obj);
