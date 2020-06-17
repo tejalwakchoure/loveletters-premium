@@ -50,7 +50,7 @@ class Results extends React.Component {
 			  	{this.props.gameWinner!==null?
 			  		<div style={{margin: 'auto'}}>
 			  			<Row style={{margin: 'auto'}}>
-			  				<h2 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' heart!</h2>
+			  				<h1 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' heart!</h1>
 			  			</Row>
 			  			<hr/>
 			  		</div>: <div></div>}
