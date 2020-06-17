@@ -142,6 +142,12 @@ class Round:
         
         random.shuffle(self.cards)
         self.top_card = self.cards.pop()
+
+        # if len(self.players) == 2:
+        #     #Discard 3 more cards
+        #     self.discard_pile.append(self.cards.pop())
+        #     self.discard_pile.append(self.cards.pop())
+        #     self.discard_pile.append(self.cards.pop())
         
         for plyr in self.order:
             self.players[plyr].reset()
@@ -286,9 +292,9 @@ class Round:
                 self.players[self.turn].tokens += 1
                 self.result_blob['result'] = 'Correct'
                 self.super_game.check_winner()
+                #TODO: Give player option to discard
             else:
                 self.result_blob['result'] = 'Incorrect'
-                #TODO: Give player option to discard
         
         elif played_card.card_name == 'Princess': #Player is knocked out immediately
             self.knockout_player(self.turn)
@@ -590,6 +596,8 @@ class Round:
             
             
     def curr_stat(self):
+        for card in self.cards:
+            print(card.card_name)
         for plyrs in self.order:
             print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
@@ -673,7 +681,7 @@ class Game:
         elif len(winnerList) > 1: #multiple winners, start a new round with only ths people
             self.order = winnerList
             self.new_round() #Start a new round with only tied players
-        else
+        else:
             return False
         
     
