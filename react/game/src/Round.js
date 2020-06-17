@@ -54,7 +54,8 @@ class Round extends React.Component {
 		    syco: obj.sycho,
 		    eliminated: obj.eliminated,
 		    prevTurnMessage: obj.prevTurn,
-		    playStatus: this.props.all_players[obj.player]+" is playing"
+		    playStatus: this.props.all_players[obj.player]+" is playing",
+		    disableButton: false
 		});
 	}
 
@@ -89,8 +90,10 @@ class Round extends React.Component {
   	handleBishopDiscard = (toDiscard) => {
 	    console.log("Bishoped card discard? " + toDiscard);
 	    this.setState({disableButton: true});
-	    if(toDiscard)
+	    if(toDiscard) {
 	    	this.props.socket.send(JSON.stringify({'type':'bishopDiscard'}));
+	    	this.setState({discard_pile: this.state.discard_pile.concat(this.state.results.player1)});
+	    }
 	}
 
 	handleCardinalDiscard = (playerChosen) => {
@@ -102,7 +105,6 @@ class Round extends React.Component {
 	}
 
   	endTurn = () => {
-  		this.setState({disableButton: false});
   		if(this.state.results.roundWinner!==null) {
   			console.log('We have a round winner');
 			this.props.gameCallback(this.state.results); //end round
@@ -116,7 +118,7 @@ class Round extends React.Component {
   	}
 
   	endTurnByButton = () => {
-  		this.setState({turnEnded: true});
+  		// this.setState({turnEnded: true});
   		if(this.state.results.roundWinner===null) {
   			console.log('No round winner yet')
 			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
@@ -132,6 +134,9 @@ class Round extends React.Component {
 	render() {
 		console.log('user = '+this.props.userID);
 		console.log('currentPlayer = '+this.state.currentPlayer);
+		console.log('playMode = '+this.state.playMode);
+		console.log('cardPlayed = '+this.state.cardToPlay);
+		console.log('cardRemaining = '+this.state.cardRemaining);
 		console.log(this.state.currentCards);
 
 		var currentCard = this.state.currentCards[0];
@@ -242,8 +247,9 @@ class Round extends React.Component {
 					</Container>);
 			}
 		}
-		else if(this.state.playMode===1) {
+		else if((this.props.userID !== this.state.currentPlayer) && this.state.playMode===1) {
 			console.log('RENDER MODE: other player x viewing play card')
+			console.log('*********NSYNC*********')
 			return(
 				<Container className="Game-header">
 					<Row style={{margin: '0px 0px auto 0px'}}>
