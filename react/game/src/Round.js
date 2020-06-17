@@ -28,6 +28,7 @@ class Round extends React.Component {
 		    prevTurnMessage: " ",
 		    discard_pile: [],
 		    cardinalChosen: null,
+		    disableButton: false,
 		    turnEnded: false
 		};
 	    this.getTurn = this.getTurn.bind(this);
@@ -87,11 +88,13 @@ class Round extends React.Component {
 
   	handleBishopDiscard = (toDiscard) => {
 	    console.log("Bishoped card discard? " + toDiscard);
+	    this.setState({disableButton: true});
 	    if(toDiscard)
 	    	this.props.socket.send(JSON.stringify({'type':'bishopDiscard'}));
 	}
 
 	handleCardinalDiscard = (playerChosen) => {
+		this.setState({disableButton: true});
 		if(playerChosen===1)
 			this.setState({cardinalChosen: this.state.results.card1});
 		else
@@ -99,6 +102,7 @@ class Round extends React.Component {
 	}
 
   	endTurn = () => {
+  		this.setState({disableButton: false});
   		if(this.state.results.roundWinner!==null) {
   			console.log('We have a round winner');
 			this.props.gameCallback(this.state.results); //end round
@@ -219,10 +223,10 @@ class Round extends React.Component {
 					            <h3 className='Play-status'>Whose hand do you wish to look at?</h3>
 					        </Row>
 					        <Row style={{margin: '1px auto 1px auto'}}>
-					        	<ToggleButtonGroup type="radio" name="options" defaultValue={1} onChange={this.handleCardinalDiscard}>
-					            	<ToggleButton value={1} size="lg"  className='Confirm-button' style={{width: '20vw'}}>
+					        	<ToggleButtonGroup type="radio" name="options" defaultValue={null} onChange={this.handleCardinalDiscard}>
+					            	<ToggleButton value={1} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>
 					            					{this.props.all_players[this.state.results.player1]}</ToggleButton>
-					            	<ToggleButton value={2} size="lg"  className='Confirm-button' style={{width: '20vw'}}>
+					            	<ToggleButton value={2} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>
 					            					{this.props.all_players[this.state.results.player2]}</ToggleButton>
 					        	</ToggleButtonGroup>
 					        </Row>
@@ -281,9 +285,9 @@ class Round extends React.Component {
 						<h3 className='Play-status'>Discard this card?</h3>
 					</Row>
 					<Row style={{margin: '1px auto auto auto'}}>
-						<ToggleButtonGroup type="radio" name="options" defaultValue={false} onChange={this.handleBishopDiscard}>
-			            	<ToggleButton value={true} size="lg"  className='Confirm-button' style={{width: '20vw'}}>Yes</ToggleButton>
-			            	<ToggleButton value={false} size="lg"  className='Confirm-button' style={{width: '20vw'}}>No</ToggleButton>
+						<ToggleButtonGroup type="radio" name="options" defaultValue={null} onChange={this.handleBishopDiscard}>
+			            	<ToggleButton value={true} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>Yes</ToggleButton>
+			            	<ToggleButton value={false} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>No</ToggleButton>
 			          	</ToggleButtonGroup>
 					</Row>
 				</Container>);
