@@ -59,6 +59,11 @@ class Game extends React.Component {
 				this.roundRef.current.getTurn(obj);
 				console.log('turn sent back to round @'+this.state.username)
 			}
+			else if(obj.type === 'playComponent'){
+				console.log('playComponent received @'+this.state.username)
+				this.roundRef.current.getPlay(obj);
+				console.log('playComponent sent back to round @'+this.state.username)
+			}
 			else if(obj.type === 'results'){
 				console.log('results received @'+this.state.username)
 				this.roundRef.current.getResults(obj);

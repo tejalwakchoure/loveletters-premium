@@ -349,6 +349,8 @@ class Round:
             
         elif played_card.card_name == 'Cardinal': #Two people  exchange
             self.player_trade(plyr1, plyr2)
+            self.result_blob['card1'] = self.players[plyr1].card.card_name
+            self.result_blob['card2'] = self.players[plyr2].card.card_name
             # TODO: Reveal one card 
             
         elif played_card.card_name == 'Priest': #Reveal card here
