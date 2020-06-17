@@ -75,7 +75,6 @@ class Player:
 
     def reset(self):
         self.card = None
-        
         self.extra = None
         
         self.immune = False
@@ -195,15 +194,16 @@ class Round:
         if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
             card_discarded = self.players[self.turn].card
             self.players[self.turn].card = self.players[self.turn].extra
-            self.players[self.turn].extra = None
             
         elif card_chosen == self.players[self.turn].extra.card_name:#Chose the extra one
             card_discarded = self.players[self.turn].extra
-            self.players[self.turn].extra = None
             
         else: #He's chosen a card that does not exist
             raise APIException("Unknown card chosen??")
             
+            
+        self.players[self.turn].extra = None
+        
         #Add to discard piles
         self.players[self.turn].discard_pile.append(card_discarded)
         self.discard_pile.append(card_discarded.card_name)
@@ -384,7 +384,7 @@ class Round:
             self.discard_pile.append(self.players[plyr].card.card_name)
 
         if not self.players[plyr].out:
-            if(self.cards):
+            if self.cards:
                 self.players[plyr].card = self.cards.pop()
             else:
                 self.players[plyr].card = self.top_card
@@ -628,7 +628,7 @@ class Game:
         
         self.order = []
         self.round = None
-        self.cards = allCards
+        
         self.overall_winner = None
         
     def add_player(self, user, username):
@@ -653,8 +653,10 @@ class Game:
         self.win_tokens = win
 
         random.shuffle(self.order)
+        
+        self.cards = allCards
         if len(self.order) > 4 or extraCardsWanted:
-            self.cards.extend(extCards)
+            self.cards += extCards
             
         ################## --------------------- COMMENT --------------------- ##################
         #for plyr in self.order:
@@ -702,3 +704,10 @@ if __name__ == '__main__':
     game.add_player(Player('rty'), 'd')
     game.add_player(Player('fgh'), 'e')
 
+    def resandturn():
+        for plyr in game.players:
+            game.round.result_status(plyr)
+         
+        for plyr in game.players:
+            game.round.turn_status(plyr)
+            
