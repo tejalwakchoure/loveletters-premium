@@ -242,6 +242,24 @@ class Round extends React.Component {
 					</Container>);
 			}
 		}
+		else if(this.state.playMode===1) {
+			console.log('RENDER MODE: other player x viewing play card')
+			return(
+				<Container className="Game-header">
+					<Row style={{margin: '0px 0px auto 0px'}}>
+						<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					</Row>
+					<Row style={{margin: 'auto'}}>
+						<h4 className='Play-status'>{this.state.playStatus}</h4>
+					</Row>
+					<hr/>
+					<PlayCard currentPlayer={this.state.currentPlayer}
+					cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
+					roundCallback={this.playCardCallback} all_players={this.props.all_players}
+					immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
+				</Container>
+			);
+		}
 		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
 			console.log('RENDER MODE: one of the players involved in the turn x results')
 			if(this.state.turnEnded)
