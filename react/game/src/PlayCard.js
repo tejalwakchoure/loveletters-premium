@@ -67,8 +67,10 @@ class PlayCard extends React.Component {
 	}
 
 	selectNumber(item, defaultSelectionSatisfied) {
-		this.setState({selectionSatisfied: this.state.selectedPlayers.length>0, 
-							selectedNumber: defaultSelectionSatisfied?-1:item});
+		console.log("this.state.selectedPlayers=", this.state.selectedPlayers)
+		console.log("defaultSelectionSatisfied=", defaultSelectionSatisfied)
+		this.setState({selectionSatisfied: (this.state.selectedPlayers.length>0), 
+							selectedNumber: (defaultSelectionSatisfied)?-1:item});
 	}
 
 	endPlay() {

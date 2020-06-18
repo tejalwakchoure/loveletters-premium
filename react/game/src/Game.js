@@ -82,8 +82,8 @@ class Game extends React.Component {
 			roundWinner: roundData.roundWinner,
 			gameWinner: roundData.gameWinner,
 			cardsAtRoundEnd: roundData.finalCards
-		});
-		console.log("gameStatus set to 2")
+		},
+		console.log("gameStatus set to 2"));
 	}
 
 	resultsCallback = (resultsData) => {
