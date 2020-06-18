@@ -102,7 +102,10 @@ class gameLoginHandler(RequestHandler):
                 game.add_player(self.user, username)
                 self.application.games[totalGames] = game
                 self.write(json.dumps({'game':str(totalGames)}))
-                print("Create romm:", roomname, password, username, totalGames)
+                ################## --------------------- COMMENT --------------------- ##################
+                #print("Create romm:", roomname, password, username, totalGames)
+                
+
                 totalGames += 1
                 
                 
@@ -110,12 +113,15 @@ class gameLoginHandler(RequestHandler):
             
         elif tp == Commands.enterRoom:#He is trying to enter room
 
-            print(roomname, password)
+            ################## --------------------- COMMENT --------------------- ##################
+            #print(roomname, password)
             
             notFound = -1
             for i, gm in self.application.games.items():
                 if gm.room_name == roomname and gm.password == password:
-                    print('game exists, add him in')
+                    ################## --------------------- COMMENT --------------------- ##################
+                    #print('game exists, add him in')
+                    
                     notFound = i
                     break
                     
@@ -150,18 +156,25 @@ class gameBoardHandler(RequestHandler):
 
 class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
     def open(self):
-        print("WebSocket opened", self.user.username)
-        self.user.addSocketHandle(self)
+        if self.user.gid == -1: #Get him out if here
+            self.write_message(json.dumps({'type': 'redirect'}))
+            self.close()
+        else:
+            self.user.addSocketHandle(self)
 
+        ################## --------------------- COMMENT --------------------- ##################
+        #print("WebSocket opened", self.user.username)
+    
     def on_message(self, message):
     
-        if self.user.gid == -1: #Get him out if here
-            self.close()
-            self.redirect('/')
+
         
         curr_game = self.application.games[self.user.gid]
         message = json.loads(message)
-        print(self.user.username, ':', message)
+
+
+        ################## --------------------- COMMENT --------------------- ##################
+        print(self.user.username, ':', message['type'])
         
         if message['type'] == 'players':
             plyrs = {}
@@ -178,7 +191,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
         elif message['type'] == 'startGame':
             #Start the game
-            curr_game.start_game(3, True) #Options are number of hearts to win and if extraCards are wanted
+            curr_game.start_game() #Options are number of hearts to win and if extraCards are wanted
             
             self.sendGameAll({'type': 'startGame'}, curr_game)
 
@@ -194,17 +207,24 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
         
         elif message['type'] == 'nextRound': #TODO: Wait for everyone to click at all times except start
-            if curr_game.roundOver: 
+
+            print(curr_game.all_in)
+            curr_game.all_in[self.user.user] = True
+
+            if curr_game.roundOver and all(curr_game.all_in.values()): 
                 curr_game.new_round() #Start the next round for everyone
-            
-            #And send everyone the turn status
-            #for plyr in curr_game.players:
-            #    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
-            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
+                #And send everyone the turn status
+                for plyr in curr_game.players:
+                    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
+                    curr_game.all_in[plyr] = False 
+                
+
+            #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             curr_game.round.player_discard(self.user.user)
-            self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
+            curr_game.round.result_blob['bishopGuess'] = 'discard'
+            #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'leaveGame': #For player to leave the game    
             del curr_game.players[self.user.user]
@@ -222,7 +242,9 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                     curr_game.players[plyr].webSocketHandle.write_message(json.dumps(message))  
 
     def on_close(self):
-        print("WebSocket closed:", self.user.username)
+        ################## --------------------- COMMENT --------------------- ##################
+        #print("WebSocket closed:", self.user.username)
+        pass
 
     def sendGameAll(self, msg, curr_game):
         for plyr in curr_game.players.values():
