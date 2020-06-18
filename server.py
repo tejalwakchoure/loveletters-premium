@@ -212,7 +212,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             self.close()
             self.redirect('/')
             
-            
+        elif message['type'] == 'playComponent':
+            for plyr in curr_game.players:
+                if plyr != self.user.user:
+                    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(message))  
 
     def on_close(self):
         print("WebSocket closed:", self.user.username)
