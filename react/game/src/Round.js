@@ -116,13 +116,13 @@ class Round extends React.Component {
 		if(playerChosen===1) {
 			this.setState({
 				cardinalChosen: this.state.results.card1,
-				cardinalChosenMessage: this.state.currentPlayer+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
+				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
 			});
 		}
 		else {
 			this.setState({
 				cardinalChosen: this.state.results.card2,
-				cardinalChosenMessage: this.state.currentPlayer+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
+				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
 			});
 		}
 	}
@@ -167,15 +167,16 @@ class Round extends React.Component {
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
-					  	<Row style={{margin: 'auto'}}>
-					  		{this.state.prevTurnMessage!==null?
-					  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>: <div></div>}
-					  	</Row>
-					  	<hr/>
+					  	{this.state.prevTurnMessage!==null?
+					  		(<div style={{margin: 'auto'}}>
+						  		<Row style={{margin: 'auto'}}>
+						  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
+						  		</Row>
+						  		<hr/>
+						  	</div>): <div></div>}
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
-					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
 					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
 					  			<Cards cardname={currentCard}/>
@@ -200,7 +201,6 @@ class Round extends React.Component {
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardToPlay}</h4>
 					  	</Row>
-					  	<hr/>
 				  		<PlayCard socket={this.props.socket} currentPlayer={this.state.currentPlayer}
 				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
 				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
@@ -216,14 +216,10 @@ class Round extends React.Component {
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 						<Row style={{margin: 'auto'}}>
-							<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
+							<h5 className='Play-status'>{this.state.results.statusMsg}</h5>
+							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
 						</Row>
-						<hr/>
-						<Row style={{margin: 'auto'}}>
-							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
-						</Row>
-						<hr/>
-						
+
 						{this.state.cardToPlay!=='Cardinal'?
 						(<Row style={{margin: 'auto'}}>
 							{this.state.results.card1!==null?
@@ -233,6 +229,7 @@ class Round extends React.Component {
 						</Row>):
 
 						(<div style={{margin: 'auto'}}>
+							<hr/>
 					        <Row style={{margin: 'auto'}}>
 					            <h3 className='Play-status'>Whose hand do you wish to look at?</h3>
 					        </Row>
@@ -267,7 +264,6 @@ class Round extends React.Component {
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.showPlay.cardPlayed}</h4>
 					  	</Row>
-					  	<hr/>
 				  		<ShowPlay all_players={this.props.all_players} playCardData={this.state.showPlay}/>
 					</Container>
 				);
@@ -285,17 +281,12 @@ class Round extends React.Component {
 				  	<Row style={{margin: '0px 0px auto 0px'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
-					<hr/>
 					<Row style={{margin: 'auto'}}>
-						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-					</Row>
-					<hr/>
-					<Row style={{margin: 'auto'}}>
+						<h5 className='Play-status'>{this.state.results.statusMsg}</h5>
 						{this.state.results.card_discarded!=='Cardinal'?
-							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
-							<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
+							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
+							<h5 className='Play-status'>{this.state.cardinalChosenMessage}</h5>}
 					</Row>
-					<hr/>
 					<Row style={{margin: 'auto'}}>
 						{this.state.results.card1!==null?
 							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
@@ -310,10 +301,8 @@ class Round extends React.Component {
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
 					<Row style={{margin: 'auto'}}>
-						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-					</Row>
-					<Row style={{margin: 'auto'}}>
-						<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
+						<h5 className='Play-status'>{this.state.results.statusMsg}</h5>
+						<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
 					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
@@ -342,17 +331,14 @@ class Round extends React.Component {
 				  	</Row>
 		  			{this.state.playMode===2?
 		  				(<div style={{margin: 'auto'}}>
-				  				<Row style={{margin: 'auto'}}>
-									<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-								</Row>
-								<hr/>
-								<Row style={{margin: 'auto'}}>
-									{this.state.results.card_discarded!=='Cardinal'?
-										<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
-										<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
-								</Row>
-								<hr/>
-							</div>): 
+			  				<Row style={{margin: 'auto'}}>
+								<h5 className='Play-status'>{this.state.results.statusMsg}</h5>
+								{this.state.results.card_discarded!=='Cardinal'?
+									<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
+									<h5 className='Play-status'>{this.state.cardinalChosenMessage}</h5>}
+							</Row>
+							<hr/>
+						</div>): 
 						(this.state.prevTurnMessage!==null?
 				  			(<div style={{margin: 'auto'}}>
 					  			<Row style={{margin: 'auto'}}>
@@ -366,17 +352,13 @@ class Round extends React.Component {
 		  			<hr/>
 
 				  	{this.state.eliminated.indexOf(this.props.userID)>=0?
-				  		(<div style={{margin: 'auto'}}>
-				  			<Row style={{margin: 'auto'}}>
+				  		(<Row style={{margin: 'auto'}}>
 					  			<h3 className='Play-status'>You have been eliminated</h3>
-					  		</Row>
-					  		<hr/>
-					  	</div>):
+					  		</Row>):
 					  	(<div style={{margin: 'auto'}}>
 						  	<Row style={{margin: 'auto'}} >
 						  		<h3 className='Play-status'>It's not your turn</h3>
 						  	</Row>
-						  	<hr/>
 						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex", justifyContent: 'center'}}>
 						  			<Cards cardname={currentCard}/>
