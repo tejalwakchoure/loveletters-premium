@@ -182,8 +182,35 @@ class PlayCard extends React.Component {
 
 		const list = this.getList(choiceType);
 		const defaultSelectionSatisfied = this.setDefaultSelection(choiceType);
-
 		const card_numbers = [1,2,3,4,5,6,7,8,9];
+		const num_list = (<ListGroup>
+			  				{card_numbers.map((item, i) => {
+								return <ListGroup.Item className='List-item-design'
+											variant={this.state.selectedNumber===item?'dark':'light'}
+											key={item} 
+											disabled={item===1}
+											onClick={(e) => this.selectNumber(item, defaultSelectionSatisfied, e)}>{item}
+										</ListGroup.Item>})}
+							</ListGroup>);
+
+		var sendPlay = {};
+		sendPlay['type'] = 'playComponent';
+		sendPlay['playMode'] = 1;
+		sendPlay['showPlay'] = {
+			"currentPlayer": this.props.currentPlayer,
+			"cardPlayed": this.props.cardPlayed,
+			"selectedPlayers": this.state.selectedPlayers,
+			"selectedNumber": this.state.selectedNumber,
+			"immune": this.props.immune,
+			"syco": this.props.syco,
+			"eliminated": this.props.eliminated
+		};
+		
+		this.props.socket.send(JSON.stringify(sendPlay));
+		console.log('sent playCard');
+
+
+		
 		if(list!=null) {
 			console.log('RENDER: PlayCard for @'+this.props.currentPlayer)
 			return (
@@ -191,19 +218,7 @@ class PlayCard extends React.Component {
 					<Row style={{justifyContent: 'center'}}>
 						<Col>{list}</Col>
 						{(this.props.cardPlayed==="Guard"|| this.props.cardPlayed==="Bishop")?
-							<Col>
-								<ListGroup>
-					  				{card_numbers.map((item, i) => {
-										return <ListGroup.Item className='List-item-design'
-													variant={this.state.selectedNumber===item?'dark':'light'}
-													key={item} 
-													disabled={item===1}
-													onClick={(e) => this.selectNumber(item, defaultSelectionSatisfied, e)}>{item}
-												</ListGroup.Item>})}
-								</ListGroup>
-							</Col>:
-							<div>
-							</div>}
+							<Col>{num_list}</Col>: <div></div>}
 					</Row>
 					<Row style={{width: '50vw', paddingTop: '10px', margin: 'auto'}}> 
 						<Button size="lg" block className='Confirm-button' 
