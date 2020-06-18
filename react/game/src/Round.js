@@ -58,7 +58,9 @@ class Round extends React.Component {
 		    syco: obj.sycho,
 		    eliminated: obj.eliminated,
 		    prevTurnMessage: obj.prevTurn,
-		    playStatus: this.props.all_players[obj.player]+" is playing"
+		    playStatus: this.props.all_players[obj.player]+" is playing",
+		    disableButton: false,
+  			// othersPlayMode: -1
 		});
 	}
 
@@ -76,7 +78,7 @@ class Round extends React.Component {
 			this.setState({turnEnded: true});
 		this.setState({
   			playMode: 2,
-  			//othersPlayMode: -1,
+  			othersPlayMode: -1,
   			results: obj,
   			discard_pile: obj.discard_pile
 		});
@@ -113,7 +115,9 @@ class Round extends React.Component {
 	}
 
   	endTurn = () => {
-  		this.setState({disableButton: false});
+  		// this.setState({
+  		// 	disableButton: false,
+  		// 	othersPlayMode: -1});
   		if(this.state.results.roundWinner!==null) {
   			console.log('We have a round winner');
 			this.props.gameCallback(this.state.results); //end round
@@ -262,7 +266,7 @@ class Round extends React.Component {
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
-					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.showPlay.cardPlayed}</h4>
 					  	</Row>
 					  	<hr/>
 				  		<ShowPlay all_players={this.props.all_players} playCardData={this.state.showPlay}/>
