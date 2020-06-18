@@ -154,6 +154,9 @@ class Round:
         
         self.turn = self.order[starter]
         self.turn_no = starter
+
+        self.round_state = 0
+
         self.player_turn()
         
     def player_turn(self):
@@ -161,6 +164,8 @@ class Round:
             self.players[self.turn].immune = False
         if self.sychoTar != None and self.discard_pile[-1] != 'Sycophant': #If it's been a turn after Sycophant then no more target
             self.sychoTar = None
+
+        
         
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
         
@@ -168,7 +173,7 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        self.curr_stat()
+        #self.curr_stat()
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given):
         #Raise exceptions if something is wrong
@@ -199,12 +204,13 @@ class Round:
             card_discarded = self.players[self.turn].extra
             
         else: #He's chosen a card that does not exist
-            raise APIException("Unknown card chosen??")
+            raise APIException("Unknown card chosen??" + card_chosen)
             
             
         self.players[self.turn].extra = None
         
         #Add to discard piles
+
         self.players[self.turn].discard_pile.append(card_discarded)
         self.discard_pile.append(card_discarded.card_name)
         
@@ -233,7 +239,6 @@ class Round:
         
         self.result_blob['result'] = None
         
-        
         #Play the cards
         try:
             self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
@@ -246,6 +251,7 @@ class Round:
 
         if self.check_win():
             #Round is over, wait for next round to start
+            self.round_state = 3 #Round is over
             self.result_blob['roundWinner'] = self.winner
             self.result_blob['finalCards'] = {}
             for plyr in self.players:
