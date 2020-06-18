@@ -54,14 +54,14 @@ class Results extends React.Component {
 		return(
 			<Container className="Game-header">
 			  	<Row style={{margin: 'auto', textAlign: 'center'}}>
-			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess this time!</h3>
+			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess!</h3>
 			  	</Row>
 			  	<hr/>
 			  
 			  	{this.props.gameWinner!==null?
 			  		<div style={{margin: 'auto'}}>
 			  			<Row style={{margin: 'auto', textAlign: 'center'}}>
-			  				<h1 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' whole heart! All you other losers can go mope around xoxo</h1>
+			  				<h1 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' heart! All you other losers can go mope around xoxo</h1>
 			  			</Row>
 			  			<hr/>
 			  		</div>: <div></div>}
