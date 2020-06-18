@@ -601,8 +601,8 @@ class Round:
             if self.result_blob['number'] != None:
                 obj = obj + ' and guessed ' + str(self.result_blob['number'])
             
-            if 'bishopGuess' in self.result_blob and self.result_blob['bishopGuess'] == 'discard':
-                obj = objj + '. Card was discarded'
+            if 'bishopAction' in self.result_blob and self.result_blob['bishopAction'] == 'discard':
+                obj = obj + '. Card was discarded'
             return obj
         else:
             return None

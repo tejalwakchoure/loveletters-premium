@@ -183,7 +183,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
             if curr_game.state == 1:#If someone rejoins they have to go to next page directly
                 self.write_message({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host, 'uid' :self.user.user, 'username':self.user.username})
-                self.write_message(json.dumps({'type': 'startGameR'}))
+                self.write_message(json.dumps({'type': 'startGame'}))
                 #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             else:
                 self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
@@ -204,10 +204,11 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
         
         elif message['type'] == 'nextTurn':
-            curr_game.round.round_state = 1 #It is a players turn, send turn 
+            if (not (curr_game.round.result_blob['card_discarded'] == 'Bishop' and curr_game.round.result_blob['result'] == 'Correct')) or 'bishopAction' in curr_game.round.result_blob:
+                curr_game.round.round_state = 1 #It is a players turn, send turn 
 
-            for plyr in curr_game.players:
-                curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
+                for plyr in curr_game.players:
+                    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
         
         elif message['type'] == 'nextRound': #TODO: Wait for everyone to click at 
 
@@ -219,17 +220,23 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 for plyr in curr_game.players:
                     curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
                     curr_game.all_in[plyr] = False 
-            else:
+            elif curr_game.round != None:
                 if curr_game.round.round_state == 1:
                     self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
-                elif curr_game.round.round_state == 2 or curr_game.round.round_state == 3:
+                elif curr_game.round.round_state == 2:
                     self.write_message(json.dumps(curr_game.round.result_status(self.user.user)))
 
             #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
-            curr_game.round.player_discard(self.user.user)
-            curr_game.round.result_blob['bishopGuess'] = 'discard'
+            print(message)
+            if message['toDiscard']:
+                curr_game.round.player_discard(self.user.user)
+                curr_game.round.result_blob['bishopAction'] = 'discard'
+            else:
+                curr_game.round.result_blob['bishopAction'] = 'nodiscard'
+            
+
             #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'leaveGame': #For player to leave the game    
