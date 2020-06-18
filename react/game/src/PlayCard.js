@@ -100,8 +100,8 @@ class PlayCard extends React.Component {
 				 	&& this.props.cardPlayed!=="Prince" && this.props.cardPlayed!=="Sycophant")
 				selectionSatisfied = true;
 
-			if(this.props.syco.length>=1)
-				selectionSatisfied = true;
+			// if(this.props.syco.length>=1)
+			// 	selectionSatisfied = true;
 		} 
 		else if(choiceType === "double") {
 			if(this.state.num_players - this.state.num_disabled_players <= 1) //only current player is eligible but 2 to choose
@@ -110,15 +110,15 @@ class PlayCard extends React.Component {
 					&& this.props.cardPlayed!=="Cardinal")
 				selectionSatisfied = true;
 
-			if(this.props.syco.length>=2)
-				selectionSatisfied = true;
+			// if(this.props.syco.length>=2)
+			// 	selectionSatisfied = true;
 		}
 		else { // type is 'either'
 			if(this.state.num_players - this.state.num_disabled_players <= 1) //only current player is eligible
 				selectionSatisfied = true;
 
-			if(this.props.syco.length>=1)
-				selectionSatisfied = true;
+			// if(this.props.syco.length>=1)
+			// 	selectionSatisfied = true;
 		}
 
 		return selectionSatisfied;
@@ -175,7 +175,7 @@ class PlayCard extends React.Component {
 
 		const list = this.getList(choiceType);
 		const defaultSelectionSatisfied = this.setDefaultSelection(choiceType);
-		const card_numbers = [1,2,3,4,5,6,7,8,9];
+		const card_numbers = [0,1,2,3,4,5,6,7,8,9];
 		const num_list = (<ListGroup>
 			  				{card_numbers.map((item, i) => {
 								return <ListGroup.Item className='List-item-design'

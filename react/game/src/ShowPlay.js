@@ -52,7 +52,7 @@ class ShowPlay extends React.Component {
 
 	render() {
 		const list = this.getList();
-		const card_numbers = [1,2,3,4,5,6,7,8,9];
+		const card_numbers = [0,1,2,3,4,5,6,7,8,9];
 		const num_list = (<ListGroup>
 			  				{card_numbers.map((item, i) => {
 								return <ListGroup.Item className='List-item-design'
