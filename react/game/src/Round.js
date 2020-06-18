@@ -275,6 +275,8 @@ class Round extends React.Component {
 		
 		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
 			console.log('RENDER MODE: one of the players involved in the turn x results')
+			console.log("cardinal discarded=--------------", (this.state.results.card_discarded==='Cardinal'))
+			console.log("cardinal chosen msg=--------------", this.state.cardinalChosenMessage)
 			if(this.state.turnEnded)
 				this.endTurn();
 			if(!this.state.results.bishopGuess) {
@@ -329,6 +331,8 @@ class Round extends React.Component {
 		else {
 			console.log('RENDER MODE: other players/one of the players involved in the turn')
 			console.log("playMode=--------------", this.state.playMode)
+			console.log("cardinal discarded=--------------", (this.state.results.card_discarded==='Cardinal'))
+			console.log("cardinal chosen msg=--------------", this.state.cardinalChosenMessage)
 			if(this.state.turnEnded)
 				this.endTurn();
 			return(
@@ -336,23 +340,26 @@ class Round extends React.Component {
 				  	<Row style={{margin: '0px 0px auto 0px'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
-				  	{this.state.prevTurnMessage!==null?
-			  			(<div style={{margin: 'auto'}}>
-				  			<Row style={{margin: 'auto'}}>
-				  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
-				  			</Row>
-				  			<hr/>
-				  		</div>): <div></div>}
-		  			<Row style={{margin: 'auto'}}>
-						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-					</Row>
-					<hr/>
-					<Row style={{margin: 'auto'}}>
-						{this.state.results.card_discarded!=='Cardinal'?
-							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
-							<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
-					</Row>
-					<hr/>
+		  			{this.state.playMode===2?
+		  				(<div style={{margin: 'auto'}}>
+				  				<Row style={{margin: 'auto'}}>
+									<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
+								</Row>
+								<hr/>
+								<Row style={{margin: 'auto'}}>
+									{this.state.results.card_discarded!=='Cardinal'?
+										<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
+										<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
+								</Row>
+								<hr/>
+							</div>): 
+						(this.state.prevTurnMessage!==null?
+				  			(<div style={{margin: 'auto'}}>
+					  			<Row style={{margin: 'auto'}}>
+					  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
+					  			</Row>
+					  			<hr/>
+					  		</div>): <div></div>)}
 					<Row style={{margin: 'auto'}}>
 				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 		  			</Row>
@@ -383,28 +390,3 @@ class Round extends React.Component {
 }
 
 export default Round;
-
-						// {this.state.playMode===2?
-			  	// 			(<div style={{margin: 'auto'}}>
-					 //  			<Row style={{margin: 'auto'}}>
-						// 			<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-						// 		</Row>
-						// 		<hr/>
-						// 		<Row style={{margin: 'auto'}}>
-						// 			{this.state.results.card_discarded!=='Cardinal'?
-						// 				<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
-						// 				<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
-						// 		</Row>
-						// 		<hr/>
-						// 	</div>):
-						// 	(this.state.prevTurnMessage!==null?
-					 //  			(<div style={{margin: 'auto'}}>
-						//   			<Row style={{margin: 'auto'}}>
-						//   				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
-						//   			</Row>
-						//   			<hr/>
-						//   			<Row style={{margin: 'auto'}}>
-						//   				<h4 className='Play-status'>{this.props.all_players[this.state.currentPlayer]} is playing</h4>
-						//   			</Row>
-						//   			<hr/>
-						//   		</div>): <div></div>)}
