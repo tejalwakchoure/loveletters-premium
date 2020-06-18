@@ -32,6 +32,7 @@ class Round extends React.Component {
 		    disableButton: false,
 		    turnEnded: false,
 		    othersPlayMode: -1,
+		    cardinalChosenMessage: "",
 		    showPlay: {}
 		};
 	    this.getTurn = this.getTurn.bind(this);
@@ -46,7 +47,6 @@ class Round extends React.Component {
 	    this.handleCardinalDiscard = this.handleCardinalDiscard.bind(this);
 
 		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
-    	console.log('sent nextRound for @'+this.props.username)
 	}
 	
 	getTurn(obj) {
@@ -58,9 +58,10 @@ class Round extends React.Component {
 		    syco: obj.sycho,
 		    eliminated: obj.eliminated,
 		    prevTurnMessage: obj.prevTurn,
+		    discard_pile: obj.discard_pile,
 		    playStatus: this.props.all_players[obj.player]+" is playing",
 		    disableButton: false,
-  			// othersPlayMode: -1
+  			cardinalChosenMessage: ""
 		});
 	}
 
@@ -96,66 +97,59 @@ class Round extends React.Component {
 			playMode: 1,
 			discard_pile: this.state.discard_pile.concat(this.state.cardToPlay)
 		});
-  		console.log(this.props.all_players[this.state.currentPlayer]+' is discarding ' + this.state.cardToPlay);
   	}
 
   	handleBishopDiscard = (toDiscard) => {
-	    console.log("Bishoped card discard? " + toDiscard);
 	    this.setState({disableButton: true});
-	    if(toDiscard)
+	    if(toDiscard){
 	    	this.props.socket.send(JSON.stringify({'type':'bishopDiscard'}));
+	    	this.setState({discard_pile: this.state.discard_pile.concat(this.state.currentCards[0])});
+	    }
 	}
 
 	handleCardinalDiscard = (playerChosen) => {
 		this.setState({disableButton: true});
-		if(playerChosen===1)
-			this.setState({cardinalChosen: this.state.results.card1});
-		else
-			this.setState({cardinalChosen: this.state.results.card2});
+		if(playerChosen===1) {
+			this.setState({
+				cardinalChosen: this.state.results.card1,
+				cardinalChosenMessage: this.state.currentPlayer+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
+			});
+		}
+		else {
+			this.setState({
+				cardinalChosen: this.state.results.card2,
+				cardinalChosenMessage: this.state.currentPlayer+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
+			});
+		}
 	}
 
   	endTurn = () => {
-  		// this.setState({
-  		// 	disableButton: false,
-  		// 	othersPlayMode: -1});
   		if(this.state.results.roundWinner!==null) {
-  			console.log('We have a round winner');
 			this.props.gameCallback(this.state.results); //end round
-			console.log('Round winner sent to Game');
 		}
 		else if(this.state.results.gameWinner!==null) {
-  			console.log('We have a game winner');
 			this.props.gameCallback(this.state.results); //end round
-			console.log('Game winner sent to Game');
 		}
   	}
 
   	endTurnByButton = () => {
   		this.setState({turnEnded: true});
   		if(this.state.results.roundWinner===null) {
-  			console.log('No round winner yet')
 			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
-	  		console.log('sent nextTurn for @'+this.props.username);
   		}
   		this.endTurn()
   	}
 
   	playCardCallback = (playCardData) => {
   		this.props.socket.send(JSON.stringify(playCardData));
-	    console.log('sent played values from Round for @'+this.props.username);
   	}
 
 	render() {
-		console.log('user = '+this.props.userID);
-		console.log('currentPlayer = '+this.state.currentPlayer);
-		console.log(this.state.currentCards);
-
 		var currentCard = this.state.currentCards[0];
 		if(currentCard===undefined)
 			currentCard="loading_card" // before first render
 		
 		if(this.props.userID === this.state.currentPlayer) {
-			console.log(this.props.username+ 'is playing');
 			var drawnCard = this.state.currentCards[1];
 			if(drawnCard===undefined)
 				drawnCard="loading_card" // before first render
@@ -259,7 +253,6 @@ class Round extends React.Component {
 		
 		else if(this.state.othersPlayMode===1) {
 			console.log('RENDER MODE: other player x viewing play card')
-			console.log('*********NSYNC*********')
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
@@ -284,12 +277,11 @@ class Round extends React.Component {
 				  	<Row style={{margin: '0px 0px auto 0px'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 				  	</Row>
-					<Row style={{margin: 'auto'}}>
-						<h4 className='Play-status'>{this.state.results.statusMsg}</h4>
-					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
-						<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
+						{this.state.cardToPlay!=='Cardinal'?
+							<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
+							<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
 					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
@@ -310,10 +302,6 @@ class Round extends React.Component {
 					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
-						<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
-					</Row>
-					<hr/>
-					<Row style={{margin: 'auto'}}>
 						<h3 className='Play-status'>Discard this card?</h3>
 					</Row>
 					<Row style={{margin: '1px auto auto auto'}}>
@@ -326,7 +314,7 @@ class Round extends React.Component {
 			}
 		} 
 		else {
-			console.log('RENDER MODE: other players/one of the players involved in the turn x playmode!=2')
+			console.log('RENDER MODE: other players/one of the players involved in the turn')
 			if(this.state.turnEnded)
 				this.endTurn();
 			return(
@@ -341,7 +329,9 @@ class Round extends React.Component {
 								</Row>
 								<hr/>
 								<Row style={{margin: 'auto'}}>
-									<h3 className='Play-status'>{this.state.results.resultMsg}</h3>
+									{this.state.cardToPlay!=='Cardinal'?
+										<h3 className='Play-status'>{this.state.results.resultMsg}</h3>:
+										<h3 className='Play-status'>{this.state.cardinalChosenMessage}</h3>}
 								</Row>
 								<hr/>
 							</div>):

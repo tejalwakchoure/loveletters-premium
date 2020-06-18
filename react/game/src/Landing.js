@@ -14,7 +14,6 @@ class Landing extends React.Component {
 	    	all_players: {},
 	    	showStartButton: false, // true for local testing, false for global
 	    	userID: ' ',
-	    	username: ' ',
 	    	gameStatus: 0
 	    };
 	   	this.getPlayers = this.getPlayers.bind(this);
@@ -26,8 +25,7 @@ class Landing extends React.Component {
 	getPlayers(obj) {
 		this.setState({
 			all_players: obj.plyrs,
-			userID: obj.uid,
-			username: obj.username
+			userID: obj.uid
 		});
 		if(obj.uid === obj.host)
 			this.setState({showStartButton: true});
@@ -36,18 +34,14 @@ class Landing extends React.Component {
 	getStartGame(obj) {
 		this.setState({gameStatus: 1}); 
 		this.props.gameCallback(this.state);
-		//console.log("Bois, we're moving ahead");
-		console.log('starting game for @'+this.props.username)
 	}
 
 	startGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'startGame'}));
-		console.log("@"+this.props.username+" sent startGame")
 	}
 
 	leaveGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'leaveGame'}));
-		console.log("@"+this.props.username+" sent leaveGame")
 	}
 
 	render() {

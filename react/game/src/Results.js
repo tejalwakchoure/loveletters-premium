@@ -13,8 +13,13 @@ class Results extends React.Component {
 
 	constructor(props) {
 	    super(props);
+	    this.state = {
+	    	toSend: false,
+	    	disableButton: false
+	    };
 	    this.getResults = this.getResults.bind(this);
 	    this.getCard = this.getCard.bind(this);
+	    this.doNext = this.doNext.bind(this);
 	}
 
 	getCard(name) {
@@ -38,19 +43,24 @@ class Results extends React.Component {
 		return points_display;
 	}
 
+	doNext(toSend) {
+		this.setState({disableButton: true});
+		this.props.gameCallback(toSend);
+	}
+
 	render() {
 		const points_display = this.getResults();
 		return(
 			<Container className="Game-header">
 			  	<Row style={{margin: 'auto'}}>
-			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess!</h3>
+			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess this time!</h3>
 			  	</Row>
 			  	<hr/>
 			  
 			  	{this.props.gameWinner!==null?
 			  		<div style={{margin: 'auto'}}>
 			  			<Row style={{margin: 'auto'}}>
-			  				<h1 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' heart!</h1>
+			  				<h1 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' whole heart! All you other losers can go mope around xoxo</h1>
 			  			</Row>
 			  			<hr/>
 			  		</div>: <div></div>}
@@ -76,11 +86,11 @@ class Results extends React.Component {
 			  	</Row>
 			  	{this.props.gameWinner!==null? 
 			  		<Row style={{width: '50vw'}}>
-			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(true)}>Start New Game</Button></Col>
-			  			<Col><Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(false)}>Leave Game</Button></Col>
+			  			<Col><Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={this.doNext(true)}>Start New Game</Button></Col>
+			  			<Col><Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={this.doNext(false)}>Leave Game</Button></Col>
 			  		</Row> :
 			  		<Row style={{width: '50vw'}}>
-			  			<Button size="lg" block className='Confirm-button' onClick={(e) => this.props.gameCallback(true)}>Start Next Round</Button>
+			  			<Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={this.doNext(true)}>Start Next Round</Button>
 			  		</Row>}
 			</Container> 
 		);

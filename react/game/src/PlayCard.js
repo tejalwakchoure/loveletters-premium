@@ -30,11 +30,6 @@ class PlayCard extends React.Component {
 		let selectedPlayers = this.state.selectedPlayers;
 		let x = 0;
 		
-		console.log("num_players= ", this.state.num_players)
-		console.log("num_disabled_players= ", this.state.num_disabled_players)
-		console.log("cardPlayed= ", this.props.cardPlayed)
-		console.log("type= ", type)
-		
 		if(type==='single') {
 			if(this.props.syco.length===0) //no sycophants; proceed as normal
 				selectedPlayers = [item];
@@ -69,13 +64,11 @@ class PlayCard extends React.Component {
 				}
 			}	
 		}
-		console.log('selected player ids:'+selectedPlayers)
 	}
 
 	selectNumber(item, defaultSelectionSatisfied) {
 		this.setState({selectionSatisfied: this.state.selectedPlayers.length>0, 
 							selectedNumber: defaultSelectionSatisfied?-1:item});
-		console.log('selected number:'+item);
 	}
 
 	endPlay() {
@@ -94,7 +87,6 @@ class PlayCard extends React.Component {
 		if(this.state.selectedNumber!==-1)
 			valuesToSend['number'] = this.state.selectedNumber;
 
-		console.log("sending to round=", valuesToSend);
 		this.props.roundCallback(valuesToSend);
 	}
 
@@ -134,7 +126,6 @@ class PlayCard extends React.Component {
 		var list = null;
 		if(["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"].indexOf(this.props.cardPlayed)>=0) { //no action
 			list = null;
-			console.log('list is null');
 		}
 		
 		else {
@@ -205,14 +196,10 @@ class PlayCard extends React.Component {
 			"syco": this.props.syco,
 			"eliminated": this.props.eliminated
 		};
-		
 		this.props.socket.send(JSON.stringify(sendPlay));
-		console.log('sent playCard');
-
 
 		
 		if(list!=null) {
-			console.log('RENDER: PlayCard for @'+this.props.currentPlayer)
 			return (
 				<div style={{margin: 'auto'}}>
 					<Row style={{justifyContent: 'center'}}>
@@ -229,7 +216,6 @@ class PlayCard extends React.Component {
 			);
 		}
 		else {
-			console.log('RENDER: PlayCard for a non-choice card for @'+this.props.currentPlayer)
 			return (<div>{this.endPlay()}</div>);
 		}
 	}
