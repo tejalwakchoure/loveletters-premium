@@ -154,6 +154,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         self.user.addSocketHandle(self)
 
     def on_message(self, message):
+    
+        if self.user.gid == -1: #Get him out if here
+            self.close()
+            self.redirect('/')
         
         curr_game = self.application.games[self.user.gid]
         message = json.loads(message)
