@@ -1,6 +1,5 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Row, Col} from 'react-bootstrap';
@@ -11,102 +10,12 @@ class ShowPlay extends React.Component {
 	
 	constructor(props) {
 	    super(props);
-	    // this.state = {
-	    // 	selectedPlayers: this.props.syco,
-	    // 	selectionSatisfied: false,
-	    // 	selectedNumber: -1,
-	    // 	num_disabled_players: this.props.immune.length + this.props.eliminated.length,
-	    // 	num_players: Object.keys(this.props.all_players).length
-	    // }
-	    // this.selectPlayer = this.selectPlayer.bind(this);
-	    // this.selectNumber = this.selectNumber.bind(this);
 		this.getList = this.getList.bind(this);
-		// this.setDefaultSelection = this.setDefaultSelection.bind(this);
-
 	}
-
-	// selectPlayer(type, item){ 
-	// 	let selectedPlayers = this.state.selectedPlayers;
-	// 	let x = 0;
-		
-	// 	if(type==='single') {
-	// 		if(this.props.syco.length===0) //no sycophants; proceed as normal
-	// 			selectedPlayers = [item];
-			
-	// 		if(this.props.cardPlayed!=="Guard" && this.props.cardPlayed!=="Bishop")
-	// 			this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
-	// 		else
-	// 			this.setState({selectionSatisfied: this.state.selectedNumber!==-1, selectedPlayers: selectedPlayers});
-	// 	}
-	// 	else {
-	// 		if(this.props.syco.length===0 || !(this.props.syco.indexOf(item)>=0)) { //this item is not a sycophant
-	// 			x = selectedPlayers.indexOf(item);
-	// 			if(x!==undefined && x>=0) {
-	// 				selectedPlayers.splice(x, 1);
-	// 			} else {
-	// 				selectedPlayers = selectedPlayers.concat(item);
-	// 			}
-	// 		}
-
-	// 		if(type==='double') {
-	// 			if(selectedPlayers.length===2) {
-	// 					this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
-	// 			} else {
-	// 				this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
-	// 			}
-				
-	// 		} else { // type is 'either'
-	// 			if(selectedPlayers.length===1 || selectedPlayers.length===2) {
-	// 				this.setState({selectionSatisfied: true, selectedPlayers: selectedPlayers});
-	// 			} else {
-	// 				this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
-	// 			}
-	// 		}	
-	// 	}
-	// 	console.log('selected player ids:'+selectedPlayers)
-	// }
-
-	// selectNumber(item, defaultSelectionSatisfied) {
-	// 	this.setState({selectionSatisfied: this.state.selectedPlayers.length>0, 
-	// 						selectedNumber: defaultSelectionSatisfied?-1:item});
-	// 	console.log('selected number:'+item);
-	// }
-
-	// setDefaultSelection(choiceType) {
-	// 	var selectionSatisfied = false;
-
-	// 	if(choiceType === "single") {
-	// 		if(this.state.num_players - this.state.num_disabled_players <= 1 //only current player is eligible
-	// 			 	&& this.props.cardPlayed!=="Prince" && this.props.cardPlayed!=="Sycophant")
-	// 			selectionSatisfied = true;
-
-	// 		if(this.props.syco.length>=1)
-	// 			selectionSatisfied = true;
-	// 	} 
-	// 	else if(choiceType === "double") {
-	// 		if(this.state.num_players - this.state.num_disabled_players <= 1) //only current player is eligible but 2 to choose
-	// 			selectionSatisfied = true;
-	// 		else if(this.state.num_players - this.state.num_disabled_players <= 2 //only 2 players are eligible including current
-	// 				&& this.props.cardPlayed!=="Cardinal")
-	// 			selectionSatisfied = true;
-
-	// 		if(this.props.syco.length>=2)
-	// 			selectionSatisfied = true;
-	// 	}
-	// 	else { // type is 'either'
-	// 		if(this.state.num_players - this.state.num_disabled_players <= 1) //only current player is eligible
-	// 			selectionSatisfied = true;
-
-	// 		if(this.props.syco.length>=1)
-	// 			selectionSatisfied = true;
-	// 	}
-
-	// 	return selectionSatisfied;
-	// }
 
 	getList() {
 		var list = null;
-		if(["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"].indexOf(this.props.playCardData.cardPlayed)>=0) { //no action
+		if(["Assassin", "Constable", "Count", "Countess", "Handmaid", "Princess"].indexOf(this.props.playCardData.cardPlayed)>=0) {
 			list = null;
 		}
 		
@@ -156,7 +65,6 @@ class ShowPlay extends React.Component {
 
 
 		if(list!=null) {
-			console.log('RENDER: ShowPlay for @'+this.props.playCardData.currentPlayer)
 			return (
 				<div style={{margin: 'auto'}}>
 					<Row style={{justifyContent: 'center'}}>
@@ -168,7 +76,6 @@ class ShowPlay extends React.Component {
 			);
 		}
 		else {
-			console.log('RENDER: ShowPlay for a non-choice card for @'+this.props.playCardData.currentPlayer)
 			return (<div></div>);
 		}
 	}
