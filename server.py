@@ -146,8 +146,8 @@ class gameLoginHandler(RequestHandler):
                 
                 self.write(json.dumps(blob))
         else:
-            print(self.request.arguments)
-        
+            #print(self.request.arguments)
+            pass
         
 class gameBoardHandler(RequestHandler):
     def get(self):
@@ -174,7 +174,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        print(self.user.username, ':', message['type'])
+        #print(self.user.username, ':', message['type'])
         
         if message['type'] == 'players':
             plyrs = {}
@@ -229,7 +229,6 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
-            print(message)
             if message['toDiscard']:
                 curr_game.round.player_discard(self.user.user)
                 curr_game.round.result_blob['bishopAction'] = 'discard'

@@ -243,9 +243,11 @@ class Round:
         try:
             self.player_play_card(card_discarded, plyr1, plyr2, numb_given)
         except APIException as e:
-            print("Card was discarded without effect")
             self.result_blob['result'] = 'x'
-            print("ERROR: ", e, " ---------------------------------------------------")
+            
+            ################## --------------------- COMMENT --------------------- ##################
+            #print("Card was discarded without effect")
+            #print("ERROR: ", e, " ---------------------------------------------------")
         
 
 
@@ -309,6 +311,7 @@ class Round:
             pass
         
         elif played_card.card_name == 'Dowager Queen': #Players have to copmare and GREATER ONE is out
+            self.result_blob['result'] = 'Loss'
             if self.players[plyr1].card.card_number > self.players[self.turn].card.card_number: #plyr1 is out
                 self.result_blob['card1'] = self.players[self.turn].card.card_name
                 self.result_blob['card2'] = self.players[plyr1].card.card_name
@@ -317,6 +320,8 @@ class Round:
                 self.result_blob['card2'] = self.players[self.turn].card.card_name
                 self.result_blob['card1'] = self.players[plyr1].card.card_name
                 self.knockout_player(self.turn)
+            else:
+                self.result_blob['result'] = 'Tie'
             #Nothing on tie
             
         elif played_card.card_name == 'King': #Exchange cards with chosen player
@@ -340,6 +345,7 @@ class Round:
             self.result_blob['result'] = 'sychoTar'
         
         elif played_card.card_name == 'Baron':#Players have to copmare and LESSER ONE is out
+            self.result_blob['result'] = 'Loss'
             if self.players[plyr1].card.card_number < self.players[self.turn].card.card_number: #plyr1 is out
                 self.result_blob['card1'] = self.players[self.turn].card.card_name
                 self.result_blob['card2'] = self.players[plyr1].card.card_name
@@ -348,6 +354,8 @@ class Round:
                 self.result_blob['card2'] = self.players[self.turn].card.card_name
                 self.result_blob['card1'] = self.players[plyr1].card.card_name
                 self.knockout_player(self.turn)
+            else:
+                self.result_blob['result'] = 'Tie'
             #Nothing on tie
         
         elif played_card.card_name == 'Baroness': #plyr1 and plyr2 have to be revealed 
@@ -435,9 +443,9 @@ class Round:
             
             fin_players = sorted(fin_players, reverse=True) #Sort the players
             
-            #############
-            print("FINAL STANDINGS")
-            print([(plyr.username,plyr.card.card_name, plyr.end_count, plyr.dis_sum) for plyr in fin_players]) 
+            ################## --------------------- COMMENT --------------------- ##################
+            #print("FINAL STANDINGS")
+            #print([(plyr.username,plyr.card.card_name, plyr.end_count, plyr.dis_sum) for plyr in fin_players]) 
             
             if fin_players[0].card.card_name == 'Bishop' and fin_players[1].card.card_name == "Princess":
                 # 1 is the winner not zero 
@@ -520,10 +528,12 @@ class Round:
             obj['card2'] = self.result_blob['card2']
             
         elif obj['card_discarded'] in ['Baron', 'Dowager Queen']:
-            obj['card1'] = self.result_blob['card2'] #Losing card to everyone
-            
-            if plyr_uid == obj['player'] or plyr_uid == obj['player1']: #Priveleged players 
+            if plyr_uid == obj['player'] or plyr_uid == obj['player1']: #Priveleged players, get to see both cards 
+                obj['card1'] = self.result_blob['card2']
                 obj['card2'] = self.result_blob['card1']
+                
+            elif self.result_blob['result'] == 'Loss': #if not priveleged players, and on loss of one player
+                obj['card1'] = self.result_blob['card2'] #Losing card to everyone
         
         elif obj['card_discarded'] in ['Guard', 'Bishop']:
             if plyr_uid == obj['player']:
@@ -536,7 +546,7 @@ class Round:
                 obj['card1'] = self.result_blob['card1']
                 obj['resultMsg'] += ' guessed Correctly. '
             elif self.result_blob['result'] == 'Incorrect':
-                obj['resultMsg'] += ' guessed Incorrectly.'
+                obj['resultMsg'] += ' guessed Incorrectly. '
             elif self.result_blob['result'] == 'Assassin':
                 obj['card1'] = 'Assassin'
             
@@ -609,14 +619,12 @@ class Round:
             
             
     def curr_stat(self):
-        # for card in self.cards:
-        #     print(card.card_name)
+    
         print(self.cards[-1].card_name, self.cards[-2].card_name, self.cards[-3].card_name )
         for plyrs in self.order:
             print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
-        #print(self.result_blob)
-        #print(self.turn_status(self.turn))
+        
         
         
 
