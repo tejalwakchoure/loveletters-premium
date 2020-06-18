@@ -83,6 +83,7 @@ class Round extends React.Component {
   			results: obj,
   			discard_pile: obj.discard_pile
 		});
+		console.log("got results from socket")
 	}
 
 	selectCard(chosen, remaining) {
@@ -126,9 +127,11 @@ class Round extends React.Component {
   	endTurn = () => {
   		if(this.state.results.roundWinner!==null) {
 			this.props.gameCallback(this.state.results); //end round
+			console.log("sent results to Game")
 		}
 		else if(this.state.results.gameWinner!==null) {
 			this.props.gameCallback(this.state.results); //end round
+			console.log("sent results to Game")
 		}
   	}
 
@@ -192,7 +195,7 @@ class Round extends React.Component {
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
-					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardPlayed}</h4>
+					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardToPlay}</h4>
 					  	</Row>
 					  	<hr/>
 				  		<PlayCard socket={this.props.socket} currentPlayer={this.state.currentPlayer}
