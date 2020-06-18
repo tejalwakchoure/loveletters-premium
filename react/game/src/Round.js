@@ -192,7 +192,7 @@ class Round extends React.Component {
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
-					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
+					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardPlayed}</h4>
 					  	</Row>
 					  	<hr/>
 				  		<PlayCard socket={this.props.socket} currentPlayer={this.state.currentPlayer}
