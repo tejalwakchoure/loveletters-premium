@@ -61,6 +61,10 @@ class Game extends React.Component {
 			else if(obj.type === 'results'){
 				this.roundRef.current.getResults(obj);
 			}
+			else if(obj.type === 'redirect'){
+				console.log("to get out of here")
+				window.location.replace('/');
+			}
 		}
 	}
 

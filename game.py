@@ -595,14 +595,17 @@ class Round:
             if self.result_blob['number'] != None:
                 obj = obj + ' and guessed ' + str(self.result_blob['number'])
             
+            if 'bishopGuess' in self.result_blob and self.result_blob['bishopGuess'] == 'discard':
+                obj = objj + '. Card was discarded'
             return obj
         else:
             return None
             
             
     def curr_stat(self):
-        for card in self.cards:
-            print(card.card_name)
+        # for card in self.cards:
+        #     print(card.card_name)
+        print(self.cards[-1].card_name, self.cards[-2].card_name, self.cards[-3].card_name )
         for plyrs in self.order:
             print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
@@ -635,6 +638,7 @@ class Game:
         self.round = None
         
         self.overall_winner = None
+        self.all_in = {}
         
     def add_player(self, user, username):
         if self.state != 0:
@@ -647,6 +651,8 @@ class Game:
             user.set_username(username)
             self.players[user.user] = user
             self.order.append(user.user)
+            self.all_in[user.user] = False
+
         else:
             raise APIException("player already exists")
             

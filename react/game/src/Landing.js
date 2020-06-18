@@ -42,6 +42,7 @@ class Landing extends React.Component {
 
 	leaveGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'leaveGame'}));
+		window.location.replace('/');
 	}
 
 	render() {
