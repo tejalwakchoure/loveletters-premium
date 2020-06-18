@@ -11,7 +11,7 @@ class Game extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	gameStatus: 0, /* 0-landing screen start game, 1- in round, 2- round results, 3-landing screen end game*/
+	    	gameStatus: 0, /* 0-landing screen:start game, 1- in round, 2- round results, 3-landing screen:end game*/
 			leavingGame: false,
 			rounds_played: 0,
 			all_players: {},
@@ -48,26 +48,18 @@ class Game extends React.Component {
 			
 			if(obj.type === 'playersS'){
 				this.landingRef.current.getPlayers(obj);
-				console.log('playersS received @'+this.state.username)
 			}
 			else if(obj.type === 'startGame'){
 				this.landingRef.current.getStartGame(obj);
-				console.log('startGame received @'+this.state.username)
 			}
 			else if(obj.type === 'turn'){
-				console.log('turn received @'+this.state.username)
 				this.roundRef.current.getTurn(obj);
-				console.log('turn sent back to round @'+this.state.username)
 			}
 			else if(obj.type === 'playComponent'){
-				console.log('playComponent received @'+this.state.username)
 				this.roundRef.current.getPlay(obj);
-				console.log('playComponent sent back to round @'+this.state.username)
 			}
 			else if(obj.type === 'results'){
-				console.log('results received @'+this.state.username)
 				this.roundRef.current.getResults(obj);
-				console.log('results sent back to round @'+this.state.username)
 			}
 		}
 	}
@@ -80,24 +72,17 @@ class Game extends React.Component {
 			userID: landingData.userID,
 			username: landingData.username
 		});
-		console.log("player info received from landing:", landingData)
-		console.log("set gameStatus to 1")
 	}
 
 	roundCallback = (roundData) => {
-		// const tempCards = this.state.cardsAtRoundEnd;
-		// tempCards.push(roundData.currentCards);
 		this.setState({
 			rounds_played: this.state.rounds_played+1,
 			tokens: roundData.tokens,
 			gameStatus: 2,
 			roundWinner: roundData.roundWinner,
 			gameWinner: roundData.gameWinner,
-			cardsAtRoundEnd: roundData.finalCards //tempCards
+			cardsAtRoundEnd: roundData.finalCards
 		});
-		console.log("results received from Round @"+ this.state.username)
-		console.log("set gameStatus to 2")
-		console.log("values got from round:", roundData)
 	}
 
 	resultsCallback = (resultsData) => {
@@ -106,33 +91,28 @@ class Game extends React.Component {
 				gameStatus: 0,
 				leavingGame: false
 			});
-			console.log('We have a game winner; set state=0 to start new game @'+ this.state.username);
-			console.log('WebSocket Client reconnected');
 			socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
 			this.setState({
 				gameStatus: 1
 			});
-			console.log('No game winner yet; set state=1 to start next round @'+ this.state.username);
 		}
 		else {
 			this.setState({
 				gameStatus: 0,
 				leavingGame: true
 			});
-			console.log('set state=0 and @'+ this.state.username+' is leaving the game');
 		}
 	}
 
 	render() {
 		if (this.state.gameStatus===0)
 			return (<Landing ref={this.landingRef} leavingGame={this.state.leavingGame} 
-						gameCallback = {this.landingCallback} socket={socket} 
-						username={this.state.username}/>); //remove username, only for testing
+						gameCallback = {this.landingCallback} socket={socket}/>);
 		else if (this.state.gameStatus===1)
 		    return (<Round ref={this.roundRef} gameCallback={this.roundCallback} all_players={this.state.all_players}
-		    				userID={this.state.userID} username={this.state.username} socket={socket}/>);
+		    				userID={this.state.userID} socket={socket}/>);
 		else if (this.state.gameStatus===2)
 			return(<Results points={this.state.tokens} allPlayers={this.state.all_players} winner={this.state.roundWinner} 
 					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} gameCallback={this.resultsCallback}/>);
