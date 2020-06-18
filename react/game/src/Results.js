@@ -20,6 +20,7 @@ class Results extends React.Component {
 	    this.getResults = this.getResults.bind(this);
 	    this.getCard = this.getCard.bind(this);
 	    this.doNext = this.doNext.bind(this);
+	    console.log("results rendered")
 	}
 
 	getCard(name) {
