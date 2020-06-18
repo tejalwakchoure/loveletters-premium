@@ -82,8 +82,8 @@ class Round extends React.Component {
   			othersPlayMode: -1,
   			results: obj,
   			discard_pile: obj.discard_pile
-		});
-		console.log("got results from socket")
+		},
+		console.log("got results from socket"));
 	}
 
 	selectCard(chosen, remaining) {
@@ -126,12 +126,12 @@ class Round extends React.Component {
 
   	endTurn = () => {
   		if(this.state.results.roundWinner!==null) {
+  			console.log("sent results to Game")
 			this.props.gameCallback(this.state.results); //end round
-			console.log("sent results to Game")
 		}
 		else if(this.state.results.gameWinner!==null) {
-			this.props.gameCallback(this.state.results); //end round
 			console.log("sent results to Game")
+			this.props.gameCallback(this.state.results); //end round
 		}
   	}
 
