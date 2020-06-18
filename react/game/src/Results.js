@@ -20,7 +20,7 @@ class Results extends React.Component {
 	    this.getResults = this.getResults.bind(this);
 	    this.getCard = this.getCard.bind(this);
 	    this.doNext = this.doNext.bind(this);
-	    console.log("results rendered")
+	    console.log("results rendered");
 	}
 
 	getCard(name) {
@@ -53,14 +53,14 @@ class Results extends React.Component {
 		const points_display = this.getResults();
 		return(
 			<Container className="Game-header">
-			  	<Row style={{margin: 'auto'}}>
+			  	<Row style={{margin: 'auto', textAlign: 'center'}}>
 			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess this time!</h3>
 			  	</Row>
 			  	<hr/>
 			  
 			  	{this.props.gameWinner!==null?
 			  		<div style={{margin: 'auto'}}>
-			  			<Row style={{margin: 'auto'}}>
+			  			<Row style={{margin: 'auto', textAlign: 'center'}}>
 			  				<h1 className='Play-status'>{this.props.allPlayers[this.props.gameWinner]} won the Princess' whole heart! All you other losers can go mope around xoxo</h1>
 			  			</Row>
 			  			<hr/>
