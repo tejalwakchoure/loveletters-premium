@@ -344,6 +344,10 @@ class Round extends React.Component {
 						  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
 						  			</Row>
 						  			<hr/>
+						  			<Row style={{margin: 'auto'}}>
+						  				<h4 className='Play-status'>{this.state.currentPlayer} is playing</h4>
+						  			</Row>
+						  			<hr/>
 						  		</div>): <div></div>)}
 					  	
 

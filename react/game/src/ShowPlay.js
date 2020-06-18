@@ -58,7 +58,7 @@ class ShowPlay extends React.Component {
 								return <ListGroup.Item className='List-item-design'
 											variant={this.props.playCardData.selectedNumber===item?'dark':'light'}
 											key={item} 
-											disabled={item===1}>{item}
+											disabled={(this.props.cardPlayed==="Guard")?(item===1):(item===-1)}>{item}
 										</ListGroup.Item>})}
 							</ListGroup>);
 
