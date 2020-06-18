@@ -400,6 +400,9 @@ class Round:
         self.order.remove(plyr)
         self.players[plyr].out = True
         self.players[plyr].tokens += self.players[plyr].dis_const
+        
+        if len(self.order) != 1:
+            self.super_game.check_winner()
 
         self.players[plyr].discard_pile.append(self.players[plyr].card)
         self.discard_pile.append(self.players[plyr].card.card_name)
@@ -678,10 +681,11 @@ class Game:
 
         if len(winnerList) == 1: #Only one winner yay
             self.roundOver = True
-            self.round.result_blob['gameWinner'] = plyr
-            self.overall_winner = plyr
+            self.round.result_blob['gameWinner'] = winnerList[0]
+            self.overall_winner = winnerList[0]
             self.state = 0
             return True
+        
         elif len(winnerList) > 1: #multiple winners, start a new round with only ths people
             self.order = winnerList
             self.new_round() #Start a new round with only tied players
