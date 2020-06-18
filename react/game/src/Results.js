@@ -86,11 +86,11 @@ class Results extends React.Component {
 			  	</Row>
 			  	{this.props.gameWinner!==null? 
 			  		<Row style={{width: '50vw'}}>
-			  			<Col><Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={this.doNext(true)}>Start New Game</Button></Col>
-			  			<Col><Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={this.doNext(false)}>Leave Game</Button></Col>
+			  			<Col><Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={() => this.doNext(true)}>Start New Game</Button></Col>
+			  			<Col><Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={() => this.doNext(false)}>Leave Game</Button></Col>
 			  		</Row> :
 			  		<Row style={{width: '50vw'}}>
-			  			<Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={this.doNext(true)}>Start Next Round</Button>
+			  			<Button size="lg" block className='Confirm-button' disabled={this.state.disableButton} onClick={() => this.doNext(true)}>Start Next Round</Button>
 			  		</Row>}
 			</Container> 
 		);
