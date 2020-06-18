@@ -181,7 +181,7 @@ class PlayCard extends React.Component {
 								return <ListGroup.Item className='List-item-design'
 											variant={this.state.selectedNumber===item?'dark':'light'}
 											key={item} 
-											disabled={item===1}
+											disabled={(this.props.cardPlayed==="Guard")?(item===1):(item===-1)}
 											onClick={(e) => this.selectNumber(item, defaultSelectionSatisfied, e)}>{item}
 										</ListGroup.Item>})}
 							</ListGroup>);
