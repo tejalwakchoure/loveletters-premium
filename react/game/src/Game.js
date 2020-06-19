@@ -119,7 +119,8 @@ class Game extends React.Component {
 		    				userID={this.state.userID} socket={socket}/>);
 		else if (this.state.gameStatus===2)
 			return(<Results points={this.state.tokens} allPlayers={this.state.all_players} winner={this.state.roundWinner} 
-					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} gameCallback={this.resultsCallback}/>);
+					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} 
+					gameCallback={this.resultsCallback} socket={socket}/>);
 	}
 }
 
