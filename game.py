@@ -1,3 +1,4 @@
+from collections import OrderedDict 
 import random
 import copy
 
@@ -471,6 +472,9 @@ class Round:
             obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
         else:
             obj['cards'] = [self.players[plyr_uid].card.card_name]
+        
+        
+        
         obj['sycho'] = []
         if self.sychoTar != None:
             obj['sycho'].append(self.sychoTar)
@@ -492,8 +496,20 @@ class Round:
                 obj['eliminated'].append(plyr.user)
         
         
+        obj['order'] = self.super_game.order
+        
+        obj['jester'] = []
+        if self.jesterTar != None:
+            obj['jester'].append(jesterTar)
+        
+        obj['constable'] = []
+        for plyr in self.players.values():
+            if plyr.dis_const > 0:
+                obj['constable'].append(plyr.user)
+        
         obj['prevTurn'] = self.msg_status(plyr_uid)
         obj['discard_pile'] = self.discard_pile
+        obj['cards_left'] = len(self.cards)
         
         return obj
     
@@ -581,6 +597,7 @@ class Round:
         obj['gameWinner'] = self.result_blob['gameWinner']
         
         obj['discard_pile'] = self.discard_pile
+        obj['cards_left'] = len(self.cards)
         
         return obj
     

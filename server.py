@@ -191,7 +191,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
         elif message['type'] == 'startGame':
             #Start the game
-            curr_game.start_game(2, True) #Options are number of hearts to win and if extraCards are wanted
+            curr_game.start_game(int(message['token_limit']), message['addExt']) #Options are number of hearts to win and if extraCards are wanted
             
             self.sendGameAll({'type': 'startGame'}, curr_game)
 
