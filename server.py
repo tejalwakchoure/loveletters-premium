@@ -174,7 +174,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        #print(self.user.username, ':', message['type'])
+        print(self.user.username, ':', message['type'], message)
         
         if message['type'] == 'players':
             plyrs = {}
