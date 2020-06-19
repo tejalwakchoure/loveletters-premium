@@ -25,6 +25,11 @@ class PlayCard extends React.Component {
 	    	num_disabled_players: this.props.num_special[0] + this.props.num_special[1],
 	    	num_players: Object.keys(this.props.all_players).length
 	    }
+	    console.log(this.props.allPlayerInfo);
+	    console.log("this.props.num_special= ", this.props.num_special);
+	    console.log("num_disabled_players= ", num_disabled_players);
+	    console.log("num_players= ", num_players);
+
 	    this.selectPlayer = this.selectPlayer.bind(this);
 	    this.selectNumber = this.selectNumber.bind(this);
 		this.endPlay = this.endPlay.bind(this);
@@ -36,7 +41,9 @@ class PlayCard extends React.Component {
 	selectPlayer(type, item){ 
 		let selectedPlayers = this.state.selectedPlayers;
 		let x = 0;
-		
+		console.log("num_disabled_players= ", this.state.num_disabled_players);
+	    console.log("num_players= ", this.state.num_players);
+	    console.log("selectedPlayers initial= ", selectedPlayers);
 		if(type==='single') {
 			if(this.props.num_special[2]===0) //no sycophants; proceed as normal
 				selectedPlayers = [item];
@@ -70,12 +77,14 @@ class PlayCard extends React.Component {
 					this.setState({selectionSatisfied: false, selectedPlayers: selectedPlayers});
 				}
 			}	
+			console.log("selectedPlayers final= ", selectedPlayers);
 		}
 	}
 
 	selectNumber(item, defaultSelectionSatisfied) {
 		console.log("this.state.selectedPlayers=", this.state.selectedPlayers)
 		console.log("defaultSelectionSatisfied=", defaultSelectionSatisfied)
+		console.log("selectedNumber=", (defaultSelectionSatisfied?-1:item))
 		this.setState({selectionSatisfied: (this.state.selectedPlayers.length>0), 
 							selectedNumber: (defaultSelectionSatisfied)?-1:item});
 	}
@@ -101,7 +110,9 @@ class PlayCard extends React.Component {
 
 	setDefaultSelection(choiceType) {
 		var selectionSatisfied = false;
-
+		console.log("choiceType= ", choiceType);
+		console.log("num_disabled_players= ", this.state.num_disabled_players);
+	    console.log("num_players= ", this.state.num_players);
 		if(choiceType === "single") {
 			if(this.state.num_players - this.state.num_disabled_players <= 1 //only current player is eligible
 				 	&& this.props.cardPlayed!=="Prince" && this.props.cardPlayed!=="Sycophant")
