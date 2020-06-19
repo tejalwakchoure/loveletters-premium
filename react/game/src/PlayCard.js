@@ -16,7 +16,8 @@ class PlayCard extends React.Component {
 		    Object.entries(this.props.allPlayerInfo).map(([id, values]) => {
     			if(values[2]===true) {
     				if(id===this.props.currentPlayer && this.props.cardPlayed!=="Prince" 
-    					&& this.props.cardPlayed!=="Sycophant" && this.props.cardPlayed!=="Cardinal") { //current player is syco & cannot be chosen
+    					&& this.props.cardPlayed!=="Sycophant" && this.props.cardPlayed!=="Cardinal") { 
+    					//syco is current player & hence cannot be chosen
     				} 
     				else {
     					syco=[id];
@@ -120,20 +121,25 @@ class PlayCard extends React.Component {
 		console.log("choiceType= ", choiceType);
 		console.log("num_disabled_players= ", this.state.num_disabled_players);
 	    console.log("num_players= ", this.state.num_players);
+	    console.log("current player is a sycophant= ", this.props.allPlayerInfo[this.props.currentPlayer][2])
+
 		if(choiceType === "single") {
-			if(this.state.num_players - this.state.num_disabled_players <= 1 //only current player is eligible
+			if(((this.state.num_players - this.state.num_disabled_players <= 1) || //only current player is eligible
+				 	(this.props.allPlayerInfo[this.props.currentPlayer][2]===true)) //many players are eligible but current is syco
 				 	&& this.props.cardPlayed!=="Prince" && this.props.cardPlayed!=="Sycophant")
 				selectionSatisfied = true;
 		} 
 		else if(choiceType === "double") {
 			if(this.state.num_players - this.state.num_disabled_players <= 1) //only current player is eligible but 2 to choose
 				selectionSatisfied = true;
-			else if(this.state.num_players - this.state.num_disabled_players <= 2 //only 2 players are eligible including current
-					&& this.props.cardPlayed!=="Cardinal")
+			else if(((this.state.num_players - this.state.num_disabled_players <= 2) || //only 2 players are eligible including current
+						(this.props.allPlayerInfo[this.props.currentPlayer][2]===true)) //many players are eligible but current is syco
+						&& this.props.cardPlayed!=="Cardinal")
 				selectionSatisfied = true;
 		}
 		else { // type is 'either'
-			if(this.state.num_players - this.state.num_disabled_players <= 1) //only current player is eligible
+			if((this.state.num_players - this.state.num_disabled_players <= 1) || //only current player is eligible
+					(this.props.allPlayerInfo[this.props.currentPlayer][2]===true)) //many players are eligible but current is syco
 				selectionSatisfied = true;
 		}
 

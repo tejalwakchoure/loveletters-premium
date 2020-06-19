@@ -17,7 +17,6 @@ class Round extends React.Component {
 	    super(props);
 	    this.state = {
 		    cardToPlay: " ",
-		    cardRemaining: " ",
 		    playMode: 0, // 0-choosing card, 1-playing card, 2-viewing results of turn
 		    currentPlayer: " ",
 		    playStatus: " ",
@@ -32,7 +31,7 @@ class Round extends React.Component {
 		    disableButton: false,
 		    turnEnded: false,
 		    othersPlayMode: -1,
-		    cardinalChosenMessage: "",
+		    // cardinalChosenMessage: "",
 		    showPlay: {}
 		};
 
@@ -63,7 +62,7 @@ class Round extends React.Component {
 		    num_cards_left: obj.cards_left,
 		    playStatus: this.props.all_players[obj.player]+" is playing",
 		    disableButton: false,
-  			cardinalChosenMessage: ""
+  			// cardinalChosenMessage: ""
 		});
 	}
 
@@ -90,13 +89,17 @@ class Round extends React.Component {
 	}
 
 	getCardinalView(obj) {
-		this.setState({cardinalChosenMessage: obj.cardinalChosenMessage});
+		const res = this.state.results;
+		res['resultMsg'] = res['resultMsg']+"."+obj.cardinalChosenMessage;
+		this.setState({
+			// cardinalChosenMessage: obj.cardinalChosenMessage,
+			results: res
+		});
 	}
 
-	selectCard(chosen, remaining) {
+	selectCard(chosen) {
 		this.setState({
-			cardToPlay: chosen,
-			cardRemaining: remaining,
+			cardToPlay: chosen
 		});
   	}
 
@@ -129,7 +132,7 @@ class Round extends React.Component {
 		if(playerChosen===1) {
 			this.setState({
 				cardinalChosen: this.state.results.card1,
-				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
+				// cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
 			});
 			this.props.socket.send(JSON.stringify({'type':'cardinalView',
 										    		'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"}));
@@ -137,7 +140,7 @@ class Round extends React.Component {
 		else {
 			this.setState({
 				cardinalChosen: this.state.results.card2,
-				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
+				// cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
 			});
 			this.props.socket.send(JSON.stringify({'type':'cardinalView',
 							    					'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"}));
@@ -198,10 +201,10 @@ class Round extends React.Component {
 					  	</Row>
 					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
-					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, drawnCard, e)}>
+					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, e)}>
 					  			<Cards cardname={currentCard}/>
 					  		</Col>
-					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(drawnCard, currentCard, e)}>
+					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(drawnCard, e)}>
 					  			<Cards cardname={drawnCard}/>
 					  		</Col>
 					  	</Row> 
@@ -224,9 +227,9 @@ class Round extends React.Component {
 					  	</Row>
 					  	<hr/>
 				  		<PlayCard socket={this.props.socket} currentPlayer={this.state.currentPlayer}
-				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
-				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-				  		allPlayerInfo={this.state.allPlayerInfo} num_special={this.state.num_special}/>
+				  		cardPlayed={this.state.cardToPlay} roundCallback={this.playCardCallback} 
+				  		all_players={this.props.all_players} allPlayerInfo={this.state.allPlayerInfo} 
+				  		num_special={this.state.num_special}/>
 					</Container>
 				);
 			} 
@@ -307,9 +310,7 @@ class Round extends React.Component {
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-						{this.state.cardinalChosenMessage===''?
-							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
-							<h5 className='Play-status'>{this.state.cardinalChosenMessage}</h5>}
+						<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
 					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
@@ -359,9 +360,7 @@ class Round extends React.Component {
 		  				(<div style={{margin: '0px auto'}}>
 			  				<Row style={{margin: 'auto'}}>
 								<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-								{this.state.cardinalChosenMessage===''?
-									<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
-									<h5 className='Play-status'>{this.state.cardinalChosenMessage}</h5>}
+								<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
 							</Row>
 							<hr/>
 						</div>): 
