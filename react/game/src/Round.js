@@ -173,18 +173,18 @@ class Round extends React.Component {
 				console.log('RENDER MODE: current player x choosing card')
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px 0px auto 0px'}}>
+					  	<Row style={{margin: 0}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	{this.state.prevTurnMessage!==null?
-					  		(<div style={{margin: 'auto'}}>
+					  		(<div style={{margin: '0px auto'}}>
 						  		<Row style={{margin: 'auto'}}>
 						  			<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
 						  		</Row>
 						  		<hr/>
 						  	</div>): <div></div>}
-					  	<Row style={{margin: 'auto'}}>
+					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 					  	</Row>
 					  	<hr/>
@@ -206,11 +206,11 @@ class Round extends React.Component {
 				console.log('RENDER MODE: current player x playing card')
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px 0px auto 0px'}}>
+					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
-					  	<Row style={{margin: 'auto'}}>
+					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardToPlay}</h4>
 					  	</Row>
 					  	<hr/>
@@ -225,11 +225,11 @@ class Round extends React.Component {
 				console.log('RENDER MODE: current player x results')
 				return (
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px 0px auto 0px'}}>
+					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
-						<Row style={{margin: 'auto'}}>
+						<Row style={{margin: '0px auto'}}>
 							<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
 							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
 						</Row>
@@ -272,11 +272,11 @@ class Round extends React.Component {
 			console.log('RENDER MODE: other player x viewing play card')
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px 0px auto 0px'}}>
+					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
-					  	<Row style={{margin: 'auto'}}>
+					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.showPlay.cardPlayed}</h4>
 					  	</Row>
 					  	<hr/>
@@ -294,11 +294,11 @@ class Round extends React.Component {
 			if(!this.state.results.bishopGuess) {
 				return (
 				<Container className="Game-header">
-				  	<Row style={{margin: '0px 0px auto 0px'}}>
+				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
-					<Row style={{margin: 'auto'}}>
+					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
 						{this.state.results.card_discarded!=='Cardinal'?
 							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
@@ -315,11 +315,11 @@ class Round extends React.Component {
 			} else {
 				return (
 				<Container className="Game-header">
-				  	<Row style={{margin: '0px 0px auto 0px'}}>
+				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
-					<Row style={{margin: 'auto'}}>
+					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
 						<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
 					</Row>
@@ -346,12 +346,12 @@ class Round extends React.Component {
 				this.endTurn();
 			return(
 				<Container className="Game-header">
-				  	<Row style={{margin: '0px 0px auto 0px'}}>
+				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 		  			{this.state.playMode===2?
-		  				(<div style={{margin: 'auto'}}>
+		  				(<div style={{margin: '0px auto'}}>
 			  				<Row style={{margin: 'auto'}}>
 								<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
 								{this.state.results.card_discarded!=='Cardinal'?
@@ -361,13 +361,13 @@ class Round extends React.Component {
 							<hr/>
 						</div>): 
 						(this.state.prevTurnMessage!==null?
-				  			(<div style={{margin: 'auto'}}>
+				  			(<div style={{margin: '0px auto'}}>
 					  			<Row style={{margin: 'auto'}}>
 					  				<h5 className='Play-status'>{this.state.prevTurnMessage}</h5>
 					  			</Row>
 					  			<hr/>
 					  		</div>): <div></div>)}
-					<Row style={{margin: 'auto'}}>
+					<Row style={{margin: '0px auto'}}>
 				  		<h4 className='Play-status'>{this.state.playStatus}</h4>
 		  			</Row>
 		  			<hr/>
