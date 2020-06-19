@@ -27,6 +27,13 @@ class Landing extends React.Component {
 	   	this.leaveGame = this.leaveGame.bind(this);
 	}
 
+	getOptions(obj) {
+		this.setState({
+			addExt: obj.addExt,
+	    	token_limit: obj.token_limit
+		});
+	}
+
 	getPlayers(obj) {
 		this.setState({
 			all_players: obj.plyrs,
@@ -43,15 +50,15 @@ class Landing extends React.Component {
 
 	startGame = () => {
 		this.props.socket.send(JSON.stringify({
-			'type':'gameOptions',
+			'type':'startGame',
 			'addExt': this.state.addExt,
 			'token_limit': this.state.token_limit
 		}));
-		this.props.socket.send(JSON.stringify({'type':'startGame'}));
 	}
 
 	leaveGame = () => {
 		this.props.socket.send(JSON.stringify({'type':'leaveGame'}));
+		window.location.replace('/');
 	}
 
 	render() {
@@ -77,7 +84,11 @@ class Landing extends React.Component {
 				              <Form.Check id="checkbox">
 				                <Form.Check.Input type={"checkbox"} 
 				                					disabled={!this.state.showStartButton}
-				                					onChange={(e) => this.setState({addExt: e.target.checked})}/>
+				                					onChange={(e) => {this.setState({addExt: e.target.checked});
+				                										this.props.socket.send(JSON.stringify({
+																						'type':'gameOptions',
+																						'addExt': e.target.checked,
+																						'token_limit': this.state.token_limit}));}}/>
 				                <Form.Check.Label className='Play-status' style={{color: '#f1e4d7'}}>Add Extension Pack</Form.Check.Label>
 				              </Form.Check>
 				              </Form.Group>
@@ -93,7 +104,11 @@ class Landing extends React.Component {
 				                                max={10}
 				                                step={1}
 				                                disabled={!this.state.showStartButton}
-				                                onChange={(e) => this.setState({token_limit: e.target.value})}/>
+				                                onChange={(e) => {this.setState({token_limit: e.target.value});
+				                									this.props.socket.send(JSON.stringify({
+																		'type':'gameOptions',
+																		'addExt': this.state.addExt,
+																		'token_limit': e.target.value}));}}/>
 				                </OverlayTrigger>
 				              </Form.Group>
 				        </Form>
