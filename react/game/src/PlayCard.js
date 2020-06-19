@@ -11,8 +11,14 @@ class PlayCard extends React.Component {
 	
 	constructor(props) {
 	    super(props);
+	    let syco = [];
+	    if(this.props.num_special[2]!==0)
+		    syco = (Object.entries(this.props.allPlayerInfo).map(([id, values]) => {
+		    			if(values[2]===true)
+		    					return [id];}));
+	    
 	    this.state = {
-	    	selectedPlayers: this.props.num_special[2],
+	    	selectedPlayers: syco,
 	    	selectionSatisfied: false,
 	    	selectedNumber: -1,
 	    	num_disabled_players: this.props.num_special[0] + this.props.num_special[1],
