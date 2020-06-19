@@ -512,7 +512,18 @@ class Round:
                 # obj['constable'].append(plyr.user)
                 
         #All this is replaced by player dict
+        
         obj['playerInfo'] = self.player_dict
+        obj['num_special'] = [0, 0, 0] #Players eliminated, immune number, sycho number
+            
+        obj['num_special'][0] = len(self.players) - len(self.order)
+        
+        for plyr in self.order:
+            if self.players[plyr].immune:
+                obj['num_special'][1] += 1
+        
+        if self.sychoTar != None:
+            obj['num_special'][2] = 1
         
         obj['prevTurn'] = self.msg_status(plyr_uid)
         obj['discard_pile'] = self.discard_pile
