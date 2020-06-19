@@ -64,7 +64,7 @@ class Round extends React.Component {
 		    disableButton: false,
   			cardinalChosenMessage: ""
 		},
-		console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage));
+		console.log("cardinalChosenMessage updated to: "+""));
 	}
 
 	getPlay(obj) {
@@ -97,11 +97,13 @@ class Round extends React.Component {
   	}
 
   	discard = () => {
-  		this.setState({
-			playMode: 1,
-			discard_pile: this.state.discard_pile.concat(this.state.cardToPlay),
-			num_cards_left: this.state.num_cards_left - 1
-		});
+  		if(this.state.currentCards.indexOf(this.state.cardToPlay)>=0) {
+	  		this.setState({
+				playMode: 1,
+				discard_pile: this.state.discard_pile.concat(this.state.cardToPlay),
+				num_cards_left: this.state.num_cards_left - 1
+			});
+		}
   	}
 
   	handleBishopDiscard = (toDiscard) => {
@@ -125,14 +127,14 @@ class Round extends React.Component {
 				cardinalChosen: this.state.results.card1,
 				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
 			},
-			console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage));
+			console.log("cardinalChosenMessage updated to: "+this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"));
 		}
 		else {
 			this.setState({
 				cardinalChosen: this.state.results.card2,
 				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
 			},
-			console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage));
+			console.log("cardinalChosenMessage updated to: "+this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"));
 		}
 	}
 
@@ -300,7 +302,7 @@ class Round extends React.Component {
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-						{this.state.results.card_discarded!=='Cardinal'?
+						{this.state.cardinalChosenMessage===''?
 							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
 							<h5 className='Play-status'>{this.state.cardinalChosenMessage}</h5>}
 					</Row>
@@ -354,7 +356,7 @@ class Round extends React.Component {
 		  				(<div style={{margin: '0px auto'}}>
 			  				<Row style={{margin: 'auto'}}>
 								<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-								{this.state.results.card_discarded!=='Cardinal'?
+								{this.state.cardinalChosenMessage===''?
 									<h5 className='Play-status'>{this.state.results.resultMsg}</h5>:
 									<h5 className='Play-status'>{this.state.cardinalChosenMessage}</h5>}
 							</Row>

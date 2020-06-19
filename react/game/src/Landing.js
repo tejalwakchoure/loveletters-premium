@@ -31,8 +31,7 @@ class Landing extends React.Component {
 		this.setState({
 			addExt: obj.addExt,
 	    	token_limit: Number(obj.token_limit)
-		},
-		console.log("in getoptions:", obj.addExt, Number(obj.token_limit)));
+		});
 	}
 
 	getPlayers(obj) {
@@ -81,6 +80,7 @@ class Landing extends React.Component {
 				  	<Row style={{margin: 'auto'}}>
 					  	<Form style={{textAlign: 'center', margin: 'auto'}}>
 				          <Form.Label className='Play-status'><h5>-Game Options-</h5></Form.Label>
+				          	<hr/>
 				            <Form.Group style={{textAlign: 'center'}}>
 				              <Form.Check id="checkbox">
 				                <Form.Check.Input type={"checkbox"} 
