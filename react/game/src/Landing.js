@@ -2,8 +2,11 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
-import './Game.css';
+import Form from 'react-bootstrap/Form';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import {Container, Row} from 'react-bootstrap';
+import './Game.css';
 
 
 class Landing extends React.Component {
@@ -14,7 +17,9 @@ class Landing extends React.Component {
 	    	all_players: {},
 	    	showStartButton: false, // true for local testing, false for global
 	    	userID: ' ',
-	    	gameStatus: 0
+	    	gameStatus: 0,
+	    	addExt: false,
+	    	token_limit: 4
 	    };
 	   	this.getPlayers = this.getPlayers.bind(this);
 	   	this.getStartGame = this.getStartGame.bind(this);
@@ -37,6 +42,11 @@ class Landing extends React.Component {
 	}
 
 	startGame = () => {
+		this.props.socket.send(JSON.stringify({
+			'type':'gameOptions',
+			'addExt': this.state.addExt,
+			'token_limit': this.state.token_limit
+		}));
 		this.props.socket.send(JSON.stringify({'type':'startGame'}));
 	}
 
@@ -60,6 +70,34 @@ class Landing extends React.Component {
 										</ListGroup.Item>})}
 						</ListGroup>
 				  	</Row>
+				  	<Row style={{margin: 'auto'}}>
+					  	<Form style={{textAlign: 'center', margin: 'auto'}}>
+				          <Form.Label className='Play-status'><h5>-Game Options-</h5></Form.Label>
+				            <Form.Group style={{textAlign: 'center'}}>
+				              <Form.Check id="checkbox">
+				                <Form.Check.Input type={"checkbox"} 
+				                					disabled={!this.state.showStartButton}
+				                					onChange={(e) => this.setState({addExt: e.target.checked})}/>
+				                <Form.Check.Label className='Play-status' style={{color: '#f1e4d7'}}>Add Extension Pack</Form.Check.Label>
+				              </Form.Check>
+				              </Form.Group>
+				              <Form.Group style={{textAlign: 'center'}}>
+				                <Form.Label className='Play-status'>Number of Tokens to Win</Form.Label>
+				                <OverlayTrigger placement="right"
+				                                delay={{ show: 250, hide: 250 }}
+				                                defaultShow={true}
+				                                overlay={<Tooltip>{this.state.token_limit}</Tooltip>}>
+				                  <Form.Control type="range" 
+				                                defaultValue={4} 
+				                                min={2}
+				                                max={10}
+				                                step={1}
+				                                disabled={!this.state.showStartButton}
+				                                onChange={(e) => this.setState({token_limit: e.target.value})}/>
+				                </OverlayTrigger>
+				              </Form.Group>
+				        </Form>
+			        </Row>
 				  	<Row style={{width: '50vw'}}> 
 				  		<Button size="lg" block className='Confirm-button' disabled={!this.state.showStartButton} onClick={this.startGame}>Start Game</Button>
 				  	</Row>
