@@ -49,6 +49,9 @@ class Game extends React.Component {
 			if(obj.type === 'playersS'){
 				this.landingRef.current.getPlayers(obj);
 			}
+			else if(obj.type === 'gameOptions'){
+				this.landingRef.current.getOptions(obj);
+			}
 			else if(obj.type === 'startGame'){
 				this.landingRef.current.getStartGame(obj);
 			}
