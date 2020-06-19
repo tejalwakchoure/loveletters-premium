@@ -30,8 +30,9 @@ class Landing extends React.Component {
 	getOptions(obj) {
 		this.setState({
 			addExt: obj.addExt,
-	    	token_limit: obj.token_limit
-		});
+	    	token_limit: Number(obj.token_limit)
+		},
+		console.log("in getoptions:", obj.addExt, Number(obj.token_limit)));
 	}
 
 	getPlayers(obj) {
@@ -84,6 +85,7 @@ class Landing extends React.Component {
 				              <Form.Check id="checkbox">
 				                <Form.Check.Input type={"checkbox"} 
 				                					disabled={!this.state.showStartButton}
+				                					checked={this.state.addExt}
 				                					onChange={(e) => {this.setState({addExt: e.target.checked});
 				                										this.props.socket.send(JSON.stringify({
 																						'type':'gameOptions',
@@ -103,12 +105,13 @@ class Landing extends React.Component {
 				                                min={2}
 				                                max={10}
 				                                step={1}
+				                                value={this.state.token_limit}
 				                                disabled={!this.state.showStartButton}
 				                                onChange={(e) => {this.setState({token_limit: e.target.value});
 				                									this.props.socket.send(JSON.stringify({
 																		'type':'gameOptions',
 																		'addExt': this.state.addExt,
-																		'token_limit': e.target.value}));}}/>
+																		'token_limit': Number(e.target.value)}));}}/>
 				                </OverlayTrigger>
 				              </Form.Group>
 				        </Form>
