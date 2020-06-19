@@ -43,11 +43,10 @@ class Landing extends React.Component {
 
 	startGame = () => {
 		this.props.socket.send(JSON.stringify({
-			'type':'gameOptions',
+			'type':'startGame',
 			'addExt': this.state.addExt,
 			'token_limit': this.state.token_limit
 		}));
-		this.props.socket.send(JSON.stringify({'type':'startGame'}));
 	}
 
 	leaveGame = () => {
