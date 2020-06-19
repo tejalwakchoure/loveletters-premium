@@ -12,10 +12,11 @@ class PlayCard extends React.Component {
 	constructor(props) {
 	    super(props);
 	    let syco = [];
-	    if(this.props.num_special[2]!==0)
-		    syco = (Object.entries(this.props.allPlayerInfo).map(([id, values]) => {
-		    			if(values[2]===true)
-		    					return [id];}));
+	    if(this.props.num_special[2]!==0) {
+		    Object.entries(this.props.allPlayerInfo).map(([id, values]) => {
+    			if(values[2]===true)
+    				syco=[id];});
+	    }
 	    
 	    this.state = {
 	    	selectedPlayers: syco,
@@ -147,7 +148,7 @@ class PlayCard extends React.Component {
 									<FontAwesomeIcon style={{float: 'left'}} icon={faUserSecret}/>: <div></div>}
 								{(this.props.allPlayerInfo[id][5]>0)?
 									(<div>
-										((this.props.allPlayerInfo[id][5]>1)? <FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>: <div></div>)
+										{(this.props.allPlayerInfo[id][5]>1)? <FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>: <div></div>}
 										<FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>
 									</div>)
   									: <div></div>}
