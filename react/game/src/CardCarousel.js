@@ -52,7 +52,9 @@ class CardCarousel extends React.Component {
 			  	<div>
 		            <ListGroup style={{minWidth: 'max-content', float: 'right'}}>
 		                {Object.entries(this.props.all_players).map(([key,value]) => {
-			                return <ListGroup.Item style={{textAlign: 'center !important',
+			                return <ListGroup.Item style={{padding: '5px',
+			                                              	fontSize: 'small',
+			                                              	textAlign: 'center !important',
 				                                            backgroundColor: 'dimgray',
 				                                            color: 'white',
 				                                            borderTop: '1px solid black',
