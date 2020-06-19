@@ -38,7 +38,7 @@ class ShowPlay extends React.Component {
 									<FontAwesomeIcon style={{float: 'left'}} icon={faUserSecret}/>: <div></div>}
 								{(this.props.playCardData.allPlayerInfo[id][5]>0)?
 									(<div>
-										{(this.props.allPlayerInfo[id][5]>1)? <FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>: <div></div>}
+										{(this.props.playCardData.allPlayerInfo[id][5]>1)? <FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>: <div></div>}
 										<FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>
 									</div>)
   									: <div></div>}
