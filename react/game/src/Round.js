@@ -372,7 +372,7 @@ class Round extends React.Component {
 		  			</Row>
 		  			<hr/>
 
-				  	{this.state.allPlayerInfo[this.props.userID][0]===true?
+				  	{(this.state.allPlayerInfo[this.props.userID]!==undefined) && (this.state.allPlayerInfo[this.props.userID][0]===true)?
 				  		(<Row style={{margin: 'auto'}}>
 					  			<h3 className='Play-status'>You have been eliminated</h3>
 					  		</Row>):
