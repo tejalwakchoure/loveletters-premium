@@ -187,7 +187,17 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             else:
                 self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
-            
+        
+        elif message['type'] == 'playerIn':
+            if curr_game.state == -1:
+                curr_game.refresh(self.user.user)
+
+            plyrs = {}
+            for plyr in curr_game.players:
+                plyrs[plyr] = curr_game.players[plyr].username
+
+            self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
+                
             
         elif message['type'] == 'startGame':
             #Start the game
@@ -239,15 +249,16 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'leaveGame': #For player to leave the game    
-            del curr_game.players[self.user.user]
+            curr_game.remove_player(self.user.user)
             self.user.gid = -1
+
             plyrs = {}
             for plyr in curr_game.players:
                 plyrs[plyr] = curr_game.players[plyr].username
             self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
             self.close()
             
-        elif message['type'] == 'playComponent':
+        elif message['type'] == 'playComponent' or message['type'] == 'gameOptions':
             for plyr in curr_game.players:
                 if plyr != self.user.user:
                     curr_game.players[plyr].webSocketHandle.write_message(json.dumps(message))  
