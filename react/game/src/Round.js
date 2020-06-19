@@ -35,10 +35,11 @@ class Round extends React.Component {
 		    cardinalChosenMessage: "",
 		    showPlay: {}
 		};
-		console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage)
+
 	    this.getTurn = this.getTurn.bind(this);
 	    this.getPlay = this.getPlay.bind(this);
 	    this.getResults = this.getResults.bind(this);
+	    this.getCardinalView = this.getCardinalView.bind(this);
 	    this.selectCard = this.selectCard.bind(this);
 	    this.discard = this.discard.bind(this);
 	    this.endTurn = this.endTurn.bind(this);
@@ -63,8 +64,7 @@ class Round extends React.Component {
 		    playStatus: this.props.all_players[obj.player]+" is playing",
 		    disableButton: false,
   			cardinalChosenMessage: ""
-		},
-		console.log("cardinalChosenMessage updated to: "+""));
+		});
 	}
 
 	getPlay(obj) {
@@ -87,6 +87,10 @@ class Round extends React.Component {
   			num_cards_left: obj.cards_left
 		},
 		console.log("got results from socket"));
+	}
+
+	getCardinalView(obj) {
+		this.setState({cardinalChosenMessage: obj.cardinalChosenMessage});
 	}
 
 	selectCard(chosen, remaining) {
@@ -126,15 +130,18 @@ class Round extends React.Component {
 			this.setState({
 				cardinalChosen: this.state.results.card1,
 				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
-			},
-			console.log("cardinalChosenMessage updated to: "+this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"));
+			});
+			this.props.socket.send(JSON.stringify({'type':'cardinalView',
+										    		'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"}));
 		}
 		else {
 			this.setState({
 				cardinalChosen: this.state.results.card2,
 				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
-			},
-			console.log("cardinalChosenMessage updated to: "+this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"));
+			});
+			this.props.socket.send(JSON.stringify({'type':'cardinalView',
+							    					'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"}));
+		
 		}
 	}
 
@@ -289,8 +296,6 @@ class Round extends React.Component {
 		
 		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
 			console.log('RENDER MODE: one of the players involved in the turn x results')
-			console.log("cardinal discarded=--------------", (this.state.results.card_discarded==='Cardinal'))
-			console.log("cardinal chosen msg=--------------", this.state.cardinalChosenMessage)
 			if(this.state.turnEnded)
 				this.endTurn();
 			if(!this.state.results.bishopGuess) {
@@ -342,8 +347,6 @@ class Round extends React.Component {
 		else {
 			console.log('RENDER MODE: other players/one of the players involved in the turn')
 			console.log("playMode=--------------", this.state.playMode)
-			console.log("cardinal discarded=--------------", (this.state.results.card_discarded==='Cardinal'))
-			console.log("cardinal chosen msg=--------------", this.state.cardinalChosenMessage)
 			if(this.state.turnEnded)
 				this.endTurn();
 			return(

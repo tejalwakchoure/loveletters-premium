@@ -14,8 +14,15 @@ class PlayCard extends React.Component {
 	    let syco = [];
 	    if(this.props.num_special[2]!==0) {
 		    Object.entries(this.props.allPlayerInfo).map(([id, values]) => {
-    			if(values[2]===true)
-    				syco=[id];});
+    			if(values[2]===true) {
+    				if(id===this.props.currentPlayer && this.props.cardPlayed!=="Prince" 
+    					&& this.props.cardPlayed!=="Sycophant" && this.props.cardPlayed!=="Cardinal") { //current player is syco & cannot be chosen
+    				} 
+    				else {
+    					syco=[id];
+    				}
+    			}
+    		});
 	    }
 	    
 	    this.state = {
