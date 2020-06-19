@@ -15,11 +15,7 @@ class Game extends React.Component {
 			leavingGame: false,
 			rounds_played: 0,
 			all_players: {},
-			tokens: {
-						"p1" : 0,
-						"p2" : 0,
-						"p3" : 0
-					},
+			tokens: {},
 			roundWinner: " ",
 			gameWinner: " ",
 			cardsAtRoundEnd: [],
