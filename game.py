@@ -170,8 +170,8 @@ class Round:
             self.player_dict[self.turn][1] = False
             
         if self.sychoTar != None and self.discard_pile[-1] != 'Sycophant': #If it's been a turn after Sycophant then no more target
-            self.sychoTar = None
             self.player_dict[self.sychoTar][2] = False
+            self.sychoTar = None
         
         
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
@@ -199,8 +199,6 @@ class Round:
         if  plyr2 != None and self.players[plyr2].immune:
             raise APIException('Plyr2 is immune')
             
-        self.result_blob = {} 
-        
         
         #Discard card and make the other card available as 'card' attribute
         if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
@@ -213,6 +211,8 @@ class Round:
         else: #He's chosen a card that does not exist
             raise APIException("Unknown card chosen??" + card_chosen)
             
+        self.result_blob = {} 
+        
             
         self.players[self.turn].extra = None
         
@@ -678,25 +678,34 @@ class Game:
 
         self.win_tokens = 4
         
-        self.players = {}
 
         
         self.roundOver = True
         
-        self.order = []
         self.round = None
         
         self.overall_winner = None
+        
+        self.players = {}
+        self.order = []
         self.all_in = {}
         
+    def refresh(self, host):
+        self.players = {}
+        self.order = []
+        self.all_in = {}
+        self.state = 0
+        self.host = host
+
+
     def add_player(self, user, username):
-        if self.state != 0:
+        if self.state == 1:
             
             #Add as spectator?
             raise APIException('Can\'t add already started')
             
             
-        if not user in self.players:  
+        if not user.user in self.players:  
             user.set_username(username)
             self.players[user.user] = user
             self.order.append(user.user)
@@ -705,8 +714,16 @@ class Game:
         else:
             raise APIException("player already exists")
             
+    def remove_player(self, user):
+        if user in self.players:
+            self.players[user].gid = -1
+            self.order.remove(user)
+            del self.all_in[user]
+            del self.players[user]
+
+
     def start_game(self, win = 4,extraCardsWanted = False):
-        if self.state != 0:
+        if self.state == 1:
             raise APIException("Already started")
         
         self.state = 1
@@ -714,9 +731,12 @@ class Game:
 
         random.shuffle(self.order)
         
-        self.cards = allCards
+        
+
         if len(self.order) > 4 or extraCardsWanted:
-            self.cards += extCards
+            self.cards = allCards + extCards
+        else:
+            self.cards = allCards
             
         ################## --------------------- COMMENT --------------------- ##################
         #for plyr in self.order:
@@ -738,7 +758,7 @@ class Game:
             self.roundOver = True
             self.round.result_blob['gameWinner'] = winnerList[0]
             self.overall_winner = winnerList[0]
-            self.state = 0
+            self.state = -1 #Waiting for start
             return True
         
         elif len(winnerList) > 1: #multiple winners, start a new round with only ths people
@@ -747,6 +767,7 @@ class Game:
         else:
             return False
         
+
     
     def new_round(self):
         if self.state == 0:
