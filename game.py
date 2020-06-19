@@ -137,6 +137,10 @@ class Round:
 
         self.result_blob = {}
         
+        self.player_dict = OrderedDict()
+        for plyr in self.order:
+            self.player_dict[plyr] = [False, False, False, False, False, 0]
+            #Eliminated, Immune, Sycho, Jester, Constable, Count
         
         self.super_game = game_super
         
@@ -163,9 +167,11 @@ class Round:
     def player_turn(self):
         if self.players[self.turn].immune:#If it's come back a round, you are no longer immune
             self.players[self.turn].immune = False
+            self.player_dict[self.turn][1] = False
+            
         if self.sychoTar != None and self.discard_pile[-1] != 'Sycophant': #If it's been a turn after Sycophant then no more target
             self.sychoTar = None
-
+            self.player_dict[self.sychoTar][2] = False
         
         
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
@@ -330,20 +336,24 @@ class Round:
         
         elif played_card.card_name == 'Constable': #Nothing happens on discard
              self.players[self.turn].dis_const += 1
+             self.player_dict[self.turn][4] = True
             
         elif played_card.card_name == 'Prince': #Chosen player discards current card
             self.player_discard(plyr1)
             
         elif played_card.card_name == 'Count': #Nothing happens on discard
             self.players[self.turn].dis_count += 1
+            self.player_dict[self.turn][5] += 1
             
         elif played_card.card_name == 'Handmaid': #Immunity granted
             self.players[self.turn].immune = True
+            self.player_dict[self.turn][1] = True
         
         elif played_card.card_name == 'Sycophant':
             self.players[plyr1].sycho = True
             self.sychoTar = plyr1
             self.result_blob['result'] = 'sychoTar'
+            self.player_dict[plyr1][2] = True
         
         elif played_card.card_name == 'Baron':#Players have to copmare and LESSER ONE is out
             self.result_blob['result'] = 'Loss'
@@ -388,6 +398,7 @@ class Round:
             self.jesterTar = plyr1
             self.jesterBet = self.turn
             self.result_blob['result'] = 'jesterBet'
+            self.player_dict[plyr1][3] = True
             
         elif played_card.card_name == 'Assassin': #Nothing to do here
             pass
@@ -414,6 +425,7 @@ class Round:
     def knockout_player(self, plyr):
         self.order.remove(plyr)
         self.players[plyr].out = True
+        self.player_dict[plyr][0] = True
         self.players[plyr].tokens += self.players[plyr].dis_const
         
         if len(self.order) != 1:
@@ -472,40 +484,46 @@ class Round:
             obj['cards'] = [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]
         else:
             obj['cards'] = [self.players[plyr_uid].card.card_name]
+
+
+        # obj['order'] = self.super_game.order
         
+        # obj['eliminated'] = []
+        # for plyr in self.players.values():
+            # if plyr.out:
+                # obj['eliminated'].append(plyr.user)
         
+        # obj['immune'] = []
+        # for plyr in self.order:
+            # if self.players[plyr].immune:
+                # obj['immune'].append(plyr)
         
-        obj['sycho'] = []
-        if self.sychoTar != None:
-            obj['sycho'].append(self.sychoTar)
+        # obj['sycho'] = []
+        # if self.sychoTar != None:
+            # obj['sycho'].append(self.sychoTar)        
         
-        ################## --------------------- COMMENT --------------------- ##################
-        #for plyr in self.order:
-        #    if plyr != plyr_uid:
-        #        obj['sycho'].append(plyr)
-        #        break
+        # obj['jester'] = []
+        # if self.jesterTar != None:
+            # obj['jester'].append(jesterTar)
         
-        obj['immune'] = []
+        # obj['constable'] = []
+        # for plyr in self.players.values():
+            # if plyr.dis_const > 0:
+                # obj['constable'].append(plyr.user)
+                
+        #All this is replaced by player dict
+        
+        obj['playerInfo'] = self.player_dict
+        obj['num_special'] = [0, 0, 0] #Players eliminated, immune number, sycho number
+            
+        obj['num_special'][0] = len(self.players) - len(self.order)
+        
         for plyr in self.order:
             if self.players[plyr].immune:
-                obj['immune'].append(plyr)
-    
-        obj['eliminated'] = []
-        for plyr in self.players.values():
-            if plyr.out:
-                obj['eliminated'].append(plyr.user)
+                obj['num_special'][1] += 1
         
-        
-        obj['order'] = self.super_game.order
-        
-        obj['jester'] = []
-        if self.jesterTar != None:
-            obj['jester'].append(jesterTar)
-        
-        obj['constable'] = []
-        for plyr in self.players.values():
-            if plyr.dis_const > 0:
-                obj['constable'].append(plyr.user)
+        if self.sychoTar != None:
+            obj['num_special'][2] = 1
         
         obj['prevTurn'] = self.msg_status(plyr_uid)
         obj['discard_pile'] = self.discard_pile
