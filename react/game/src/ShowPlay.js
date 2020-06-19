@@ -4,7 +4,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
 import {Row, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faShieldAlt, faHandshake, faSkull} from '@fortawesome/free-solid-svg-icons';
+import {faShieldAlt, faHandshake, faSkull, faCrown, faUserSecret, faChessBishop} from '@fortawesome/free-solid-svg-icons';
 
 class ShowPlay extends React.Component {
 	
@@ -22,29 +22,36 @@ class ShowPlay extends React.Component {
 		else {
 			var enableCurrent = (this.props.playCardData.cardPlayed==="Prince" || this.props.playCardData.cardPlayed==="Sycophant"
 									|| this.props.playCardData.cardPlayed==="Cardinal");
-			var isImmune = false;
-  			var isSyco = false;
-  			var isEliminated = false;
 
 	  		list = (<ListGroup>
   				{Object.entries(this.props.all_players).map(([id, value]) => {
-  					isImmune = (this.props.playCardData.immune.indexOf(id)>=0);
-  					isSyco = (this.props.playCardData.syco.indexOf(id)>=0);
-  					isEliminated = (this.props.playCardData.eliminated.indexOf(id)>=0);
 					return <ListGroup.Item className='List-item-design'
 								variant={(this.props.playCardData.selectedPlayers.indexOf(id)>=0)?'dark':'light'}
 								key={id}
 								disabled={(enableCurrent?false:(id===this.props.playCardData.currentPlayer)) || 
-											isImmune || isEliminated}>{value}
-								{isImmune?
-									<FontAwesomeIcon style={{float: 'right'}} icon={faShieldAlt}/>: 
-									(isSyco?
-										<FontAwesomeIcon style={{float: 'right'}} icon={faHandshake}/>: 
-										(isEliminated?
-											<FontAwesomeIcon style={{float: 'right'}} icon={faSkull}/>: 
+											(this.props.playCardData.allPlayerInfo[id][1]===true) || 
+												(this.props.playCardData.allPlayerInfo[id][0]===true)}>
+								
+								{(this.props.playCardData.allPlayerInfo[id][3]===true)?
+									<FontAwesomeIcon style={{float: 'left'}} icon={faCrown}/>: <div></div>}
+								{(this.props.playCardData.allPlayerInfo[id][4]===true)?
+									<FontAwesomeIcon style={{float: 'left'}} icon={faUserSecret}/>: <div></div>}
+								{(this.props.playCardData.allPlayerInfo[id][5]>0)?
+									(<div>
+										((this.props.playCardData.allPlayerInfo[id][5]>1)? <FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>: <div></div>)
+										<FontAwesomeIcon style={{float: 'left'}} icon={faChessBishop}/>
+									</div>)
+  									: <div></div>}
+								{value}
+								{(this.props.playCardData.allPlayerInfo[id][0]===true)?
+									<FontAwesomeIcon style={{float: 'right'}} icon={faSkull}/>: 
+									((this.props.playCardData.allPlayerInfo[id][1]===true)?
+										<FontAwesomeIcon style={{float: 'right'}} icon={faShieldAlt}/>: 
+										((this.props.playCardData.allPlayerInfo[id][2]===true)?
+											<FontAwesomeIcon style={{float: 'right'}} icon={faHandshake}/>: 
 											<div></div>))}
 							</ListGroup.Item>})}
-				</ListGroup>);  
+				</ListGroup>);
 	  	} 
 
 		return list;

@@ -23,11 +23,11 @@ class Round extends React.Component {
 		    playStatus: " ",
 		    results: {},
 		    currentCards: [],
-		    immune: [],
-		    syco: [],
-		    eliminated: [],
+		    allPlayerInfo: {},
+		    num_special: [],
 		    prevTurnMessage: " ",
 		    discard_pile: [],
+		    num_cards_left: 32,
 		    cardinalChosen: null,
 		    disableButton: false,
 		    turnEnded: false,
@@ -35,6 +35,7 @@ class Round extends React.Component {
 		    cardinalChosenMessage: "",
 		    showPlay: {}
 		};
+		console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage)
 	    this.getTurn = this.getTurn.bind(this);
 	    this.getPlay = this.getPlay.bind(this);
 	    this.getResults = this.getResults.bind(this);
@@ -54,15 +55,16 @@ class Round extends React.Component {
 			playMode: 0, // start new turn
 			currentPlayer: obj.player,
 			currentCards: obj.cards,
-			immune: obj.immune,
-		    syco: obj.sycho,
-		    eliminated: obj.eliminated,
+			allPlayerInfo: obj.playerInfo,
+			num_special: obj.num_special,
 		    prevTurnMessage: obj.prevTurn,
 		    discard_pile: obj.discard_pile,
+		    num_cards_left: obj.cards_left,
 		    playStatus: this.props.all_players[obj.player]+" is playing",
 		    disableButton: false,
   			cardinalChosenMessage: ""
-		});
+		},
+		console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage));
 	}
 
 	getPlay(obj) {
@@ -81,7 +83,8 @@ class Round extends React.Component {
   			playMode: 2,
   			othersPlayMode: -1,
   			results: obj,
-  			discard_pile: obj.discard_pile
+  			discard_pile: obj.discard_pile,
+  			num_cards_left: obj.cards_left
 		},
 		console.log("got results from socket"));
 	}
@@ -96,7 +99,8 @@ class Round extends React.Component {
   	discard = () => {
   		this.setState({
 			playMode: 1,
-			discard_pile: this.state.discard_pile.concat(this.state.cardToPlay)
+			discard_pile: this.state.discard_pile.concat(this.state.cardToPlay),
+			num_cards_left: this.state.num_cards_left - 1
 		});
   	}
 
@@ -107,7 +111,10 @@ class Round extends React.Component {
 	    	'toDiscard': toDiscard
 	    }));
 	    if(toDiscard){
-	    	this.setState({discard_pile: this.state.discard_pile.concat(this.state.currentCards[0])});
+	    	this.setState({
+	    		discard_pile: this.state.discard_pile.concat(this.state.currentCards[0]),
+	    		num_cards_left: this.state.num_cards_left - 1
+	    	});
 	    }
 	}
 
@@ -117,13 +124,15 @@ class Round extends React.Component {
 			this.setState({
 				cardinalChosen: this.state.results.card1,
 				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
-			});
+			},
+			console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage));
 		}
 		else {
 			this.setState({
 				cardinalChosen: this.state.results.card2,
 				cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
-			});
+			},
+			console.log("cardinalChosenMessage updated to: "+this.state.cardinalChosenMessage));
 		}
 	}
 
@@ -165,7 +174,8 @@ class Round extends React.Component {
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
-					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	{this.state.prevTurnMessage!==null?
 					  		(<div style={{margin: 'auto'}}>
@@ -197,7 +207,8 @@ class Round extends React.Component {
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
-					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardToPlay}</h4>
@@ -206,7 +217,7 @@ class Round extends React.Component {
 				  		<PlayCard socket={this.props.socket} currentPlayer={this.state.currentPlayer}
 				  		cardPlayed={this.state.cardToPlay} cardRemaining={this.state.cardRemaining} 
 				  		roundCallback={this.playCardCallback} all_players={this.props.all_players}
-				  		immune={this.state.immune} syco={this.state.syco} eliminated={this.state.eliminated}/>
+				  		allPlayerInfo={this.state.allPlayerInfo} num_special={this.state.num_special}/>
 					</Container>
 				);
 			} 
@@ -215,7 +226,8 @@ class Round extends React.Component {
 				return (
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
-					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 						<Row style={{margin: 'auto'}}>
 							<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
@@ -261,7 +273,8 @@ class Round extends React.Component {
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px 0px auto 0px'}}>
-					  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	<Row style={{margin: 'auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.showPlay.cardPlayed}</h4>
@@ -282,7 +295,8 @@ class Round extends React.Component {
 				return (
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px 0px auto 0px'}}>
-				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 					<Row style={{margin: 'auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
@@ -302,7 +316,8 @@ class Round extends React.Component {
 				return (
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px 0px auto 0px'}}>
-				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 					<Row style={{margin: 'auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
@@ -332,7 +347,8 @@ class Round extends React.Component {
 			return(
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px 0px auto 0px'}}>
-				  		<CardCarousel allCardsDiscarded={this.state.discard_pile}/>
+				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
+					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 		  			{this.state.playMode===2?
 		  				(<div style={{margin: 'auto'}}>
@@ -356,7 +372,7 @@ class Round extends React.Component {
 		  			</Row>
 		  			<hr/>
 
-				  	{this.state.eliminated.indexOf(this.props.userID)>=0?
+				  	{this.state.allPlayerInfo[this.props.userID][0]===true?
 				  		(<Row style={{margin: 'auto'}}>
 					  			<h3 className='Play-status'>You have been eliminated</h3>
 					  		</Row>):
