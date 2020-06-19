@@ -689,6 +689,8 @@ class Game:
         self.players = {}
         self.order = []
         self.all_in = {}
+
+        random.seed()
         
     def refresh(self, host):
         self.players = {}
@@ -705,7 +707,8 @@ class Game:
             raise APIException('Can\'t add already started')
             
             
-        if not user.user in self.players:  
+        if not user.user in self.players:
+
             user.set_username(username)
             self.players[user.user] = user
             self.order.append(user.user)
@@ -730,7 +733,6 @@ class Game:
         self.win_tokens = win
 
         random.shuffle(self.order)
-        
         
 
         if len(self.order) > 4 or extraCardsWanted:
@@ -763,7 +765,8 @@ class Game:
         
         elif len(winnerList) > 1: #multiple winners, start a new round with only ths people
             self.order = winnerList
-            self.new_round() #Start a new round with only tied players
+            self.roundOver = True
+            #Wait for a new round
         else:
             return False
         
