@@ -27,8 +27,8 @@ class CardCarousel extends React.Component {
 		if(this.props.allCardsDiscarded!==undefined)
 			playedCardlist = this.props.allCardsDiscarded;
 		return(
-			<div>
-				<Col style={{margin: '0px 0px auto 0px'}}>
+			<div style={{margin: '0px 0px auto 0px', width: '100%', display: 'flex', flexDirection: 'row'}}>
+				<div style={{margin: '0px 0px auto 0px'}}>
 					<div id="top-row" style={{display: 'flex', flexDirection: 'row'}}>
 						<Card className="Card-carousel-num">
 			                <Card.Body style={{ padding: 0, textAlign: 'center', backgroundColor: 'gray'}}>
@@ -48,13 +48,13 @@ class CardCarousel extends React.Component {
 							<div id="last-card" ref={(e) => {this.lastCard=e;}}></div>
 					  	</div>
 				  	</div>
-			  	</Col>
+			  	</div>
 			  	<div>
 		            <ListGroup style={{minWidth: 'max-content', float: 'right'}}>
 		                {Object.entries(this.props.all_players).map(([key,value]) => {
 			                return <ListGroup.Item style={{textAlign: 'center !important',
 				                                            backgroundColor: 'dimgray',
-				                                            color: '#f1e4d7',
+				                                            color: 'white',
 				                                            borderTop: '1px solid black',
 				                                            minWidth: 'max-content'}}
 			                                        key={key}>
