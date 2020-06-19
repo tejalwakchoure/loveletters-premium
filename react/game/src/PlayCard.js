@@ -27,8 +27,8 @@ class PlayCard extends React.Component {
 	    }
 	    console.log(this.props.allPlayerInfo);
 	    console.log("this.props.num_special= ", this.props.num_special);
-	    console.log("num_disabled_players= ", num_disabled_players);
-	    console.log("num_players= ", num_players);
+	    console.log("num_disabled_players= ", this.props.num_special[0] + this.props.num_special[1]);
+	    console.log("num_players= ", Object.keys(this.props.all_players).length);
 
 	    this.selectPlayer = this.selectPlayer.bind(this);
 	    this.selectNumber = this.selectNumber.bind(this);
