@@ -23,6 +23,7 @@ class Round extends React.Component {
 		    results: {},
 		    currentCards: [],
 		    allPlayerInfo: {},
+		    order: [],
 		    num_special: [],
 		    prevTurnMessage: " ",
 		    discard_pile: [],
@@ -31,7 +32,8 @@ class Round extends React.Component {
 		    disableButton: false,
 		    turnEnded: false,
 		    othersPlayMode: -1,
-		    showPlay: {}
+		    showPlay: {},
+		    allImgs: {}
 		};
 
 	    this.getTurn = this.getTurn.bind(this);
@@ -48,6 +50,26 @@ class Round extends React.Component {
 
 		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
 	}
+
+	componentDidMount() {
+		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+    
+	    let imagesToBePreloaded = {};
+
+	    let innerImgs = {};
+	    card_names.map((img, index) => {
+	        innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
+	    imagesToBePreloaded['mini'] = innerImgs;
+
+	    innerImgs = {};
+	    innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	    card_names.map((img, index) => {
+	        innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
+	    imagesToBePreloaded['big'] = innerImgs;
+
+	    this.setState({allImgs: imagesToBePreloaded});
+	}
 	
 	getTurn(obj) {
 		this.setState({
@@ -55,13 +77,13 @@ class Round extends React.Component {
 			currentPlayer: obj.player,
 			currentCards: obj.cards,
 			allPlayerInfo: obj.playerInfo,
+			order: obj.order,
 			num_special: obj.num_special,
 		    prevTurnMessage: obj.prevTurn,
 		    discard_pile: obj.discard_pile,
 		    num_cards_left: obj.cards_left,
 		    playStatus: this.props.all_players[obj.player]+" is playing",
-		    disableButton: false,
-  			// cardinalChosenMessage: ""
+		    disableButton: false
 		});
 	}
 
@@ -176,7 +198,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: 0}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 					  	</Row>
 					  	{this.state.prevTurnMessage!==null?
 					  		(<div style={{margin: '0px auto'}}>
@@ -191,10 +213,10 @@ class Round extends React.Component {
 					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
 					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, e)}>
-					  			<Cards cardname={currentCard}/>
+					  			<Cards cardname={currentCard} allImgs={this.state.allImgs['big']} />
 					  		</Col>
 					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(drawnCard, e)}>
-					  			<Cards cardname={drawnCard}/>
+					  			<Cards cardname={drawnCard} allImgs={this.state.allImgs['big']} />
 					  		</Col>
 					  	</Row> 
 					  	<Row style={{width: '50vw'}}> 
@@ -208,7 +230,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 					  	</Row>
 					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardToPlay}</h4>
@@ -226,7 +248,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 					  	</Row>
 						<Row style={{margin: '0px auto'}}>
 							<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
@@ -235,9 +257,9 @@ class Round extends React.Component {
 						{this.state.cardToPlay!=='Cardinal'?
 						(<Row style={{margin: 'auto'}}>
 							{this.state.results.card1!==null?
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
 							{this.state.results.card2!==null?
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
 						</Row>):
 
 						(<div style={{margin: 'auto'}}>
@@ -253,7 +275,7 @@ class Round extends React.Component {
 					        	</ToggleButtonGroup>
 					        </Row>
 					        <Row style={{margin: 'auto'}}>
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.cardinalChosen}/></Col>
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.cardinalChosen} allImgs={this.state.allImgs['big']} /></Col>
 							</Row>
 						</div>)}
 
@@ -270,7 +292,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 					  	</Row>
 					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.showPlay.cardPlayed}</h4>
@@ -289,7 +311,7 @@ class Round extends React.Component {
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
@@ -297,9 +319,9 @@ class Round extends React.Component {
 					<hr/>
 					<Row style={{margin: 'auto'}}>
 						{this.state.results.card1!==null?
-							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
 						{this.state.results.card2!==null?
-							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
 					</Row>
 				</Container>);
 			} else {
@@ -307,7 +329,7 @@ class Round extends React.Component {
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
@@ -332,7 +354,7 @@ class Round extends React.Component {
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 				  	</Row>
 		  			{this.state.playMode===2?
 		  				(<div style={{margin: '0px auto'}}>
@@ -363,7 +385,7 @@ class Round extends React.Component {
 						  	</Row>
 						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex", justifyContent: 'center'}}>
-						  			<Cards cardname={currentCard}/>
+						  			<Cards cardname={currentCard} allImgs={this.state.allImgs['big']} />
 						  		</Col>
 						  	</Row>
 					  	</div>)}
