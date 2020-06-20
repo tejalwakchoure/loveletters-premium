@@ -16,23 +16,21 @@ class Round extends React.Component {
 	constructor(props) {
 	    super(props);
 
-	    const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
-                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
-	    let imagesToBePreloaded = {};
-	    let innerImgs = {};
+	    // const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+     	//                    	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+	    // let imagesToBePreloaded = {};
+	    // let innerImgs = {};
 
-	    card_names.map((img, index) => {
-	        innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
-	    imagesToBePreloaded['mini'] = innerImgs;
+	    // card_names.map((img, index) => {
+	    //     innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
+	    // imagesToBePreloaded['mini'] = innerImgs;
 
-	    innerImgs = {};
-	    innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
-	    card_names.map((img, index) => {
-	        innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
-	    imagesToBePreloaded['big'] = innerImgs;
-	    console.log(imagesToBePreloaded)
-	    // this.setState({allImgs: imagesToBePreloaded});
-
+	    // innerImgs = {};
+	    // innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	    // card_names.map((img, index) => {
+	    //     innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
+	    // imagesToBePreloaded['big'] = innerImgs;
+	    // console.log(imagesToBePreloaded)
 
 
 	    this.state = {
@@ -53,7 +51,7 @@ class Round extends React.Component {
 		    turnEnded: false,
 		    othersPlayMode: -1,
 		    showPlay: {},
-		    allImgs: imagesToBePreloaded
+		    allImgs: {}//imagesToBePreloaded
 		};
 
 	    this.getTurn = this.getTurn.bind(this);
@@ -70,26 +68,6 @@ class Round extends React.Component {
 
 		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
 	}
-
-	// componentDidMount() {
-	// 	const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
- //                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
-    
-	//     let imagesToBePreloaded = {};
-
-	//     let innerImgs = {};
-	//     card_names.map((img, index) => {
-	//         innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
-	//     imagesToBePreloaded['mini'] = innerImgs;
-
-	//     innerImgs = {};
-	//     innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
-	//     card_names.map((img, index) => {
-	//         innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
-	//     imagesToBePreloaded['big'] = innerImgs;
-
-	//     this.setState({allImgs: imagesToBePreloaded});
-	// }
 	
 	getTurn(obj) {
 		this.setState({
@@ -131,7 +109,7 @@ class Round extends React.Component {
 	getCardinalView(obj) {
 		const res = this.state.results;
 		if(res['resultMsg']!=='')
-			res['resultMsg'] = res['resultMsg']+"."+obj.cardinalChosenMessage;
+			res['resultMsg'] = res['resultMsg']+". "+obj.cardinalChosenMessage;
 		else
 			res['resultMsg'] = res['resultMsg']+obj.cardinalChosenMessage;
 		this.setState({results: res});
@@ -271,7 +249,7 @@ class Round extends React.Component {
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 					  	</Row>
 						<Row style={{margin: '0px auto'}}>
-							<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
+							<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
 						</Row>
 						<hr/>
 						{this.state.cardToPlay!=='Cardinal'?
@@ -334,7 +312,7 @@ class Round extends React.Component {
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
-						<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
+						<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
 					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
@@ -352,7 +330,7 @@ class Round extends React.Component {
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
-						<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
+						<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
 					</Row>
 					<hr/>
 					<Row style={{marginBottom: '15px'}}>
@@ -379,7 +357,7 @@ class Round extends React.Component {
 		  			{this.state.playMode===2?
 		  				(<div style={{margin: '0px auto'}}>
 			  				<Row style={{margin: 'auto'}}>
-								<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
+								<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
 							</Row>
 							<hr/>
 						</div>): 
