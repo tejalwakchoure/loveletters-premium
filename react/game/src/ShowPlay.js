@@ -69,8 +69,7 @@ class ShowPlay extends React.Component {
 										</ListGroup.Item>})}
 							</ListGroup>);
 
-
-
+							
 		if(list!=null) {
 			return (
 				<div style={{margin: 'auto'}}>
