@@ -14,6 +14,8 @@ class Game extends React.Component {
 	    	gameStatus: 0, /* 0-landing screen:start game, 1- in round, 2- round results, 3-landing screen:end game*/
 			leavingGame: false,
 			rounds_played: 0,
+			num_players: 0,
+			players_accepted: 0,
 			all_players: {},
 			tokens: {},
 			roundWinner: " ",
@@ -64,10 +66,9 @@ class Game extends React.Component {
 				this.roundRef.current.getCardinalView(obj);
 			}
 			else if(obj.type === 'redirect'){
-				console.log("to get out of here")
 				window.location.replace('/');
 			}
-		}
+	  	}
 	}
 
 
@@ -75,6 +76,7 @@ class Game extends React.Component {
 		this.setState({
 			gameStatus: landingData.gameStatus,
 			all_players: landingData.all_players,
+			num_players: Object.keys(landingData.all_players).length,
 			userID: landingData.userID,
 			username: landingData.username
 		});
@@ -82,14 +84,13 @@ class Game extends React.Component {
 
 	roundCallback = (roundData) => {
 		this.setState({
-			rounds_played: this.state.rounds_played+1,
+			rounds_played: this.state.rounds_played + 1,
 			tokens: roundData.tokens,
 			gameStatus: 2,
 			roundWinner: roundData.roundWinner,
 			gameWinner: roundData.gameWinner,
 			cardsAtRoundEnd: roundData.finalCards
-		},
-		console.log("gameStatus set to 2"));
+		});
 	}
 
 	resultsCallback = (resultsData) => {
@@ -101,9 +102,10 @@ class Game extends React.Component {
 			socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
-			this.setState({
-				gameStatus: 1
-			});
+			const players_accepted = this.state.players_accepted + 1;
+			if(players_accepted === this.state.num_players)
+				this.setState({gameStatus: 1});
+			this.setState({players_accepted: players_accepted});
 		}
 		else {
 			this.setState({

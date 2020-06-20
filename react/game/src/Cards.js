@@ -9,16 +9,28 @@ class Cards extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	selected: 1
+	    	selected: 1,
+	    	allImgs: {}
 		};
 	    this.clickCard = this.clickCard.bind(this);
 	}
 
+	componentDidMount() {
+		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+    
+	    let imagesToBePreloaded = {};
+	    imagesToBePreloaded['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	    card_names.map((img, index) => {
+	        imagesToBePreloaded[img] = require('../assets/cards/'+img+'.jpeg');});
+	    this.setState({allImgs: imagesToBePreloaded});
+	}
+
 	getCard() {
 		if(this.props.cardname===null || this.props.cardname===undefined)
-			return require('../assets/cards/loading_card.jpeg');
+			return this.state.allImgs['loading_card'];
 		else
-			return require('../assets/cards/'+this.props.cardname+'.jpeg');
+			return this.state.allImgs[this.props.cardname];
 	}
 
 	clickCard = () => {
