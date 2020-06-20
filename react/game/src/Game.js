@@ -65,6 +65,9 @@ class Game extends React.Component {
 			else if(obj.type === 'cardinalView'){
 				this.roundRef.current.getCardinalView(obj);
 			}
+			else if(obj.type === 'readyAll'){
+				this.setState({gameStatus: 1});
+			}
 			else if(obj.type === 'redirect'){
 				window.location.replace('/');
 			}
@@ -102,10 +105,13 @@ class Game extends React.Component {
 			socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
-			const players_accepted = this.state.players_accepted + 1;
-			if(players_accepted === this.state.num_players)
-				this.setState({gameStatus: 1});
-			this.setState({players_accepted: players_accepted});
+			socket.send(JSON.stringify({'type':'ready'}));
+			// const players_accepted = this.state.players_accepted + 1;
+			// if(players_accepted === this.state.num_players)
+			// this.setState({
+			// 	gameStatus: 1
+			// });
+			// this.setState({players_accepted: players_accepted});
 		}
 		else {
 			this.setState({
