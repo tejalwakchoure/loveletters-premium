@@ -15,6 +15,26 @@ class Round extends React.Component {
 
 	constructor(props) {
 	    super(props);
+
+	    const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+	    let imagesToBePreloaded = {};
+	    let innerImgs = {};
+
+	    card_names.map((img, index) => {
+	        innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
+	    imagesToBePreloaded['mini'] = innerImgs;
+
+	    innerImgs = {};
+	    innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	    card_names.map((img, index) => {
+	        innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
+	    imagesToBePreloaded['big'] = innerImgs;
+	    console.log(imagesToBePreloaded)
+	    // this.setState({allImgs: imagesToBePreloaded});
+
+
+
 	    this.state = {
 		    cardToPlay: " ",
 		    playMode: 0, // 0-choosing card, 1-playing card, 2-viewing results of turn
@@ -33,7 +53,7 @@ class Round extends React.Component {
 		    turnEnded: false,
 		    othersPlayMode: -1,
 		    showPlay: {},
-		    allImgs: {}
+		    allImgs: imagesToBePreloaded
 		};
 
 	    this.getTurn = this.getTurn.bind(this);
@@ -51,25 +71,25 @@ class Round extends React.Component {
 		this.props.socket.send(JSON.stringify({'type':'nextRound'}));
 	}
 
-	componentDidMount() {
-		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
-                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+	// componentDidMount() {
+	// 	const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+ //                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
     
-	    let imagesToBePreloaded = {};
+	//     let imagesToBePreloaded = {};
 
-	    let innerImgs = {};
-	    card_names.map((img, index) => {
-	        innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
-	    imagesToBePreloaded['mini'] = innerImgs;
+	//     let innerImgs = {};
+	//     card_names.map((img, index) => {
+	//         innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
+	//     imagesToBePreloaded['mini'] = innerImgs;
 
-	    innerImgs = {};
-	    innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
-	    card_names.map((img, index) => {
-	        innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
-	    imagesToBePreloaded['big'] = innerImgs;
+	//     innerImgs = {};
+	//     innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	//     card_names.map((img, index) => {
+	//         innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
+	//     imagesToBePreloaded['big'] = innerImgs;
 
-	    this.setState({allImgs: imagesToBePreloaded});
-	}
+	//     this.setState({allImgs: imagesToBePreloaded});
+	// }
 	
 	getTurn(obj) {
 		this.setState({
