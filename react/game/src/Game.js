@@ -30,6 +30,19 @@ class Game extends React.Component {
 
 		this.landingRef = React.createRef();
 		this.roundRef = React.createRef();
+
+		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+     	                   	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+	    let imgs = {};
+	    card_names.map((img, index) => {
+	        imgs[img] = require('../assets/cards/mini'+img+'.png');
+	    	console.log('preloaded '+img)});
+	    imgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	    imgs['display_blank'] = require('../assets/cards/displayBlank.png');
+	    card_names.map((img, index) => {
+	        imgs[img] = require('../assets/cards/'+img+'.jpeg');
+	    	console.log('preloaded '+img)});
+	    
 	}
 
 
@@ -106,12 +119,9 @@ class Game extends React.Component {
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
 			socket.send(JSON.stringify({'type':'ready'}));
-			// const players_accepted = this.state.players_accepted + 1;
-			// if(players_accepted === this.state.num_players)
 			// this.setState({
 			// 	gameStatus: 1
 			// });
-			// this.setState({players_accepted: players_accepted});
 		}
 		else {
 			this.setState({
