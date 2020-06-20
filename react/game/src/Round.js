@@ -242,8 +242,7 @@ class Round extends React.Component {
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 						<Row style={{margin: '0px auto'}}>
-							<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-							<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
+							<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
 						</Row>
 						<hr/>
 						{this.state.cardToPlay!=='Cardinal'?
@@ -255,11 +254,10 @@ class Round extends React.Component {
 						</Row>):
 
 						(<div style={{margin: 'auto'}}>
-					        <Row style={{margin: 'auto'}}>
+					        <Row style={{marginBottom: '15px'}}>
 					            <h3 className='Play-status'>Whose hand do you wish to look at?</h3>
 					        </Row>
-					        <hr/>
-					        <Row style={{margin: '1px auto 1px auto'}}>
+					        <Row style={{margin: '1px auto'}}>
 					        	<ToggleButtonGroup type="radio" name="options" defaultValue={null} onChange={this.handleCardinalDiscard}>
 					            	<ToggleButton value={1} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>
 					            					{this.props.all_players[this.state.results.player1]}</ToggleButton>
@@ -309,8 +307,7 @@ class Round extends React.Component {
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
-						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-						<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
+						<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
 					</Row>
 					<hr/>
 					<Row style={{margin: 'auto'}}>
@@ -328,15 +325,13 @@ class Round extends React.Component {
 					  						all_players={this.props.all_players} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
-						<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-						<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
+						<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
 					</Row>
 					<hr/>
-					<Row style={{margin: 'auto'}}>
+					<Row style={{marginBottom: '15px'}}>
 						<h3 className='Play-status'>Discard this card?</h3>
 					</Row>
-					<hr/>
-					<Row style={{margin: '1px auto auto auto'}}>
+					<Row style={{margin: '1px auto'}}>
 						<ToggleButtonGroup type="radio" name="options" defaultValue={null} onChange={this.handleBishopDiscard}>
 			            	<ToggleButton value={true} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>Yes</ToggleButton>
 			            	<ToggleButton value={false} size="lg"  className='Confirm-button' style={{width: '20vw'}} disabled={this.state.disableButton}>No</ToggleButton>
@@ -359,8 +354,7 @@ class Round extends React.Component {
 		  			{this.state.playMode===2?
 		  				(<div style={{margin: '0px auto'}}>
 			  				<Row style={{margin: 'auto'}}>
-								<h5 className='Play-status'>{this.state.results.statusMsg}.</h5>
-								<h5 className='Play-status'>{this.state.results.resultMsg}</h5>
+								<h5 className='Play-status'>{this.state.results.statusMsg}.{this.state.results.resultMsg}</h5>
 							</Row>
 							<hr/>
 						</div>): 
@@ -381,10 +375,9 @@ class Round extends React.Component {
 					  			<h3 className='Play-status'>You have been eliminated</h3>
 					  		</Row>):
 					  	(<div style={{margin: 'auto'}}>
-						  	<Row style={{margin: 'auto'}} >
+						  	<Row style={{marginBottom: '15px'}} >
 						  		<h3 className='Play-status'>It's not your turn</h3>
 						  	</Row>
-						  	<hr/>
 						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex", justifyContent: 'center'}}>
 						  			<Cards cardname={currentCard}/>
