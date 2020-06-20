@@ -16,23 +16,6 @@ class Round extends React.Component {
 	constructor(props) {
 	    super(props);
 
-	    // const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
-     	//                    	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
-	    // let imagesToBePreloaded = {};
-	    // let innerImgs = {};
-
-	    // card_names.map((img, index) => {
-	    //     innerImgs[img] = require('../assets/cards/mini'+img+'.png');});
-	    // imagesToBePreloaded['mini'] = innerImgs;
-
-	    // innerImgs = {};
-	    // innerImgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
-	    // card_names.map((img, index) => {
-	    //     innerImgs[img] = require('../assets/cards/'+img+'.jpeg');});
-	    // imagesToBePreloaded['big'] = innerImgs;
-	    // console.log(imagesToBePreloaded)
-
-
 	    this.state = {
 		    cardToPlay: " ",
 		    playMode: 0, // 0-choosing card, 1-playing card, 2-viewing results of turn
@@ -50,8 +33,7 @@ class Round extends React.Component {
 		    disableButton: false,
 		    turnEnded: false,
 		    othersPlayMode: -1,
-		    showPlay: {},
-		    allImgs: {}//imagesToBePreloaded
+		    showPlay: {}
 		};
 
 	    this.getTurn = this.getTurn.bind(this);
@@ -196,7 +178,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: 0}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	{this.state.prevTurnMessage!==null?
 					  		(<div style={{margin: '0px auto'}}>
@@ -211,10 +193,10 @@ class Round extends React.Component {
 					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
 					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, e)}>
-					  			<Cards cardname={currentCard} allImgs={this.state.allImgs['big']} />
+					  			<Cards cardname={currentCard}/>
 					  		</Col>
 					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(drawnCard, e)}>
-					  			<Cards cardname={drawnCard} allImgs={this.state.allImgs['big']} />
+					  			<Cards cardname={drawnCard}/>
 					  		</Col>
 					  	</Row> 
 					  	<Row style={{width: '50vw'}}> 
@@ -228,7 +210,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.cardToPlay}</h4>
@@ -246,7 +228,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 						<Row style={{margin: '0px auto'}}>
 							<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
@@ -255,9 +237,9 @@ class Round extends React.Component {
 						{this.state.cardToPlay!=='Cardinal'?
 						(<Row style={{margin: 'auto'}}>
 							{this.state.results.card1!==null?
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
 							{this.state.results.card2!==null?
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
 						</Row>):
 
 						(<div style={{margin: 'auto'}}>
@@ -273,7 +255,7 @@ class Round extends React.Component {
 					        	</ToggleButtonGroup>
 					        </Row>
 					        <Row style={{margin: 'auto'}}>
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.cardinalChosen} allImgs={this.state.allImgs['big']} /></Col>
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.cardinalChosen}/></Col>
 							</Row>
 						</div>)}
 
@@ -290,7 +272,7 @@ class Round extends React.Component {
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
 					  	<Row style={{margin: '0px auto'}}>
 					  		<h4 className='Play-status'>{this.state.playStatus} {this.state.showPlay.cardPlayed}</h4>
@@ -309,7 +291,7 @@ class Round extends React.Component {
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
@@ -317,9 +299,9 @@ class Round extends React.Component {
 					<hr/>
 					<Row style={{margin: 'auto'}}>
 						{this.state.results.card1!==null?
-							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
 						{this.state.results.card2!==null?
-							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2} allImgs={this.state.allImgs['big']} /></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
 					</Row>
 				</Container>);
 			} else {
@@ -327,7 +309,7 @@ class Round extends React.Component {
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 					<Row style={{margin: '0px auto'}}>
 						<h5 className='Play-status'>{this.state.results.statusMsg}. {this.state.results.resultMsg}</h5>
@@ -352,7 +334,7 @@ class Round extends React.Component {
 				<Container className="Game-header">
 				  	<Row style={{margin: '0px auto'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
-					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer} allImgs={this.state.allImgs['mini']} />
+					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
 		  			{this.state.playMode===2?
 		  				(<div style={{margin: '0px auto'}}>
@@ -383,7 +365,7 @@ class Round extends React.Component {
 						  	</Row>
 						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex", justifyContent: 'center'}}>
-						  			<Cards cardname={currentCard} allImgs={this.state.allImgs['big']} />
+						  			<Cards cardname={currentCard}/>
 						  		</Col>
 						  	</Row>
 					  	</div>)}

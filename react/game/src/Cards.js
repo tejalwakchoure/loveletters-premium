@@ -8,17 +8,14 @@ class Cards extends React.Component {
 	
 	constructor(props) {
 	    super(props);
-	    this.state = {
-	    	// allImgs: this.props.allImgs
-		};
 	    this.clickCard = this.clickCard.bind(this);
 	}
 
 	getCard() {
 		if(this.props.cardname===null || this.props.cardname===undefined)
-			return require('../assets/cards/loading_card.jpeg'); //this.state.allImgs['loading_card'];
+			return require('../assets/cards/loading_card.jpeg');
 		else
-			return require('../assets/cards/'+this.props.cardname+'.jpeg');//this.state.allImgs[this.props.cardname];
+			return require('../assets/cards/'+this.props.cardname+'.jpeg');
 	}
 
 	clickCard = () => {
