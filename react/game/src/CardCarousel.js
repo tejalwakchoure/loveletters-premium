@@ -10,25 +10,15 @@ import './Game.css';
 class CardCarousel extends React.Component {
 	constructor(props) {
 	    super(props);
-	    this.state = {allImgs: this.props.allImgs};
+	    // this.state = {allImgs: this.props.allImgs};
 	}
-	
-	// componentDidMount() {
-	// 	const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
- //                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
-    
-	//     let imagesToBePreloaded = {};
-	//     card_names.map((img, index) => {
-	//         imagesToBePreloaded[img] = require('../assets/cards/mini'+img+'.png');});
-	//     this.setState({allImgs: imagesToBePreloaded});
-	// }
 
 	componentDidUpdate () {
 		this.scrollToBottom();
 	}
 
 	getCard(name) {
-		return this.state.allImgs[name];
+		return require('../assets/cards/mini'+name+'.png'); //this.state.allImgs[name];
 	}
 
 	scrollToBottom = () => {

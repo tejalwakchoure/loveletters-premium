@@ -16,29 +16,29 @@ class Results extends React.Component {
 	    this.state = {
 	    	toSend: false,
 	    	disableButton: false,
-	    	allImgs: {}
+	    	// allImgs: {}
 	    };
 	    this.getResults = this.getResults.bind(this);
 	    this.getCard = this.getCard.bind(this);
 	    this.doNext = this.doNext.bind(this);
 	}
 
-	componentDidMount() {
-		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
-                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+	// componentDidMount() {
+	// 	const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+ //                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
     
-	    let imagesToBePreloaded = {};
-	    imagesToBePreloaded['displayBlank'] = require('../assets/cards/displayBlank.png');
-	    card_names.map((img, index) => {
-	        imagesToBePreloaded[img] = require('../assets/cards/mini'+img+'.png');});
-	    this.setState({allImgs: imagesToBePreloaded});
-	}
+	//     let imagesToBePreloaded = {};
+	//     imagesToBePreloaded['displayBlank'] = require('../assets/cards/displayBlank.png');
+	//     card_names.map((img, index) => {
+	//         imagesToBePreloaded[img] = require('../assets/cards/mini'+img+'.png');});
+	//     this.setState({allImgs: imagesToBePreloaded});
+	// }
 
 	getCard(name) {
 		if(name===null || name===undefined)
-			return this.state.allImgs['displayBlank'];
+			return require('../assets/cards/displayBlank.png'); //this.state.allImgs['displayBlank'];
 		else
-			return this.state.allImgs[name];
+			return require('../assets/cards/mini'+name+'.png'); //this.state.allImgs[name];
 
 	}
 

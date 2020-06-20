@@ -56,7 +56,7 @@ class PlayCard extends React.Component {
 				this.setState({selectionSatisfied: this.state.selectedNumber!==-1, selectedPlayers: selectedPlayers});
 		}
 		else {
-			if(this.props.num_special[2]===0 || !(this.props.allPlayerInfo[item][2]===false)) { //this item is not a sycophant
+			if(this.props.num_special[2]===0 || !(this.props.allPlayerInfo[item][2]===true)) { //this item is not a sycophant
 				x = selectedPlayers.indexOf(item);
 				if(x!==undefined && x>=0) {
 					selectedPlayers.splice(x, 1);
