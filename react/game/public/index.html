@@ -30,34 +30,7 @@
     <div id="root"></div>
 
     <script type="text/javascript"> 
-      var headID = document.getElementsByTagName('head')[0];
-      let collection = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester',
-                          'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
-      for (item of collection) {
-             var link = document.createElement('link');
-             link.rel = 'preload';
-             link.as = "image";
-             link.href = "../assets/cards/mini"+item+".png";
-             headID.appendChild(link);
-            }
-      for (item of collection) {
-             var link = document.createElement('link');
-             link.rel = 'preload';
-             link.as = "image";
-             link.href = "../assets/cards/"+item+".jpeg";
-             headID.appendChild(link);
-            }
-        var link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = "image";
-        link.href = "../assets/cards/loading_card.jpeg";
-        headID.appendChild(link);
-
-        link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = "image";
-        link.href = "../assets/cards/display_blank.png";
-        headID.appendChild(link);
+      
     </script>
     <!--
       This HTML file is a template.
