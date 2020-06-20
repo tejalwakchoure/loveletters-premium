@@ -31,7 +31,6 @@ class Round extends React.Component {
 		    disableButton: false,
 		    turnEnded: false,
 		    othersPlayMode: -1,
-		    // cardinalChosenMessage: "",
 		    showPlay: {}
 		};
 
@@ -84,17 +83,16 @@ class Round extends React.Component {
   			results: obj,
   			discard_pile: obj.discard_pile,
   			num_cards_left: obj.cards_left
-		},
-		console.log("got results from socket"));
+		});
 	}
 
 	getCardinalView(obj) {
 		const res = this.state.results;
-		res['resultMsg'] = res['resultMsg']+"."+obj.cardinalChosenMessage;
-		this.setState({
-			// cardinalChosenMessage: obj.cardinalChosenMessage,
-			results: res
-		});
+		if(res['resultMsg']!=='')
+			res['resultMsg'] = res['resultMsg']+"."+obj.cardinalChosenMessage;
+		else
+			res['resultMsg'] = res['resultMsg']+obj.cardinalChosenMessage;
+		this.setState({results: res});
 	}
 
 	selectCard(chosen) {
@@ -130,18 +128,12 @@ class Round extends React.Component {
 	handleCardinalDiscard = (playerChosen) => {
 		this.setState({disableButton: true});
 		if(playerChosen===1) {
-			this.setState({
-				cardinalChosen: this.state.results.card1,
-				// cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"
-			});
+			this.setState({cardinalChosen: this.state.results.card1});
 			this.props.socket.send(JSON.stringify({'type':'cardinalView',
 										    		'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"}));
 		}
 		else {
-			this.setState({
-				cardinalChosen: this.state.results.card2,
-				// cardinalChosenMessage: this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"
-			});
+			this.setState({cardinalChosen: this.state.results.card2});
 			this.props.socket.send(JSON.stringify({'type':'cardinalView',
 							    					'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"}));
 		
@@ -150,11 +142,9 @@ class Round extends React.Component {
 
   	endTurn = () => {
   		if(this.state.results.roundWinner!==null) {
-  			console.log("sent results to Game")
 			this.props.gameCallback(this.state.results); //end round
 		}
 		else if(this.state.results.gameWinner!==null) {
-			console.log("sent results to Game")
 			this.props.gameCallback(this.state.results); //end round
 		}
   	}
@@ -182,7 +172,6 @@ class Round extends React.Component {
 				drawnCard="loading_card" // before first render
 
 			if(this.state.playMode===0) {
-				console.log('RENDER MODE: current player x choosing card')
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: 0}}>
@@ -215,7 +204,6 @@ class Round extends React.Component {
 				);
 			}
 			else if(this.state.playMode===1) {
-				console.log('RENDER MODE: current player x playing card')
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
@@ -234,7 +222,6 @@ class Round extends React.Component {
 				);
 			} 
 			else {
-				console.log('RENDER MODE: current player x results')
 				return (
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
@@ -279,7 +266,6 @@ class Round extends React.Component {
 		}
 		
 		else if(this.state.othersPlayMode===1) {
-			console.log('RENDER MODE: other player x viewing play card')
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: '0px auto'}}>
@@ -296,7 +282,6 @@ class Round extends React.Component {
 		}
 		
 		else if((this.props.userID === this.state.results.player1 || this.props.userID === this.state.results.player2) && this.state.playMode===2) {
-			console.log('RENDER MODE: one of the players involved in the turn x results')
 			if(this.state.turnEnded)
 				this.endTurn();
 			if(!this.state.results.bishopGuess) {
@@ -341,8 +326,6 @@ class Round extends React.Component {
 			}
 		} 
 		else {
-			console.log('RENDER MODE: other players/one of the players involved in the turn')
-			console.log("playMode=--------------", this.state.playMode)
 			if(this.state.turnEnded)
 				this.endTurn();
 			return(
