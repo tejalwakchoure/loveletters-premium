@@ -32,6 +32,8 @@ def hash_obj(obj, salt = '1c(R$p{Gsjk/5', add_random=False, algo=hashlib.sha256)
     data = '%s%s%s' % (obj, salt, random.random() if add_random else '')
     return algo(data.encode('utf-8')).hexdigest()
 
+
+
 class Commands(object):
 
     createRoom = 7
@@ -174,7 +176,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        print(self.user.username, ':', message['type'], message)
+        print(self.user.username, ':', message['type']) #, message)
         
         if message['type'] == 'players':
             plyrs = {}
@@ -202,7 +204,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         elif message['type'] == 'startGame':
             #Start the game
             curr_game.start_game(int(message['token_limit']), message['addExt']) #Options are number of hearts to win and if extraCards are wanted
-            
+            curr_game.new_round()
             self.sendGameAll({'type': 'startGame'}, curr_game)
 
         elif message['type'] == 'discard':
@@ -220,20 +222,22 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 for plyr in curr_game.players:
                     curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
         
-        elif message['type'] == 'nextRound': #TODO: Wait for everyone to click at 
-
+        elif message['type'] == 'ready': #TODO: Wait for everyone to click ready
             curr_game.all_in[self.user.user] = True
 
             if curr_game.roundOver and all(curr_game.all_in.values()): 
                 curr_game.new_round() #Start the next round for everyone
                 #And send everyone the turn status
+                self.sendGameAll({'type':'readyAll'}, curr_game)
+
+
                 for plyr in curr_game.players:
-                    curr_game.players[plyr].webSocketHandle.write_message(json.dumps(curr_game.round.turn_status(plyr)))
                     curr_game.all_in[plyr] = False 
-            elif curr_game.round != None:
-                if curr_game.round.round_state == 1:
+
+        elif message['type'] == 'nextRound':
+                if curr_game.round.round_state <= 1: #0 or 1
                     self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
-                elif curr_game.round.round_state == 2:
+                elif curr_game.round.round_state >= 2: #2 or 3
                     self.write_message(json.dumps(curr_game.round.result_status(self.user.user)))
 
             #self.write_message(json.dumps(curr_game.round.turn_status(self.user.user)))
@@ -258,7 +262,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
             self.close()
             
-        elif message['type'] == 'playComponent' or message['type'] == 'gameOptions':
+        elif message['type'] == 'playComponent' or message['type'] == 'gameOptions' or message['type'] == 'cardinalView':
             for plyr in curr_game.players:
                 if plyr != self.user.user:
                     curr_game.players[plyr].webSocketHandle.write_message(json.dumps(message))  

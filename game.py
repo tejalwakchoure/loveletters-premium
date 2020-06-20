@@ -1,4 +1,3 @@
-from collections import OrderedDict 
 import random
 import copy
 
@@ -137,7 +136,9 @@ class Round:
 
         self.result_blob = {}
         
-        self.player_dict = OrderedDict()
+        
+        self.player_dict = {}
+
         for plyr in self.order:
             self.player_dict[plyr] = [False, False, False, False, False, 0]
             #Eliminated, Immune, Sycho, Jester, Constable, Count
@@ -180,7 +181,7 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        #self.curr_stat()
+        self.curr_stat()
         
     def player_play(self, card_chosen, plyr1, plyr2, numb_given):
         #Raise exceptions if something is wrong
@@ -190,7 +191,7 @@ class Round:
         if plyr2 != None and self.players[plyr2].out:
             raise APIException("Hello Sir, what is this, plyr2 is out, unacceptable") 
         
-        if self.sychoTar != None and plyr1 != self.sychoTar:
+        if plyr1 != None and self.sychoTar != None and plyr1 != self.sychoTar:
             raise APIException('Theres a sychoTarget which has not been taken')
             
         if  plyr1 != None and self.players[plyr1].immune:
@@ -209,7 +210,7 @@ class Round:
             card_discarded = self.players[self.turn].extra
             
         else: #He's chosen a card that does not exist
-            raise APIException("Unknown card chosen??" + card_chosen)
+            raise APIException("Unknown card chosen: " + card_chosen, ', Cards available: ',self.players[self.turn].card.card_name+', '+ self.players[self.turn].extra.card_name)
             
         self.result_blob = {} 
         
@@ -514,6 +515,8 @@ class Round:
         #All this is replaced by player dict
         
         obj['playerInfo'] = self.player_dict
+        obj['order'] = self.order
+
         obj['num_special'] = [0, 0, 0] #Players eliminated, immune number, sycho number
             
         obj['num_special'][0] = len(self.players) - len(self.order)
@@ -597,7 +600,7 @@ class Round:
                 obj['resultMsg'] += 'You have'
             else:
                 obj['resultMsg'] += self.players[obj['eliminated'][0]].username + ' has'
-            obj['resultMsg'] += ' been eliminated.'
+            obj['resultMsg'] += ' been eliminated. '
         
         
         obj['bishopGuess'] = obj['card_discarded'] == 'Bishop' and self.result_blob['result'] == 'Correct' and plyr_uid == obj['player1']
@@ -655,9 +658,9 @@ class Round:
             
     def curr_stat(self):
     
-        print(self.cards[-1].card_name, self.cards[-2].card_name, self.cards[-3].card_name )
+        print(self.cards[-3].card_name, self.cards[-2].card_name, self.cards[-1].card_name )
         for plyrs in self.order:
-            print(self.players[plyrs].username + '(' + self.players[plyrs].user + ')' ':' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
+            print(self.players[plyrs].username + '(' + self.players[plyrs].user[:4] + ')' ':\t' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
         
         
