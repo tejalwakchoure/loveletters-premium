@@ -10,18 +10,18 @@ import './Game.css';
 class CardCarousel extends React.Component {
 	constructor(props) {
 	    super(props);
-	    this.state = {allImgs: {}};
+	    this.state = {allImgs: this.props.allImgs};
 	}
 	
-	componentDidMount() {
-		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
-                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+	// componentDidMount() {
+	// 	const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+ //                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
     
-	    let imagesToBePreloaded = {};
-	    card_names.map((img, index) => {
-	        imagesToBePreloaded[img] = require('../assets/cards/mini'+img+'.png');});
-	    this.setState({allImgs: imagesToBePreloaded});
-	}
+	//     let imagesToBePreloaded = {};
+	//     card_names.map((img, index) => {
+	//         imagesToBePreloaded[img] = require('../assets/cards/mini'+img+'.png');});
+	//     this.setState({allImgs: imagesToBePreloaded});
+	// }
 
 	componentDidUpdate () {
 		this.scrollToBottom();
@@ -66,7 +66,7 @@ class CardCarousel extends React.Component {
 			  	</div>
 			  	<div>
 		            <ListGroup style={{minWidth: 'max-content', float: 'right'}}>
-		                {Object.entries(this.props.all_players).map(([key,value]) => {
+		                {this.props.order.map((id, index) => {
 			                return <ListGroup.Item style={{padding: '3px 10px',
 			                                              	fontSize: 'small',
 			                                              	textAlign: 'center !important',
@@ -75,11 +75,11 @@ class CardCarousel extends React.Component {
 				                                            border: 0,
 				                                            borderTop: '0.5px solid black',
 				                                            minWidth: 'max-content'}}
-			                                        key={key}>
-			                          {this.props.currentPlayer===key?
+			                                        key={id}>
+			                          {this.props.currentPlayer===id?
 			                          	<FontAwesomeIcon icon={faLongArrowAltRight}/>:<div></div>}
 			                          <span>&nbsp;&nbsp;</span>
-			                          {value}
+			                          {this.props.all_players[id]}
 			                        </ListGroup.Item>})}
 		            </ListGroup>
 	            </div>
