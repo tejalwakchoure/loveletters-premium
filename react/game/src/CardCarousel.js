@@ -3,24 +3,39 @@ import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLongArrowAltRight} from '@fortawesome/free-solid-svg-icons';
-import {Col} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import './Game.css';
 
 
 class CardCarousel extends React.Component {
+	constructor(props) {
+	    super(props);
+	    this.state = {allImgs: {}};
+	}
 	
+	componentDidMount() {
+		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
+                        	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
+    
+	    let imagesToBePreloaded = {};
+	    card_names.map((img, index) => {
+	        imagesToBePreloaded[img] = require('../assets/cards/mini'+img+'.png');});
+	    this.setState({allImgs: imagesToBePreloaded});
+	}
+
+	componentDidUpdate () {
+		this.scrollToBottom();
+	}
+
 	getCard(name) {
-		return require('../assets/cards/mini'+name+'.png');
+		return this.state.allImgs[name];
 	}
 
 	scrollToBottom = () => {
 		this.lastCard.scrollIntoView({ behavior: "smooth" });
 	}
 
-	componentDidUpdate () {
-		this.scrollToBottom();
-	}
+	
 
 	render() {
 		let playedCardlist = [];
@@ -52,7 +67,7 @@ class CardCarousel extends React.Component {
 			  	<div>
 		            <ListGroup style={{minWidth: 'max-content', float: 'right'}}>
 		                {Object.entries(this.props.all_players).map(([key,value]) => {
-			                return <ListGroup.Item style={{padding: '3px 10px'
+			                return <ListGroup.Item style={{padding: '3px 10px',
 			                                              	fontSize: 'small',
 			                                              	textAlign: 'center !important',
 				                                            backgroundColor: 'gray',
