@@ -696,9 +696,6 @@ class Game:
         random.seed()
         
     def refresh(self, host):
-        self.players = {}
-        self.order = []
-        self.all_in = {}
         self.state = 0
         self.host = host
 
