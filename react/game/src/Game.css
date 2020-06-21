@@ -24,7 +24,7 @@
   margin: auto 15px auto auto;
   border-color: dimgray !important;
   background-color: dimgray !important;
-  box-shadow: -3px -5px 0px 3px black;
+  box-shadow: 4px 5px 0 3px #000;
   color: white;
   font-weight: bold;
   font-size: 1.75vw;
