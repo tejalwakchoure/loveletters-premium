@@ -22,11 +22,15 @@ class Game extends React.Component {
 			gameWinner: " ",
 			cardsAtRoundEnd: [],
 			userID: ' ',
-			username: ' '
+			username: ' ',
+			obj: {}
 		};
 		this.landingCallback = this.landingCallback.bind(this);
 		this.roundCallback = this.roundCallback.bind(this);
 		this.resultsCallback = this.resultsCallback.bind(this);
+		
+		this.landingRef = React.createRef();
+		this.roundRef = React.createRef();
 
 		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
      	                   	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
@@ -44,9 +48,6 @@ class Game extends React.Component {
 
 
 	componentDidMount() {
-		this.landingRef = React.createRef();
-		this.roundRef = React.createRef();
-
 	   	socket.onopen = () => {
 			console.log('WebSocket Client Connected');
 			socket.send(JSON.stringify({'type':'players'}));
@@ -56,35 +57,71 @@ class Game extends React.Component {
 	   		var obj = JSON.parse(event.data);
 			console.log(obj);
 			console.log(obj.type);
-			
-			if(obj.type === 'playersS'){
-				this.landingRef.current.getPlayers(obj);
-			}
-			else if(obj.type === 'gameOptions'){
-				this.landingRef.current.getOptions(obj);
-			}
-			else if(obj.type === 'startGame'){
-				this.landingRef.current.getStartGame(obj);
-			}
-			else if(obj.type === 'turn'){
-				this.roundRef.current.getTurn(obj);
-			}
-			else if(obj.type === 'playComponent'){
-				this.roundRef.current.getPlay(obj);
-			}
-			else if(obj.type === 'results'){
-				this.roundRef.current.getResults(obj);
-			}
-			else if(obj.type === 'cardinalView'){
-				this.roundRef.current.getCardinalView(obj);
-			}
-			else if(obj.type === 'readyAll'){
-				this.setState({gameStatus: 1});
-			}
-			else if(obj.type === 'redirect'){
-				window.location.replace('/');
-			}
+			const set = this.setObjectValue(obj);
+			if(set===false)
+				this.setState({obj: obj});
 	  	}
+	}
+
+	componentDidUpdate() {
+		const set = this.setObjectValue(this.state.obj);
+		if(set===true)
+			this.setState({obj: {}});
+	}
+
+	setObjectValue(obj) {
+		let set = false;
+		if(obj.type === 'playersS'){
+			if(this.landingRef.current!==null) {
+				this.landingRef.current.getPlayers(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'gameOptions'){
+			if(this.landingRef.current!==null) {
+				this.landingRef.current.getOptions(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'startGame'){
+			if(this.landingRef.current!==null) {
+				this.landingRef.current.getStartGame(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'turn'){
+			if(this.roundRef.current!==null) {
+				this.roundRef.current.getTurn(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'playComponent'){
+			if(this.roundRef.current!==null) {
+				this.roundRef.current.getPlay(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'results'){
+			if(this.roundRef.current!==null) {
+				this.roundRef.current.getResults(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'cardinalView'){
+			if(this.roundRef.current!==null) {
+				this.roundRef.current.getCardinalView(obj);
+				set=true;
+			}
+		}
+		else if(obj.type === 'readyAll'){
+			this.setState({gameStatus: 1});
+			set=true;
+		}
+		else if(obj.type === 'redirect'){
+			window.location.replace('/');
+			set=true;
+		}
+		return set;
 	}
 
 
