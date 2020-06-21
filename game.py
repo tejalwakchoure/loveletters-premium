@@ -305,12 +305,18 @@ class Round:
         #Check each condition and do acordingly
         if played_card.requires_numb and numb_given == None:
             raise APIException("Number required was not given")
-
+        
+        if played_card.requires_people == 0:
+            plyr1 = None
+            plyr2 = None
+        
         if played_card.requires_people == 1 and plyr1 == None:
             raise APIException("Player 1 was required not given")
         
         if played_card.requires_people == 2 and plyr2 == None:
             raise APIException("Player 2 was required not given")
+            
+        
 
         if played_card.card_name == 'Bishop': #Check number and player, if match gain an affection token
             if self.players[plyr1].card.card_number == numb_given:
@@ -667,13 +673,25 @@ class Round:
             
             
     def curr_stat(self):
-        for cards in self.cards[-3:]:
-            print(cards.card_name)
-        for plyrs in self.order:
-            print(self.players[plyrs].username + '(' + self.players[plyrs].user[:4] + ')' ':\t' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
-        print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
+        obj = {}
+        obj['cards'] = []
+        for cards in self.cards:
+            obj['cards'].append(cards.card_name)
+        obj['order'] = self.order
+        obj['player_curr'] = {self.turn: [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]}
+        obj['discard_pile'] = self.discard_pile
         
+        obj['player_info'] = self.player_dict
         
+        obj['player_cards'] = {}
+        
+        obj['tokens'] = {}
+        for plyr in self.players:
+            obj['tokens'][plyr] = self.players[plyr].tokens
+            if plyr in self.order:
+                obj['player_cards'][plyr] = self.players[self.turn].card.card_name
+        
+        return obj
         
 
         

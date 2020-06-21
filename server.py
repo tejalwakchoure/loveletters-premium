@@ -24,7 +24,7 @@ define("debug", default=True, help="run in debug mode")
 
 
 totalGames = 0
-
+adminControl = None
 
 
 
@@ -296,8 +296,38 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             traceback.print_tb(err.__traceback__)
             self.close()
             
+
+class adminHandler(RequestHandler):
+
+    def get(self):
+        print('AdminControl OPENED')
+        self.render('admin.html')
         
 
+
+class wsAdminControlHandler(RequestHandler, tornado.websocket.WebSocketHandler):
+
+        
+    def open(self):
+        print('AdminControl WebSocket OPENED')
+        adminControl = self
+    
+    def on_close(self):
+        print('AdminControl WebSocket CLOSED')
+        adminControl = None
+        
+    def on_message(self, message):
+        print("ADMIN: ", message)
+        
+    def sendMsg(self, message):
+        try:
+            self.write_message(message)
+        except tornado.websocket.WebSocketClosedError as e:
+            print("WebSocket ERROR: ", e)
+            traceback.print_tb(err.__traceback__)
+            self.close()
+        
+    
 class Application(tornado.web.Application):
 
     def __init__(self, *args, **kwargs):
@@ -330,7 +360,10 @@ handlers = [
         (r'/login.css', LoginCSSHandler),
         (r"/getGame", gameLoginHandler),
         (r"/gameBoard", gameBoardHandler),
-        (r"/ws", webSocketHandler)
+        (r"/ws", webSocketHandler),
+        
+        (r"/adminControl", adminHandler),
+        (r"/wsAdminControl",wsAdminControlHandler)
       
 ]
 if __name__ == "__main__":
