@@ -28,9 +28,6 @@ class Game extends React.Component {
 		this.roundCallback = this.roundCallback.bind(this);
 		this.resultsCallback = this.resultsCallback.bind(this);
 
-		this.landingRef = React.createRef();
-		this.roundRef = React.createRef();
-
 		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
      	                   	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
 	    let imgs = {};
@@ -47,6 +44,9 @@ class Game extends React.Component {
 
 
 	componentDidMount() {
+		this.landingRef = React.createRef();
+		this.roundRef = React.createRef();
+
 	   	socket.onopen = () => {
 			console.log('WebSocket Client Connected');
 			socket.send(JSON.stringify({'type':'players'}));
