@@ -208,7 +208,7 @@ class Round extends React.Component {
 			else if(this.state.playMode===1) {
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px auto'}}>
+					  	<Row style={{margin: 0}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -226,7 +226,7 @@ class Round extends React.Component {
 			else {
 				return (
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px auto'}}>
+					  	<Row style={{margin: 0}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -270,7 +270,7 @@ class Round extends React.Component {
 		else if(this.state.othersPlayMode===1) {
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: '0px auto'}}>
+					  	<Row style={{margin: 0}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -289,7 +289,7 @@ class Round extends React.Component {
 			if(!this.state.results.bishopGuess) {
 				return (
 				<Container className="Game-header">
-				  	<Row style={{margin: '0px auto'}}>
+				  	<Row style={{margin: 0}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
@@ -307,7 +307,7 @@ class Round extends React.Component {
 			} else {
 				return (
 				<Container className="Game-header">
-				  	<Row style={{margin: '0px auto'}}>
+				  	<Row style={{margin: 0}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
@@ -332,7 +332,7 @@ class Round extends React.Component {
 				this.endTurn();
 			return(
 				<Container className="Game-header">
-				  	<Row style={{margin: '0px auto'}}>
+				  	<Row style={{margin: 0}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
