@@ -43,6 +43,8 @@ class Results extends React.Component {
 	}
 
 	doNext(toSend) {
+		//if(this.props.gameWinner!==null)
+		//	this.props.socket.send(JSON.stringify({'type':'playerIn'}));
 		this.setState({disableButton: true});
 		this.props.gameCallback(toSend);
 	}
