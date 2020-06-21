@@ -50,7 +50,7 @@ class CardCarousel extends React.Component {
 				  	</div>
 			  	</div>
 			  	<div style={{width: '100%'}}>
-		            <ListGroup style={{minWidth: 'max-content', float: 'right', boxShadow: '4px 5px 0 3px #000'}}>
+		            <ListGroup style={{minWidth: 'max-content', marginLeft: '15px', boxShadow: '4px 5px 0 3px #000'}}>
 		                {this.props.order.map((id, index) => {
 			                return <ListGroup.Item style={{padding: '3px 10px',
 			                                              	fontSize: 'small',
