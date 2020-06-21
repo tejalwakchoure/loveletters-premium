@@ -49,6 +49,10 @@
   border: 1px solid #0cbf9d !important;
 }
 
+btn.disabled, .btn:disabled {
+  opacity: .50 !important;
+}
+
 .Card-design {
   color: #f1e4d7;
   background-color: #2f1522;
@@ -91,7 +95,7 @@ hr {
 }
 
 .List-item-design.disabled {
-  color: #867e7e !important;
+  color: #656060 !important;
 }
 
 .list-group-item-dark {
