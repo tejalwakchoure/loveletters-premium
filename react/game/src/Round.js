@@ -83,6 +83,8 @@ class Round extends React.Component {
 		// 	this.setState({turnEnded: true});
 		// if(obj.gameWinner!==null)
 		// 	this.setState({turnEnded: true});
+
+		console.log("in round.js getResults")
 		this.setState({
   			playMode: 2,
   			othersPlayMode: -1,

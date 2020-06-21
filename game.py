@@ -57,8 +57,8 @@ extCards = [Card(9, 'Bishop', '', 1, True),
 class Player:
     def __init__(self, uid):
         self.user = uid
-        self.reset()
         self.tokens = 0
+        self.reset()
         
         self.webSocketHandle = None
 
@@ -73,7 +73,7 @@ class Player:
         self.webSocketHandle = sock
 
 
-    def reset(self):
+    def reset(self, fullReset = False):
         self.card = None
         self.extra = None
         
@@ -87,6 +87,10 @@ class Player:
         
         self.end_count = 0
         self.dis_sum = 0
+
+        if fullReset:
+            self.tokens = 0
+
         
     def discard_sum(self):
         sum = 0
@@ -183,8 +187,10 @@ class Round:
         ################## --------------------- COMMENT --------------------- ##################
         self.curr_stat()
         
-    def player_play(self, card_chosen, plyr1, plyr2, numb_given):
+    def player_play(self,user, card_chosen, plyr1, plyr2, numb_given):
         #Raise exceptions if something is wrong
+        if user != self.turn:
+            raise APIException("Not current players turn")
         if plyr1 != None and self.players[plyr1].out:
             raise APIException("Hello Sir, what is this, plyr1 is out, unacceptable") 
 
@@ -657,8 +663,8 @@ class Round:
             
             
     def curr_stat(self):
-    
-        print(self.cards[-3].card_name, self.cards[-2].card_name, self.cards[-1].card_name )
+        for cards in self.cards[-3:]:
+            print(cards.card_name)
         for plyrs in self.order:
             print(self.players[plyrs].username + '(' + self.players[plyrs].user[:4] + ')' ':\t' + self.players[plyrs].card.card_name + ' '*(14 - len(self.players[plyrs].card.card_name)) + '\t' +str(self.players[plyrs].card.card_number) + '\t' + str(self.players[plyrs].tokens))
         print(self.players[self.turn].username + ' has ' + self.players[self.turn].extra.card_name + ' and ' + self.players[self.turn].card.card_name + ' to play')
@@ -696,6 +702,9 @@ class Game:
         random.seed()
         
     def refresh(self, host):
+        for plyr in self.players.values():
+            plyr.reset(True) #Do a full reset 
+
         self.state = 0
         self.host = host
 
@@ -760,7 +769,7 @@ class Game:
             self.roundOver = True
             self.round.result_blob['gameWinner'] = winnerList[0]
             self.overall_winner = winnerList[0]
-            self.state = -1 #Waiting for start
+            self.state = 2 #Game is completely over
             return True
         
         elif len(winnerList) > 1: #multiple winners, start a new round with only ths people

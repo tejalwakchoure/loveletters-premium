@@ -31,11 +31,8 @@ class Results extends React.Component {
 
 	getResults() {
 		let points_display = this.props.points;
-		const emptyPoints = {};
-		Object.entries(this.props.allPlayers).map(([key,value]) => {emptyPoints[key] = 0;}); 
-		
-		if(this.props.points===null || this.props.points===undefined)
-			points_display = emptyPoints;
+		let emptyPoints = {};
+
 
 		let displayIcon = <FontAwesomeIcon icon={faHeart}/>;
     	let spaceIcon = <span>&nbsp;&nbsp;</span>;
@@ -43,9 +40,10 @@ class Results extends React.Component {
 			let icons = [];
 			for(let i=0;i<value;i++)
 				icons = icons.concat(displayIcon).concat(spaceIcon);
-			points_display[key] = icons;
+			emptyPoints[key] = icons;
 		});
-		return points_display;
+		console.log(emptyPoints, points_display)
+		return emptyPoints;
 	}
 
 	doNext(toSend) {
