@@ -115,13 +115,11 @@ class Game extends React.Component {
 				gameStatus: 0,
 				leavingGame: false
 			});
-			socket.send(JSON.stringify({'type':'players'}));
+			socket.send(JSON.stringify({'type':'playerIn'}));
+			// socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
 			socket.send(JSON.stringify({'type':'ready'}));
-			// this.setState({
-			// 	gameStatus: 1
-			// });
 		}
 		else {
 			this.setState({
