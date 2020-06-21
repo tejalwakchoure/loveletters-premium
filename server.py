@@ -191,7 +191,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
         
         elif message['type'] == 'playerIn':
-            if curr_game.state == -1:
+            if curr_game.state == 2:
                 curr_game.refresh(self.user.user)
             
             plyrs = {}
@@ -208,7 +208,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             self.sendGameAll({'type': 'startGame'}, curr_game)
 
         elif message['type'] == 'discard':
-            curr_game.round.player_play(message['card'], message['player1'], message['player2'], message['number'])
+            try:
+                curr_game.round.player_play(self.user.user, message['card'], message['player1'], message['player2'], message['number'])
+            except game.APIException as e:
+                print("API ERROR: ", e)
             curr_game.round.round_state = 2 #Results are there show everyone
 
             for plyr in curr_game.players:

@@ -137,6 +137,7 @@ class Game extends React.Component {
 		let emptyPoints = {};
 		Object.entries(this.state.all_players).map(([key,value]) => {emptyPoints[key] = []}); 
 
+		console.log("roundCallback ka setState: ", ((roundData.tokens!==emptyPoints) && (roundData.tokens!==null) && (roundData.tokens!==undefined)))
 		this.setState({
 			rounds_played: this.state.rounds_played + 1,
 			points: (((roundData.tokens!==emptyPoints) && (roundData.tokens!==null) && 
