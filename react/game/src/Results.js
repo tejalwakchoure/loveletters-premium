@@ -14,7 +14,6 @@ class Results extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
-	    	points: this.props.points,
 	    	toSend: false,
 	    	disableButton: false
 	    };
@@ -31,7 +30,7 @@ class Results extends React.Component {
 	}
 
 	getResults() {
-		const points_display = this.state.points; //tokens won
+		let points_display = this.props.points;
 		let displayIcon = <FontAwesomeIcon icon={faHeart}/>;
     	let spaceIcon = <span>&nbsp;&nbsp;</span>;
 		Object.entries(points_display).map(([key,value]) => {
@@ -46,12 +45,14 @@ class Results extends React.Component {
 	doNext(toSend) {
 		//if(this.props.gameWinner!==null)
 		//	this.props.socket.send(JSON.stringify({'type':'playerIn'}));
+
 		this.setState({disableButton: true});
 		this.props.gameCallback(toSend);
 	}
 
 	render() {
 		const points_display = this.getResults();
+		console.log(points_display)
 		return(
 			<Container className="Game-header">
 			  	<Row style={{margin: 'auto', textAlign: 'center'}}>
