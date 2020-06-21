@@ -72,7 +72,10 @@ class Player:
     def addSocketHandle(self, sock):
         self.webSocketHandle = sock
 
-
+    def removeSocketHandle(self):
+        self.webSocketHandle = None
+    
+    
     def reset(self, fullReset = False):
         self.card = None
         self.extra = None
@@ -185,7 +188,7 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        self.curr_stat()
+        #self.curr_stat()
         
     def player_play(self,user, card_chosen, plyr1, plyr2, numb_given):
         #Raise exceptions if something is wrong
@@ -477,6 +480,7 @@ class Round:
             #Princess always beats Bishop(no matter Counts)
         
         if win:
+            self.round_state = 2
             if self.winner == self.jesterTar: #If the bet made by the joker was correct, give the token
                 self.players[self.jesterBet].tokens += 1
                 
