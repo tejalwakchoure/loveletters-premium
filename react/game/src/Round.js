@@ -75,10 +75,14 @@ class Round extends React.Component {
 	}
 
 	getResults(obj) {
-		if(obj.roundWinner!==null && obj.discard_pile===[])
+		if(obj.roundWinner!==null || obj.gameWinner!==null) {
 			this.setState({turnEnded: true});
-		if(obj.gameWinner!==null)
-			this.setState({turnEnded: true});
+			this.props.gameCallback(obj);
+		}
+		// if(obj.roundWinner!==null && obj.discard_pile===[])
+		// 	this.setState({turnEnded: true});
+		// if(obj.gameWinner!==null)
+		// 	this.setState({turnEnded: true});
 		this.setState({
   			playMode: 2,
   			othersPlayMode: -1,
@@ -156,7 +160,7 @@ class Round extends React.Component {
   		if(this.state.results.roundWinner===null) {
 			this.props.socket.send(JSON.stringify({'type':'nextTurn'}));
   		}
-  		this.endTurn()
+  		this.endTurn();
   	}
 
   	playCardCallback = (playCardData) => {
