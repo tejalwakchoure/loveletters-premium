@@ -14,6 +14,7 @@ class Results extends React.Component {
 	constructor(props) {
 	    super(props);
 	    this.state = {
+	    	points: this.props.points,
 	    	toSend: false,
 	    	disableButton: false
 	    };
@@ -30,7 +31,7 @@ class Results extends React.Component {
 	}
 
 	getResults() {
-		const points_display = this.props.points; //tokens won
+		const points_display = this.state.points; //tokens won
 		let displayIcon = <FontAwesomeIcon icon={faHeart}/>;
     	let spaceIcon = <span>&nbsp;&nbsp;</span>;
 		Object.entries(points_display).map(([key,value]) => {
@@ -67,7 +68,7 @@ class Results extends React.Component {
 			  	<Row style={{margin: 'auto'}}> 
 			  		<ListGroup>
 			  			{Object.entries(points_display).map(([key,value]) => {
-			  				const cardToShow = this.props.cardsAtRoundEnd[key];
+			  				const cardToShow = (this.props.cardsAtRoundEnd!==undefined)?this.props.cardsAtRoundEnd[key]:null;
 							return (<ListGroup.Item key={key} className='List-item-design Container'>
 									<Row>
 										<Col style={{display: 'inline'}}>
