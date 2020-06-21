@@ -30,14 +30,15 @@ class CardCarousel extends React.Component {
 				<div style={{margin: '0px 0px auto 0px'}}>
 					<div id="top-row" style={{display: 'flex', flexDirection: 'row'}}>
 						<Card className="Card-carousel-num">
-			                <Card.Body style={{ padding: 0, textAlign: 'center', backgroundColor: 'gray'}}>
+			                <Card.Body style={{ padding: 0, textAlign: 'center', backgroundColor: 'dimgray'}}>
 			                  <Card.Text>{this.props.num_cards_left}</Card.Text>
 			                </Card.Body>
 		              	</Card>
 		              	<div className='Card-carousel' style={{overflowX: 'scroll'}}> 
 						  	{playedCardlist.map((item, index) => 
 						  		<div key={item}>
-			                    	<Card style={{ width: '3.7vw', marginLeft: '1px' }}>
+			                    	<Card style={{ width: '3.7vw', marginLeft: '1px', 
+			                    				border: '1px solid dimgray', backgroundColor: 'dimgray'}}>
 								      <Card.Body style={{ padding: 0 }}>
 								        <Card.Img src={this.getCard(item)}/>
 								      </Card.Body>
@@ -54,7 +55,7 @@ class CardCarousel extends React.Component {
 			                return <ListGroup.Item style={{padding: '3px 10px',
 			                                              	fontSize: 'small',
 			                                              	textAlign: 'center !important',
-				                                            backgroundColor: 'gray',
+				                                            backgroundColor: 'dimgray',
 				                                            color: 'white',
 				                                            border: 0,
 				                                            borderTop: '0.5px solid black',
