@@ -31,6 +31,12 @@ class Results extends React.Component {
 
 	getResults() {
 		let points_display = this.props.points;
+		const emptyPoints = {};
+		Object.entries(this.props.allPlayers).map(([key,value]) => {emptyPoints[key] = 0;}); 
+		
+		if(this.props.points===null || this.props.points===undefined)
+			points_display = emptyPoints;
+
 		let displayIcon = <FontAwesomeIcon icon={faHeart}/>;
     	let spaceIcon = <span>&nbsp;&nbsp;</span>;
 		Object.entries(points_display).map(([key,value]) => {
