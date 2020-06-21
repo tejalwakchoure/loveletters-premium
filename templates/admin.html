@@ -1,0 +1,26 @@
+<head>
+  <title>Love Letters Premium</title>
+  <!--meta-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta property="og:type" content="website">
+  <!--title-->
+  <meta property="og:title" content="ADMIN PAGE">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<script >
+  $(document).ready(function() {
+	const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/wsAdminControl")
+	socket.onmessage = function(event){
+		$.getJSON(event.data, function(data){
+			$('#gameOption').append(data)
+		});
+	}
+  }
+</script>
+
+<body>
+  <div id="gameOption"> </div>
+   <!--Javascript-->
+</body>
