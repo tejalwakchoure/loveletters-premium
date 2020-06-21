@@ -193,7 +193,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         elif message['type'] == 'playerIn':
             if curr_game.state == -1:
                 curr_game.refresh(self.user.user)
-
+            
             plyrs = {}
             for plyr in curr_game.players:
                 plyrs[plyr] = curr_game.players[plyr].username
