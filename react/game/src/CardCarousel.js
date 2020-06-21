@@ -26,7 +26,7 @@ class CardCarousel extends React.Component {
 		if(this.props.allCardsDiscarded!==undefined)
 			playedCardlist = this.props.allCardsDiscarded;
 		return(
-			<div style={{margin: '0px 0px auto 0px', width: '100vw', display: 'flex', flexDirection: 'row'}}>
+			<div style={{margin: '0px 0px auto 0px', width: '96vw', display: 'flex', flexDirection: 'row'}}>
 				<div style={{margin: '0px 0px auto 0px'}}>
 					<div id="top-row" style={{display: 'flex', flexDirection: 'row'}}>
 						<Card className="Card-carousel-num">
