@@ -50,10 +50,12 @@ joinEnter.onclick = function(){
         var obj = JSON.parse(data)
         if (obj.game == 'na'){
             window.alert("Game doesn't exist")
-        }else{
+        }else if(obj.game == 'admin'){
             //reload to next page
-            window.location.href = "/gameBoard";
-        }        
+            window.location.href = "/adminControl";
+        }else{
+			window.location.href = "/gameBoard";
+		}
     });
 }
 

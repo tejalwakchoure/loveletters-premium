@@ -9,15 +9,14 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
-<script >
+<script>
   $(document).ready(function() {
 	const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/wsAdminControl")
 	socket.onmessage = function(event){
-		$.getJSON(event.data, function(data){
-			$('#gameOption').append(data)
-		});
+		$('#gameOption').append(event.data + '\n')
+		
 	}
-  }
+  });
 </script>
 
 <body>
