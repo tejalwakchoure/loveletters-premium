@@ -168,7 +168,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         if self.user.gid != -1:
             curr_game = self.application.games[self.user.gid]
             message = json.loads(message)
-            curr_game.timeout = 0
+            curr_game.idle_state = 0
             
         else:
             message = {'type': 'redirect'}
@@ -180,7 +180,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         
         #Send admin details
         if adminControl['admin'] != None and adminControl['gid'] == self.user.gid:
-            adminControl['admin'].sendMsg(json.dumps(curr_game.curr_stat()))
+            adminControl['admin'].sendMsg(curr_game.curr_stat())
         
         
         if message['type'] == 'players':
@@ -189,9 +189,9 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 plyrs[plyr] = curr_game.players[plyr].username
             
             if curr_game.state == 1:#If someone rejoins they have to go to next page directly
-                self.sendMsg(json.dumps({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host, 'uid' :self.user.user, 'username':self.user.username}))
-                self.sendMsg(json.dumps({'type': 'startGame'}))
-                #self.sendMsg(json.dumps(curr_game.round.turn_status(self.user.user)))
+                self.sendMsg({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host, 'uid' :self.user.user, 'username':self.user.username})
+                self.sendMsg({'type': 'startGame'})
+                
             else:
                 self.sendGameAll({'type':'playersS', 'plyrs':plyrs, 'host':curr_game.host}, curr_game)
         
@@ -217,11 +217,11 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 curr_game.round.player_play(self.user.user, message['card'], message['player1'], message['player2'], message['number'])
             except APIException as e:
                 print("API ERROR: ", e)
-                self.sendMsg(json.dumps({'type':'error', 'err':str(e)}))
+                self.sendMsg({'type':'error', 'err':str(e)})
             #curr_game.round.round_state = 2 #Results are there show everyone
 
             for plyr in curr_game.players:
-                curr_game.players[plyr].webSocketHandle.sendMsg(json.dumps(curr_game.round.result_status(plyr)))#Send everyone results 
+                curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.result_status(plyr))#Send everyone results 
             
         
         elif message['type'] == 'nextTurn':
@@ -229,7 +229,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 curr_game.round.round_state = 1 #It is a players turn, send turn 
 
                 for plyr in curr_game.players:
-                    curr_game.players[plyr].webSocketHandle.sendMsg(json.dumps(curr_game.round.turn_status(plyr)))
+                    curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.turn_status(plyr))
         
         elif message['type'] == 'ready': #TODO: Wait for everyone to click ready
             curr_game.all_in[self.user.user] = True
@@ -245,11 +245,9 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 
         elif message['type'] == 'nextRound':
                 if curr_game.round.round_state <= 1: #0 or 1
-                    self.sendMsg(json.dumps(curr_game.round.turn_status(self.user.user)))
+                    self.sendMsg(curr_game.round.turn_status(self.user.user))
                 elif curr_game.round.round_state >= 2: #2 or 3
-                    self.sendMsg(json.dumps(curr_game.round.result_status(self.user.user)))
-
-            #self.sendMsg(json.dumps(curr_game.round.turn_status(self.user.user)))
+                    self.sendMsg(curr_game.round.result_status(self.user.user))
             
         elif message['type'] == 'bishopDiscard': #Option to allow discard card if required
             if message['toDiscard']:
@@ -258,8 +256,6 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             else:
                 curr_game.round.result_blob['bishopAction'] = 'nodiscard'
             
-
-            #self.sendMsg(json.dumps(curr_game.round.turn_status(self.user.user)))
             
         elif message['type'] == 'leaveGame': #For player to leave the game    
             curr_game.remove_player(self.user.user)
@@ -274,10 +270,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         elif message['type'] == 'playComponent' or message['type'] == 'gameOptions' or message['type'] == 'cardinalView':
             for plyr in curr_game.players:
                 if plyr != self.user.user:
-                    curr_game.players[plyr].webSocketHandle.sendMsg(json.dumps(message))  
+                    curr_game.players[plyr].webSocketHandle.sendMsg(message)
         
         elif message['type'] == 'redirect':
-            self.sendMsg(json.dumps(message))
+            self.sendMsg(message)
             self.close()
         
     def on_close(self):
@@ -290,12 +286,11 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             if plyr.webSocketHandle != None:
                 msg['uid'] = plyr.user
                 msg['username'] = plyr.username
-                plyr.webSocketHandle.sendMsg(json.dumps(msg))  
-            
+                plyr.webSocketHandle.sendMsg(msg)
 
     def sendMsg(self, message):
         try:
-            self.write_message(message)
+            self.write_message(json.dumps(message))
         except tornado.websocket.WebSocketClosedError as e:
             print("WebSocket ERROR: ", e)
             traceback.print_tb(err.__traceback__)
@@ -321,7 +316,7 @@ class wsAdminControlHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         adminControl['admin'] = self
         adminControl['gid'] = 0
         
-        self.sendMsg(json.dumps({'games': totalGames}))
+        self.sendMsg({'games': totalGames})
     
     def on_close(self):
         print('AdminControl WebSocket CLOSED')
@@ -333,7 +328,7 @@ class wsAdminControlHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         
     def sendMsg(self, message):
         try:
-            self.write_message(message)
+            self.write_message(json.dumps(message))
         except tornado.websocket.WebSocketClosedError as e:
             print("WebSocket ERROR: ", e)
             traceback.print_tb(err.__traceback__)
@@ -386,10 +381,11 @@ if __name__ == "__main__":
         remove = [k for k in app.games if app.games[k].idle_state == 2]
         print("CLEARING: ", remove)
         for k in remove:
+            app.games[k].closing()
             del app.games[k]
         
         for k, gms in app.games.items():
             gms.idle_state += 1
     
-    tornado.ioloop.PeriodicCallback(check_idle, 1000*60*5).start() #Every 5 minutes check idle state of games
+    tornado.ioloop.PeriodicCallback(check_idle, 1000*60*1).start() #Every 5 minutes check idle state of games
     tornado.ioloop.IOLoop.current().start()
