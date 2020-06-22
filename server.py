@@ -16,7 +16,7 @@ import traceback
 
 from game import Game, Users, APIException
 
-import socketio
+MAX_GAMES = 256
 
 
 define("port", default=5556, help="run on the given port", type=int)
@@ -24,9 +24,10 @@ define("debug", default=True, help="run in debug mode")
 
 
 totalGames = 0
-adminControl = None
+adminControl = {'admin': None, 'gid': None}
 
-
+with open('admin.json') as f:
+    adminData = json.load(f)
 
 #Some radnom helper function to make IDs
 def hash_obj(obj, salt = '1c(R$p{Gsjk/5', add_random=False, algo=hashlib.sha256):
@@ -101,16 +102,20 @@ class gameLoginHandler(RequestHandler):
             else:
                 game = Game(self.user.user, password, roomname, totalGames)
                 
-                self.user.gid = totalGames
                 
                 game.add_player(self.user, username)
+                
+                while totalGames in self.application.games: #Find an empty slot
+                    totalGames = (totalGames+1)%MAX_GAMES
+                
+                self.user.gid = totalGames
                 self.application.games[totalGames] = game
+                
+                
                 self.write(json.dumps({'game':str(totalGames)}))
                 ################## --------------------- COMMENT --------------------- ##################
                 #print("Create romm:", roomname, password, username, totalGames)
                 
-
-                totalGames += 1
                 
                 
                 
@@ -120,35 +125,26 @@ class gameLoginHandler(RequestHandler):
             ################## --------------------- COMMENT --------------------- ##################
             #print(roomname, password)
             
-            notFound = -1
-            for i, gm in self.application.games.items():
-                if gm.room_name == roomname and gm.password == password:
-                    ################## --------------------- COMMENT --------------------- ##################
-                    #print('game exists, add him in')
-                    
-                    notFound = i
-                    break
-                    
-            if notFound == -1:
-                self.write(json.dumps({'game':'na'}))
+            if username == 'admin' and roomname == adminData['admin'] and password == adminData['pass']:
+                self.user.username = "ADMIN"
+                self.user.admin = True
+                self.write(json.dumps({'game':'admin'}))
             else:
-                #add into game given by totalGames = i
-                blob = {'game':str(notFound)}
-                
-                self.user.gid = notFound
-                    
-                self.application.games[notFound].add_player(self.user, username)
-                
-                #players = {}
-                
-                #for i in self.application.games[notFound].players:
-                #    players.update({'name': i.name , 'color': i})
-                
-                #blob.update({'players':players})
-                
-                
-                
-                self.write(json.dumps(blob))
+                notFound = -1
+                for i, gm in self.application.games.items():
+                    if gm.room_name == roomname and gm.password == password:
+                        ################## --------------------- COMMENT --------------------- ##################
+                        #print('game exists, add him in')
+                        notFound = i
+                        break
+                if notFound == -1:
+                    self.write(json.dumps({'game':'na'}))
+                else:
+                    #add into game given by totalGames = i
+                    blob = {'game':str(notFound)}
+                    self.user.gid = notFound
+                    self.application.games[notFound].add_player(self.user, username)
+                    self.write(json.dumps(blob))
         else:
             #print(self.request.arguments)
             pass
@@ -172,12 +168,20 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         if self.user.gid != -1:
             curr_game = self.application.games[self.user.gid]
             message = json.loads(message)
+            curr_game.timeout = 0
+            
         else:
             message = {'type': 'redirect'}
 
 
         ################## --------------------- COMMENT --------------------- ##################
         print(self.user.username, ':', message['type']) #, message)
+        
+        
+        #Send admin details
+        if adminControl['admin'] != None and adminControl['gid'] == self.user.gid:
+            adminControl['admin'].sendMsg(json.dumps(curr_game.curr_stat()))
+        
         
         if message['type'] == 'players':
             plyrs = {}
@@ -213,6 +217,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 curr_game.round.player_play(self.user.user, message['card'], message['player1'], message['player2'], message['number'])
             except APIException as e:
                 print("API ERROR: ", e)
+                self.sendMsg(json.dumps({'type':'error', 'err':str(e)}))
             #curr_game.round.round_state = 2 #Results are there show everyone
 
             for plyr in curr_game.players:
@@ -300,8 +305,11 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
 class adminHandler(RequestHandler):
 
     def get(self):
-        print('AdminControl OPENED')
-        self.render('admin.html')
+        if self.user.admin:
+            print('AdminControl OPENED')
+            self.render('admin.html')
+        else:
+            self.redirect('/')
         
 
 
@@ -310,11 +318,15 @@ class wsAdminControlHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         
     def open(self):
         print('AdminControl WebSocket OPENED')
-        adminControl = self
+        adminControl['admin'] = self
+        adminControl['gid'] = 0
+        
+        self.sendMsg(json.dumps({'games': totalGames}))
     
     def on_close(self):
         print('AdminControl WebSocket CLOSED')
-        adminControl = None
+        adminControl['admin'] = None
+        self.user.admin = False
         
     def on_message(self, message):
         print("ADMIN: ", message)
@@ -369,4 +381,15 @@ handlers = [
 if __name__ == "__main__":
     app = Application(handlers, **settings)
     app.listen(options.port)
+    
+    def check_idle():
+        remove = [k for k in app.games if app.games[k].idle_state == 2]
+        print("CLEARING: ", remove)
+        for k in remove:
+            del app.games[k]
+        
+        for k, gms in app.games.items():
+            gms.idle_state += 1
+    
+    tornado.ioloop.PeriodicCallback(check_idle, 1000*60*5).start() #Every 5 minutes check idle state of games
     tornado.ioloop.IOLoop.current().start()

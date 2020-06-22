@@ -61,7 +61,9 @@ class Player:
         self.reset()
         
         self.webSocketHandle = None
-
+        
+        self.admin = False
+        
         self.gid = -1
         
         self.username = 'random' + uid[:5]
@@ -209,6 +211,8 @@ class Round:
         if  plyr2 != None and self.players[plyr2].immune:
             raise APIException('Plyr2 is immune')
             
+        if self.players[self.turn].extra == None:
+            raise APIException("Already Played")
         
         #Discard card and make the other card available as 'card' attribute
         if card_chosen == self.players[self.turn].card.card_name:#Chose his normal card
@@ -678,10 +682,14 @@ class Round:
         for cards in self.cards:
             obj['cards'].append(cards.card_name)
         obj['order'] = self.order
-        obj['player_curr'] = {self.turn: [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]}
+        if self.round_state == 1 or self.round_state == 2:
+            obj['player_curr'] = {self.turn: [self.players[self.turn].card.card_name, self.players[self.turn].extra.card_name]}
+        
         obj['discard_pile'] = self.discard_pile
         
         obj['player_info'] = self.player_dict
+        
+        obj['round_state'] = self.round_state
         
         obj['player_cards'] = {}
         
@@ -709,7 +717,7 @@ class Game:
 
         self.win_tokens = 4
         
-
+        self.idle_state = 0
         
         self.roundOver = True
         
@@ -810,6 +818,22 @@ class Game:
         del self.round
         self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), self.prev_winner_no)
         
+        
+    def curr_stat(self):
+        blob = {'game' : None}
+        blob['players'] = {}
+        for plyr in self.players:
+            blob['players'][plyr] = self.players[plyr].username
+        if self.state != 1:
+            blob['game'] = 'no'
+        elif self.round != None:
+            blob['game'] = 'round'
+            blob.update(self.round.curr_stat())
+        else:
+            blob['game'] = 'yes'
+            
+        return blob
+            
     
 #For testing
 if __name__ == '__main__':
