@@ -736,7 +736,7 @@ class Game:
             plyr.reset(True) #Do a full reset 
 
         self.state = 0
-        self.host = host
+        # self.host = host
 
 
     def add_player(self, user, username):
@@ -833,6 +833,13 @@ class Game:
             blob['game'] = 'yes'
             
         return blob
+            
+    def closing(self):
+        for plyr in self.players.values():
+            if plyr.webSocketHandle != None:
+                plyr.webSocketHandle.sendMsg({'type': 'redirect'})
+                plyr.webSocketHandle.close()
+            plyr.gid = -1
             
     
 #For testing
