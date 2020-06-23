@@ -137,7 +137,6 @@ class Game extends React.Component {
 		let emptyPoints = {};
 		Object.entries(this.state.all_players).map(([key,value]) => {emptyPoints[key] = []}); 
 
-		console.log("roundCallback ka setState: ", ((roundData.tokens!==emptyPoints) && (roundData.tokens!==null) && (roundData.tokens!==undefined)))
 		this.setState({
 			rounds_played: this.state.rounds_played + 1,
 			points: (((roundData.tokens!==emptyPoints) && (roundData.tokens!==null) && 
@@ -156,7 +155,6 @@ class Game extends React.Component {
 				leavingGame: false
 			});
 			socket.send(JSON.stringify({'type':'playerIn'}));
-      		// socket.send(JSON.stringify({'type':'players'}));
 		}
 		else if(this.state.gameWinner===null && resultsData===true) {
 			socket.send(JSON.stringify({'type':'ready'}));
@@ -167,25 +165,6 @@ class Game extends React.Component {
 				leavingGame: true
 			});
 		}
-
-		// let points_display = null;
-		// const emptyPoints = {};
-		// Object.entries(this.state.all_players).map(([key,value]) => {emptyPoints[key] = 0;}); 
-		
-		// if(this.state.points===null || this.state.points===undefined || this.state.points===emptyPoints) {
-		// 	console.log("No tokens recieved")
-		// 	if(this.state.prevPoints!==null && this.state.prevPoints!==undefined)
-		// 		points_display = this.state.prevPoints;
-		// 	else
-		// 		points_display = emptyPoints;
-		// }
-		// else 
-		// 	points_display = this.state.points; //tokens won
-		
-		// this.setState({
-		// 	prevPoints: points_display,
-		// 	points: points_display
-		// });
 	}
 
 	render() {

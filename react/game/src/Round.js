@@ -54,6 +54,7 @@ class Round extends React.Component {
 	getTurn(obj) {
 		this.setState({
 			playMode: 0, // start new turn
+			othersPlayMode: -1,
 			currentPlayer: obj.player,
 			currentCards: obj.cards,
 			allPlayerInfo: obj.playerInfo,
@@ -80,7 +81,6 @@ class Round extends React.Component {
 			this.props.gameCallback(obj);
 		}
 
-		console.log("in round.js getResults")
 		this.setState({
   			playMode: 2,
   			othersPlayMode: -1,
@@ -168,6 +168,7 @@ class Round extends React.Component {
   	}
 
 	render() {
+		console.log("othersPlayMode(display only syncs with other players if this is =1) = ",this.state.othersPlayMode)
 		var currentCard = this.state.currentCards[0];
 		if(currentCard===undefined)
 			currentCard="loading_card" // before first render
