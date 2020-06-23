@@ -28,8 +28,13 @@ class Cards extends React.Component {
 		return(
 	  		<Card onClick={this.clickCard} className='Card-design'>
 			    <Card.Body style={{ padding: 0 }}>
-			    	<Button className='card-button' variant="info">
+			    	<Button className='card-button' variant="info" disabled={this.props.toDisable}>
 			        	<Card.Img src={this.getCard()}/>
+			        	{this.props.toDisable?(<Card.ImgOverlay style={{backgroundColor: 'rgba(184, 184, 184, 0.75)'}}>
+    												<Card.Text style={{fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle'}}>
+    													You must discard the Countess
+    												</Card.Text>
+											  	</Card.ImgOverlay>):<div></div>}
 			        </Button>
 			    </Card.Body>
 	    	</Card>
