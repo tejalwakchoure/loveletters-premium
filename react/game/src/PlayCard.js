@@ -82,7 +82,6 @@ class PlayCard extends React.Component {
 				}
 			}	
 		}
-		console.log('selectedPlayers=', selectedPlayers)
 	}
 
 	selectNumber(item, defaultSelectionSatisfied) {

@@ -42,21 +42,16 @@ class Results extends React.Component {
 				icons = icons.concat(displayIcon).concat(spaceIcon);
 			emptyPoints[key] = icons;
 		});
-		console.log(emptyPoints, points_display)
 		return emptyPoints;
 	}
 
 	doNext(toSend) {
-		//if(this.props.gameWinner!==null)
-		//	this.props.socket.send(JSON.stringify({'type':'playerIn'}));
-
 		this.setState({disableButton: true});
 		this.props.gameCallback(toSend);
 	}
 
 	render() {
 		const points_display = this.getResults();
-		console.log(points_display)
 		return(
 			<Container className="Game-header">
 			  	<Row style={{margin: 'auto', textAlign: 'center'}}>
