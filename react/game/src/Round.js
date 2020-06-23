@@ -79,10 +79,6 @@ class Round extends React.Component {
 			this.setState({turnEnded: true});
 			this.props.gameCallback(obj);
 		}
-		// if(obj.roundWinner!==null && obj.discard_pile===[])
-		// 	this.setState({turnEnded: true});
-		// if(obj.gameWinner!==null)
-		// 	this.setState({turnEnded: true});
 
 		console.log("in round.js getResults")
 		this.setState({
@@ -103,7 +99,9 @@ class Round extends React.Component {
 		this.setState({results: res});
 	}
 
-	selectCard(chosen) {
+	selectCard(chosen, mustPlay) {
+		if(mustPlay!==null)
+			chosen = mustPlay;
 		this.setState({
 			cardToPlay: chosen
 		});
@@ -138,12 +136,12 @@ class Round extends React.Component {
 		if(playerChosen===1) {
 			this.setState({cardinalChosen: this.state.results.card1});
 			this.props.socket.send(JSON.stringify({'type':'cardinalView',
-										    		'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"}));
+								'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player1]+"'s card"}));
 		}
 		else {
 			this.setState({cardinalChosen: this.state.results.card2});
 			this.props.socket.send(JSON.stringify({'type':'cardinalView',
-							    					'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"}));
+							    	'cardinalChosenMessage': this.props.all_players[this.state.currentPlayer]+" viewed "+this.props.all_players[this.state.results.player2]+"'s card"}));
 		
 		}
 	}
@@ -178,8 +176,16 @@ class Round extends React.Component {
 			var drawnCard = this.state.currentCards[1];
 			if(drawnCard===undefined)
 				drawnCard="loading_card" // before first render
-
+			
 			if(this.state.playMode===0) {
+
+				const checkCountessArray = ['King', 'Prince'];
+				var isCountess = null;
+				if(currentCard==='Countess' && checkCountessArray.indexOf(drawnCard)>=0)
+					isCountess = currentCard;
+				if(drawnCard==='Countess' && checkCountessArray.indexOf(currentCard)>=0)
+					isCountess = drawnCard;
+
 				return(
 					<Container className="Game-header">
 					  	<Row style={{margin: 0}}>
@@ -198,11 +204,13 @@ class Round extends React.Component {
 					  	</Row>
 					  	<hr/>
 					  	<Row style={{margin: 'auto'}}>
-					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(currentCard, e)}>
-					  			<Cards cardname={currentCard}/>
+					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} 
+					  				onClick={(e) => this.selectCard(currentCard, isCountess, e)}>
+					  				<Cards cardname={currentCard} toDisable={(isCountess!==null)?(isCountess===drawnCard):false}/>
 					  		</Col>
-					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} onClick={(e) => this.selectCard(drawnCard, e)}>
-					  			<Cards cardname={drawnCard}/>
+					  		<Col style={{display: "inline-flex", justifyContent: 'center'}} 
+					  				onClick={(e) => this.selectCard(drawnCard, isCountess, e)}>
+					  			<Cards cardname={drawnCard} toDisable={(isCountess!==null)?(isCountess===currentCard):false}/>
 					  		</Col>
 					  	</Row> 
 					  	<Row style={{width: '50vw'}}> 
@@ -243,9 +251,13 @@ class Round extends React.Component {
 						{this.state.cardToPlay!=='Cardinal'?
 						(<Row style={{margin: 'auto'}}>
 							{this.state.results.card1!==null?
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}>
+									<Cards cardname={this.state.results.card1} toDisable={false}/>
+								</Col>: <div></div>}
 							{this.state.results.card2!==null?
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}>
+									<Cards cardname={this.state.results.card2} toDisable={false}/>
+								</Col>: <div></div>}
 						</Row>):
 
 						(<div style={{margin: 'auto'}}>
@@ -261,7 +273,9 @@ class Round extends React.Component {
 					        	</ToggleButtonGroup>
 					        </Row>
 					        <Row style={{margin: 'auto'}}>
-								<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.cardinalChosen}/></Col>
+								<Col style={{display: "inline-flex", justifyContent: 'center'}}>
+									<Cards cardname={this.state.cardinalChosen} toDisable={false}/>
+								</Col>
 							</Row>
 						</div>)}
 
@@ -305,9 +319,13 @@ class Round extends React.Component {
 					<hr/>
 					<Row style={{margin: 'auto'}}>
 						{this.state.results.card1!==null?
-							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card1}/></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}>
+								<Cards cardname={this.state.results.card1} toDisable={false}/>
+							</Col>: <div></div>}
 						{this.state.results.card2!==null?
-							<Col style={{display: "inline-flex", justifyContent: 'center'}}><Cards cardname={this.state.results.card2}/></Col>: <div></div>}
+							<Col style={{display: "inline-flex", justifyContent: 'center'}}>
+								<Cards cardname={this.state.results.card2} toDisable={false}/>
+							</Col>: <div></div>}
 					</Row>
 				</Container>);
 			} else {
@@ -371,7 +389,7 @@ class Round extends React.Component {
 						  	</Row>
 						  	<Row style={{margin: 'auto'}}>
 						  		<Col style={{display: "inline-flex", justifyContent: 'center'}}>
-						  			<Cards cardname={currentCard}/>
+						  			<Cards cardname={currentCard} toDisable={false}/>
 						  		</Col>
 						  	</Row>
 					  	</div>)}
