@@ -148,6 +148,9 @@ class gameLoginHandler(RequestHandler):
         else:
             #print(self.request.arguments)
             pass
+            
+        if adminControl['admin']:
+            adminControl['admin'].sendStatus() #Send admin status
         
 class gameBoardHandler(RequestHandler):
     def get(self):
@@ -179,8 +182,8 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         
         
         #Send admin details
-        if adminControl['admin'] != None and adminControl['gid'] == self.user.gid:
-            adminControl['admin'].sendMsg(curr_game.curr_stat())
+        if adminControl['admin'] and adminControl['gid'] == self.user.gid:
+            adminControl['admin'].sendStatus()
         
         
         if message['type'] == 'players':
@@ -293,7 +296,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             self.write_message(json.dumps(message))
         except tornado.websocket.WebSocketClosedError as e:
             print("WebSocket ERROR: ", e)
-            traceback.print_tb(err.__traceback__)
+            traceback.print_tb(e.__traceback__)
             self.close()
             
 
@@ -316,22 +319,40 @@ class wsAdminControlHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         adminControl['admin'] = self
         adminControl['gid'] = 0
         
-        self.sendMsg({'games': totalGames})
-    
+        self.sendStatus()
+        
+    def sendStatus(self):
+        blob = {'totGames': len(self.application.games), 'games':list(self.application.games.keys())}
+        if adminControl['gid']!= None and adminControl['gid'] in self.application.games:
+            blob.update(self.application.games[adminControl['gid']].curr_stat())
+            blob['gid'] = adminControl['gid']
+            blob['roomname'] = self.application.games[adminControl['gid']].room_name
+        else:
+            blob['game'] = None
+        # print(blob, adminControl)
+        self.sendMsg(blob)
+        
     def on_close(self):
         print('AdminControl WebSocket CLOSED')
         adminControl['admin'] = None
+        adminControl['gid'] = None
+        
         self.user.admin = False
         
     def on_message(self, message):
         print("ADMIN: ", message)
+        message = json.loads(message)
+        
+        if message['type'] == 'viewGame':
+            adminControl['gid'] = int(message['gid'])
+            self.sendStatus()
+            
         
     def sendMsg(self, message):
         try:
             self.write_message(json.dumps(message))
         except tornado.websocket.WebSocketClosedError as e:
             print("WebSocket ERROR: ", e)
-            traceback.print_tb(err.__traceback__)
             self.close()
         
     
@@ -387,5 +408,5 @@ if __name__ == "__main__":
         for k, gms in app.games.items():
             gms.idle_state += 1
     
-    tornado.ioloop.PeriodicCallback(check_idle, 1000*60*1).start() #Every 5 minutes check idle state of games
+    tornado.ioloop.PeriodicCallback(check_idle, 1000*60*5).start() #Every 5 minutes check idle state of games
     tornado.ioloop.IOLoop.current().start()
