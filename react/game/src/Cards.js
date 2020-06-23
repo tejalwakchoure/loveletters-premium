@@ -30,7 +30,7 @@ class Cards extends React.Component {
 			    <Card.Body style={{ padding: 0 }}>
 			    	<Button className='card-button' variant="info" disabled={this.props.toDisable}>
 			        	<Card.Img src={this.getCard()}/>
-			        	{this.props.toDisable?(<Card.ImgOverlay style={{backgroundColor: 'rgba(184, 184, 184, 0.75)'}}>
+			        	{this.props.toDisable?(<Card.ImgOverlay style={{backgroundColor: 'rgba(184, 184, 184, 0.75)', color: 'white'}}>
     												<Card.Text style={{fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle'}}>
     													You must discard the Countess
     												</Card.Text>
