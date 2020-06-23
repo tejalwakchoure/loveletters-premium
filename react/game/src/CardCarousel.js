@@ -29,11 +29,12 @@ class CardCarousel extends React.Component {
 			<div style={{margin: '0px 0px auto 0px', width: '96vw', display: 'flex', flexDirection: 'row'}}>
 				<div style={{margin: '0px 0px auto 0px'}}>
 					<div id="top-row" style={{display: 'flex', flexDirection: 'row'}}>
-						<Card className="Card-carousel-num">
-			                <Card.Body style={{ padding: 0, textAlign: 'center', backgroundColor: 'dimgray'}}>
-			                  <Card.Text>{this.props.num_cards_left}</Card.Text>
-			                </Card.Body>
-		              	</Card>
+						{this.props.num_cards_left!==-1?
+							(<Card className="Card-carousel-num">
+				                <Card.Body style={{ padding: 0, textAlign: 'center', backgroundColor: 'dimgray'}}>
+				                  <Card.Text>{this.props.num_cards_left}</Card.Text>
+				                </Card.Body>
+		              		</Card>):<div></div>}
 		              	<div className='Card-carousel' style={{overflowX: 'scroll'}}> 
 						  	{playedCardlist.map((item, index) => 
 						  		<div key={item}>
@@ -50,7 +51,8 @@ class CardCarousel extends React.Component {
 				  	</div>
 			  	</div>
 			  	<div style={{width: '100%'}}>
-		            <ListGroup style={{minWidth: 'max-content', marginLeft: '15px', boxShadow: '4px 5px 0 3px #000'}}>
+			  	{this.props.all_players!==[]?
+		            (<ListGroup style={{minWidth: 'max-content', marginLeft: '15px', boxShadow: '4px 5px 0 3px #000'}}>
 		                {this.props.order.map((id, index) => {
 			                return <ListGroup.Item style={{padding: '3px 10px',
 			                                              	fontSize: 'small',
@@ -66,7 +68,7 @@ class CardCarousel extends React.Component {
 			                          <span>&nbsp;&nbsp;</span>
 			                          {this.props.all_players[id]}
 			                        </ListGroup.Item>})}
-		            </ListGroup>
+		            </ListGroup>):<div></div>}
 	            </div>
 		    </div>
 		);

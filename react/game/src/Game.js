@@ -22,6 +22,7 @@ class Game extends React.Component {
 			roundWinner: " ",
 			gameWinner: " ",
 			cardsAtRoundEnd: [],
+			discardPileAtRoundEnd: [],
 			userID: ' ',
 			username: ' ',
 			obj: {}
@@ -35,19 +36,11 @@ class Game extends React.Component {
 
 		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
      	                   	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
-	    // let imgs = {};
-	   	// imgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
-	    // imgs['display_blank'] = require('../assets/cards/displayBlank.png');
+	   
 	    new Image().src = require('../assets/cards/loading_card.jpeg');
 	    new Image().src = require('../assets/cards/displayBlank.png');
-	    card_names.map((img, index) => {
-	        // imgs[img] = require('../assets/cards/mini'+img+'.png');
-	        new Image().src = require('../assets/cards/mini'+img+'.png');
-	        console.log("Preloaded")});
-	    card_names.map((img, index) => {
-	        // imgs[img] = require('../assets/cards/'+img+'.jpeg');
-	        new Image().src = require('../assets/cards/'+img+'.jpeg');
-	   		console.log("Preloaded")});    
+	    card_names.map((img, index) => {new Image().src = require('../assets/cards/mini'+img+'.png')});
+	    card_names.map((img, index) => {new Image().src = require('../assets/cards/'+img+'.jpeg')});    
 	}
 
 
@@ -150,7 +143,8 @@ class Game extends React.Component {
 			gameStatus: 2,
 			roundWinner: roundData.roundWinner,
 			gameWinner: roundData.gameWinner,
-			cardsAtRoundEnd: roundData.finalCards
+			cardsAtRoundEnd: roundData.finalCards,
+			discardPileAtRoundEnd: roundData.discard_pile
 		});
 	}
 
@@ -182,8 +176,8 @@ class Game extends React.Component {
 		    				userID={this.state.userID} socket={socket}/>);
 		else if (this.state.gameStatus===2)
 			return(<Results points={this.state.points} allPlayers={this.state.all_players} winner={this.state.roundWinner} 
-					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd} 
-					gameCallback={this.resultsCallback} socket={socket}/>);
+					gameWinner={this.state.gameWinner} cardsAtRoundEnd={this.state.cardsAtRoundEnd}
+					carousel={this.state.discardPileAtRoundEnd} gameCallback={this.resultsCallback} socket={socket}/>);
 	}
 }
 

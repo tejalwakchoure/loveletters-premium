@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import './Game.css';
+import CardCarousel from './CardCarousel.js';
 import {Container, Row, Col} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faHeart} from '@fortawesome/free-solid-svg-icons';
@@ -54,6 +55,10 @@ class Results extends React.Component {
 		const points_display = this.getResults();
 		return(
 			<Container className="Game-header">
+			  	<Row style={{margin: '0 0 5px 0'}}>
+			  		<CardCarousel allCardsDiscarded={this.props.carousel} num_cards_left={-1}
+			  						all_players={[]} order={[]} currentPlayer={null}/>
+			  	</Row>
 			  	<Row style={{margin: 'auto', textAlign: 'center'}}>
 			  		<h3 className='Play-status'>{this.props.allPlayers[this.props.winner]}'s letter reached the Princess!</h3>
 			  	</Row>
