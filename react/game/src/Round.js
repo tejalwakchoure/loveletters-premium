@@ -86,7 +86,7 @@ class Round extends React.Component {
   			othersPlayMode: -1,
   			results: obj,
   			discard_pile: obj.discard_pile,
-  			num_cards_left: obj.cards_left
+  			num_cards_left: obj.cards_left,
 			currentPlayer: obj.player
 		});
 	}

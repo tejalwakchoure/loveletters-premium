@@ -36,12 +36,14 @@ class Game extends React.Component {
 		const card_names = ['Bishop','Dowager Queen','Constable','Count','Sycophant','Baroness','Cardinal','Jester', 
      	                   	'Guard','Assassin','Princess','Countess','King','Prince','Handmaid','Baron','Priest'];
 	    let imgs = {};
-	    card_names.map((img, index) => {
-	        imgs[img] = require('../assets/cards/mini'+img+'.png');});
-	    imgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
+	   	imgs['loading_card'] = require('../assets/cards/loading_card.jpeg');
 	    imgs['display_blank'] = require('../assets/cards/displayBlank.png');
 	    card_names.map((img, index) => {
-	        imgs[img] = require('../assets/cards/'+img+'.jpeg');});    
+	        imgs[img] = require('../assets/cards/mini'+img+'.png');
+	        console.log("Preloaded")});
+	    card_names.map((img, index) => {
+	        imgs[img] = require('../assets/cards/'+img+'.jpeg');
+	   		console.log("Preloaded")});    
 	}
 
 
