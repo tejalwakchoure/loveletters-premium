@@ -181,10 +181,6 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         print(self.user.username, ':', message['type']) #, message)
         
         
-        #Send admin details
-        if adminControl['admin'] and adminControl['gid'] == self.user.gid:
-            adminControl['admin'].sendStatus()
-        
         
         if message['type'] == 'players':
             plyrs = {}
@@ -223,14 +219,17 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 self.sendMsg({'type':'error', 'err':str(e)})
             
             curr_game.round.round_state = 2 #Results are there show everyone
-            self.sendGameAll(curr_game.round.result_status(plyr), curr_game)#Send everyone results 
+            
+            for plyr in curr_game.players:
+                curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.result_status(plyr))#Send everyone results 
             
         
         elif message['type'] == 'nextTurn':
             if (not (curr_game.round.result_blob['card_discarded'] == 'Bishop' and curr_game.round.result_blob['result'] == 'Correct')) or 'bishopAction' in curr_game.round.result_blob:
                 curr_game.round.round_state = 1 #It is a players turn, send turn 
 
-                self.sendGameAll(curr_game.round.turn_status(plyr), curr_game)
+                for plyr in curr_game.players:
+                    curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.turn_status(plyr))
         
         elif message['type'] == 'ready': #TODO: Wait for everyone to click ready
             curr_game.all_in[self.user.user] = True
@@ -276,6 +275,13 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
         elif message['type'] == 'redirect':
             self.sendMsg(message)
             self.close()
+        else:
+            print("UNKNOWN MESSAGE: ", message)
+            
+        
+        #Send admin details
+        if adminControl['admin'] and adminControl['gid'] == self.user.gid:
+            adminControl['admin'].sendStatus()
         
     def on_close(self):
         ################## --------------------- COMMENT --------------------- ##################
