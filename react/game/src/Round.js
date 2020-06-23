@@ -168,7 +168,6 @@ class Round extends React.Component {
   	}
 
 	render() {
-		console.log("othersPlayMode(display only syncs with other players if this is =1) = ",this.state.othersPlayMode)
 		var currentCard = this.state.currentCards[0];
 		if(currentCard===undefined)
 			currentCard="loading_card" // before first render
@@ -189,7 +188,7 @@ class Round extends React.Component {
 
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: 0}}>
+					  	<Row style={{margin: '0 0 5px 0'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -223,7 +222,7 @@ class Round extends React.Component {
 			else if(this.state.playMode===1) {
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: 0}}>
+					  	<Row style={{margin: '0 0 5px 0'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -241,7 +240,7 @@ class Round extends React.Component {
 			else {
 				return (
 					<Container className="Game-header">
-					  	<Row style={{margin: 0}}>
+					  	<Row style={{margin: '0 0 5px 0'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -291,7 +290,7 @@ class Round extends React.Component {
 		else if(this.state.othersPlayMode===1) {
 				return(
 					<Container className="Game-header">
-					  	<Row style={{margin: 0}}>
+					  	<Row style={{margin: '0 0 5px 0'}}>
 					  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 					  	</Row>
@@ -310,7 +309,7 @@ class Round extends React.Component {
 			if(!this.state.results.bishopGuess) {
 				return (
 				<Container className="Game-header">
-				  	<Row style={{margin: 0}}>
+				  	<Row style={{margin: '0 0 5px 0'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
@@ -332,7 +331,7 @@ class Round extends React.Component {
 			} else {
 				return (
 				<Container className="Game-header">
-				  	<Row style={{margin: 0}}>
+				  	<Row style={{margin: '0 0 5px 0'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
@@ -357,7 +356,7 @@ class Round extends React.Component {
 				this.endTurn();
 			return(
 				<Container className="Game-header">
-				  	<Row style={{margin: 0}}>
+				  	<Row style={{margin: '0 0 5px 0'}}>
 				  		<CardCarousel allCardsDiscarded={this.state.discard_pile} num_cards_left={this.state.num_cards_left}
 					  						all_players={this.props.all_players} order={this.state.order} currentPlayer={this.state.currentPlayer}/>
 				  	</Row>
