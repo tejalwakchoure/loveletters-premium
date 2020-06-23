@@ -25,16 +25,34 @@ class CardCarousel extends React.Component {
 		let playedCardlist = [];
 		if(this.props.allCardsDiscarded!==undefined)
 			playedCardlist = this.props.allCardsDiscarded;
-		return(
+		
+		if(this.props.num_cards_left===-1) {
+			return(
+				<div className='Card-carousel' style={{overflowX: 'scroll'}}> 
+				  	{playedCardlist.map((item, index) => 
+				  		<div key={item}>
+	                    	<Card style={{ width: '3.7vw', marginLeft: '1px', 
+	                    				border: '1px solid dimgray', backgroundColor: 'dimgray'}}>
+						      <Card.Body style={{ padding: 0 }}>
+						        <Card.Img src={this.getCard(item)}/>
+						      </Card.Body>
+						    </Card>
+						</div>
+					)}
+					<div id="last-card" ref={(e) => {this.lastCard=e;}}></div>
+				</div>
+				);
+		}
+		else {
+			return (
 			<div style={{margin: '0px 0px auto 0px', width: '96vw', display: 'flex', flexDirection: 'row'}}>
 				<div style={{margin: '0px 0px auto 0px'}}>
 					<div id="top-row" style={{display: 'flex', flexDirection: 'row'}}>
-						{this.props.num_cards_left!==-1?
-							(<Card className="Card-carousel-num">
+							<Card className="Card-carousel-num">
 				                <Card.Body style={{ padding: 0, textAlign: 'center', backgroundColor: 'dimgray'}}>
 				                  <Card.Text>{this.props.num_cards_left}</Card.Text>
 				                </Card.Body>
-		              		</Card>):<div></div>}
+		              		</Card>
 		              	<div className='Card-carousel' style={{overflowX: 'scroll'}}> 
 						  	{playedCardlist.map((item, index) => 
 						  		<div key={item}>
@@ -51,8 +69,7 @@ class CardCarousel extends React.Component {
 				  	</div>
 			  	</div>
 			  	<div style={{width: '100%'}}>
-			  	{this.props.all_players!==[]?
-		            (<ListGroup style={{minWidth: 'max-content', marginLeft: '15px', boxShadow: '4px 5px 0 3px #000'}}>
+		            <ListGroup style={{minWidth: 'max-content', marginLeft: '15px', boxShadow: '4px 5px 0 3px #000'}}>
 		                {this.props.order.map((id, index) => {
 			                return <ListGroup.Item style={{padding: '3px 10px',
 			                                              	fontSize: 'small',
@@ -68,10 +85,11 @@ class CardCarousel extends React.Component {
 			                          <span>&nbsp;&nbsp;</span>
 			                          {this.props.all_players[id]}
 			                        </ListGroup.Item>})}
-		            </ListGroup>):<div></div>}
+		            </ListGroup>
 	            </div>
 		    </div>
-		);
+			);
+		}
 	}
 }
 
