@@ -697,7 +697,7 @@ class Round:
         for plyr in self.players:
             obj['tokens'][plyr] = self.players[plyr].tokens
             if plyr in self.order:
-                obj['player_cards'][plyr] = self.players[self.turn].card.card_name
+                obj['player_cards'][plyr] = self.players[plyr].card.card_name
         
         return obj
         
