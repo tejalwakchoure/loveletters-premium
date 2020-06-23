@@ -10,68 +10,89 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <script>
-  const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/wsAdminControl")
+  const socket = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/wsAdminControl");
   
   function sendGameType() {
-	socket.send(JSON.stringify({'type':"viewGame", 'gid': $('#gameKeyVal').val()}))
+	socket.send(JSON.stringify({'type':"viewGame", 'gid': $('#gameKeyVal').val()}));
   }
 	
 
   $(document).ready(function() {
 	socket.onmessage = function(event){
-		msg = JSON.parse(event.data)
-		console.log(msg)
+		msg = JSON.parse(event.data);
+		console.log(msg);
 		
-		$('#gamesLen').html('Number of games: ' + msg['totGames'])
-		$('#gamesKey').html('Keys: ' + msg['games'])
+		$('#gamesLen').html('Number of games: ' + msg['totGames']);
+		$('#gamesKey').html('Keys: ' + msg['games']);
 		
 		
 		if(msg['game'] != null){
-			$('#gameStatus').html('VIEWING GAME WITH GID:' + msg['gid'] + ', Roomname: ' + msg['roomname'] + '<br>')
+			$('#gameStatus').html('VIEWING GAME WITH GID:' + msg['gid'] + ', Roomname: ' + msg['roomname'] + '<br>');
 			
-			$('#gameStatus').append('<br>')
+			$('#gameStatus').append('<br>');
 			
-			players = msg['players']
-			$('#gameStatus').append('Players In -' + '<br>')
+			players = msg['players'];
+			$('#gameStatus').append('Players In -' + '<br>');
 			for (const [key, value] of Object.entries(players)) {
-				$('#gameStatus').append(value + '    --' + key + '<br>')
+				$('#gameStatus').append(value + '    --' + key + '<br>');
 			}
 			
-			$('#gameStatus').append('<br>')
+			$('#gameStatus').append('<br>');
 			
 			if(msg['game'] == 'no'){
-				$('#gameStatus').append('GAME HAS NOT STARTED' + '<br>')
+				$('#gameStatus').append('GAME HAS NOT STARTED' + '<br>');
 			}else if(msg['game'] == 'round'){			
 				var i;
 				for (i = 0; i < msg['order'].length; i++) {
-					$('#gameStatus').append(players[msg['order'][i]] + ': ' + msg['player_cards'][msg['order'][i]] + '<br>')
+					$('#gameStatus').append(players[msg['order'][i]] + ': ' + msg['player_cards'][msg['order'][i]] + '<br>');
 				} 
 				
-				$('#gameStatus').append('<br>')
-				$('#gameStatus').append('<br>')
+				$('#gameStatus').append('<br>');
 				
+				
+				$('#gameStatus').append('<table>');
+				$('#gameStatus').append('<tr>  <th>PLAYER</th> <th>Eliminated</th> <th>Immune</th> <th>Syco</th> <th>Jester</th> <th>Constable</th> <th>Count</th> <th>Tokens</th> </tr>');
 				for (const [key, value] of Object.entries(players)) {
-					$('#gameStatus').append(value + '    --' + '       ' + msg['player_info'][key] + '       ' + msg['tokens'][key]  + '<br>')
+					
+					$('#gameStatus').append('<tr>');
+					$('#gameStatus').append('<td>' + value + '</td>');
+					
+					
+					for(i = 0; i < msg['player_info'][key].length; i++){
+						$('#gameStatus').append('<td>' + msg['player_info'][key][i] + '</td>');
+					}
+					
+					$('#gameStatus').append('<td>' + msg['tokens'][key] + '</td>');
+					
+					$('#gameStatus').append('</tr>');
+					
+					//$('#gameStatus').append(value + '    --' + '       ' + msg['player_info'][key] + '       ' + msg['tokens'][key]  + '<br>')
 				}
 				
-				$('#gameStatus').append('<br>')
-				$('#gameStatus').append('<br>')
+				$('#gameStatus').append('<table>');
+				
+				
+				
+				$('#gameStatus').append('<br>');
+				$('#gameStatus').append('<br>');
 				
 				if(msg['round_state'] == 1 || msg['round_state'] == 2){
-					$('#gameStatus').append('Current Player:' + players[Object.keys(msg['player_curr'])[0]] + '<br>')
-					$('#gameStatus').append('Cards in hand:' + Object.values(msg['player_curr'])[0] + '<br>')
+					$('#gameStatus').append('Current Player:' + players[Object.keys(msg['player_curr'])[0]] + '<br>');
+					$('#gameStatus').append('Cards in hand:' + Object.values(msg['player_curr'])[0] + '<br>');
 				}
 
-				$('#gameStatus').append('<br>')
+				$('#gameStatus').append('<br>');
 
-				$('#gameStatus').append('Cards left:' + msg['cards'] + '<br>')
-				$('#gameStatus').append('Cards Discarded:' + msg['discard_pile'] + '<br>')
+				$('#gameStatus').append('Cards Removed  :  ' + msg['top_card'] + '<br>');
+				$('#gameStatus').append('Cards Left     :  ' + msg['cards'] + '<br>');
+				$('#gameStatus').append('Cards Discarded:  ' + msg['discard_pile'] + '<br>');
+				
 				
 			}else{
-				$('#gameStatus').append('game state is 1. but no round to show' + '<br>')
+				$('#gameStatus').append('game state is 1. but no round to show' + '<br>');
 			}
 		}else{
-			$('#gameStatus').html('NOT VIEWING ANY VALID GAME')	
+			$('#gameStatus').html('NOT VIEWING ANY VALID GAME');
 		}
 		
 		//$('#gameStatus').append(event.data + '<br>')		
@@ -80,6 +101,17 @@
   
   
 </script>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 2px;
+  text-align: center;
+}
+</style>
 
 <body>
   <div id="gameOptions">
