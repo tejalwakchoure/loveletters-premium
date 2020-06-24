@@ -313,6 +313,9 @@ class Round:
         if played_card.requires_people == 0:
             plyr1 = None
             plyr2 = None
+            self.result_blob['plyr1'] = None
+            self.result_blob['plyr1'] = None
+            
         
         if played_card.requires_people == 1 and plyr1 == None:
             raise APIException("Player 1 was required not given")
