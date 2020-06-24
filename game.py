@@ -190,7 +190,7 @@ class Round:
 
 
         ################## --------------------- COMMENT --------------------- ##################
-        #self.curr_stat()
+        #self.curr_status()
         
     def player_play(self,user, card_chosen, plyr1, plyr2, numb_given):
         #Raise exceptions if something is wrong
@@ -679,7 +679,7 @@ class Round:
             return None
             
             
-    def curr_stat(self):
+    def curr_status(self):
         obj = {}
         obj['cards'] = []
         for cards in self.cards:
@@ -823,7 +823,7 @@ class Game:
         self.round = Round(self, self.players, copy.deepcopy(self.order), copy.deepcopy(self.cards), self.prev_winner_no)
         
         
-    def curr_stat(self):
+    def curr_status(self):
         blob = {'game' : None}
         blob['players'] = {}
         for plyr in self.players:
@@ -832,7 +832,7 @@ class Game:
             blob['game'] = 'no'
         elif self.round != None:
             blob['game'] = 'round'
-            blob.update(self.round.curr_stat())
+            blob.update(self.round.curr_status())
         else:
             blob['game'] = 'yes'
             
