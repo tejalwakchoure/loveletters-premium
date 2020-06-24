@@ -217,11 +217,10 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             except APIException as e:
                 print("API ERROR: ", e)
                 self.sendMsg({'type':'error', 'err':str(e)})
-            
-            curr_game.round.round_state = 2 #Results are there show everyone
-            
-            for plyr in curr_game.players:
-                curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.result_status(plyr))#Send everyone results 
+            else:
+                curr_game.round.round_state = 2 #Results are there show everyone
+                for plyr in curr_game.players:
+                    curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.result_status(plyr))#Send everyone results 
             
         
         elif message['type'] == 'nextTurn':
@@ -238,7 +237,6 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
                 curr_game.new_round() #Start the next round for everyone
                 #And send everyone the turn status
                 self.sendGameAll({'type':'readyAll'}, curr_game)
-
 
                 for plyr in curr_game.players:
                     curr_game.all_in[plyr] = False 
@@ -332,7 +330,7 @@ class wsAdminControlHandler(RequestHandler, tornado.websocket.WebSocketHandler):
     def sendStatus(self):
         blob = {'totGames': len(self.application.games), 'games':list(self.application.games.keys())}
         if adminControl['gid']!= None and adminControl['gid'] in self.application.games:
-            blob.update(self.application.games[adminControl['gid']].curr_stat())
+            blob.update(self.application.games[adminControl['gid']].curr_status())
             blob['gid'] = adminControl['gid']
             blob['roomname'] = self.application.games[adminControl['gid']].room_name
         else:
