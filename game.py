@@ -175,10 +175,14 @@ class Round:
         self.player_turn()
         
     def player_turn(self):
-        if self.players[self.turn].immune:#If it's come back a round, you are no longer immune
+        if self.players[self.turn].immune: #If it's come back a round, you are no longer immune
             self.players[self.turn].immune = False
             self.player_dict[self.turn][1] = False
             
+        if self.sychoTar != None and self.players[self.sychoTar].out: #Sycophant target just died
+            self.player_dict[self.sychoTar][2] = False
+            self.sychoTar = None
+        
         if self.sychoTar != None and self.discard_pile[-1] != 'Sycophant': #If it's been a turn after Sycophant then no more target
             self.player_dict[self.sychoTar][2] = False
             self.sychoTar = None
@@ -186,7 +190,7 @@ class Round:
         
         self.players[self.turn].extra = self.cards.pop() #Give player a card to choose from
         
-        #TODO: if it's a Countess with a prince or King, has to discard the Countess
+        #TODO_DONE: if it's a Countess with a prince or King, has to discard the Countess
 
 
         ################## --------------------- COMMENT --------------------- ##################
@@ -330,7 +334,7 @@ class Round:
                 self.players[self.turn].tokens += 1
                 self.result_blob['result'] = 'Correct'
                 self.super_game.check_winner()
-                #TODO: Give player option to discard
+                #TODO_DONE: Give player option to discard
             else:
                 self.result_blob['result'] = 'Incorrect'
         
@@ -393,16 +397,16 @@ class Round:
             #Nothing on tie
         
         elif played_card.card_name == 'Baroness': #plyr1 and plyr2 have to be revealed 
-            pass #TODO HERE
+            pass
             
         elif played_card.card_name == 'Cardinal': #Two people  exchange
             self.player_trade(plyr1, plyr2)
             self.result_blob['card1'] = self.players[plyr1].card.card_name
             self.result_blob['card2'] = self.players[plyr2].card.card_name
-            # TODO: Reveal one card 
+            # Reveal one card 
             
         elif played_card.card_name == 'Priest': #Reveal card here
-            pass #TODO
+            pass
             
         elif played_card.card_name == 'Guard': #Number and player revealed
             if self.players[plyr1].card.card_name == 'Assassin':
