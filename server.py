@@ -3,7 +3,9 @@ import random
 import hashlib
 import shutil 
 import json
+import sys
 
+import asyncio
 import tornado.escape
 import tornado.ioloop
 import tornado.web
@@ -220,15 +222,21 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             else:
                 curr_game.round.round_state = 2 #Results are there show everyone
                 for plyr in curr_game.players:
-                    curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.result_status(plyr))#Send everyone results 
-            
+                    if curr_game.players[plyr].webSocketHandle != None:
+                        curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.result_status(plyr))#Send everyone results 
+                    else:
+                        print("Player has diconnected for some reason")
         
         elif message['type'] == 'nextTurn':
             if (not (curr_game.round.result_blob['card_discarded'] == 'Bishop' and curr_game.round.result_blob['result'] == 'Correct')) or 'bishopAction' in curr_game.round.result_blob:
                 curr_game.round.round_state = 1 #It is a players turn, send turn 
 
                 for plyr in curr_game.players:
-                    curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.turn_status(plyr))
+                    if curr_game.players[plyr].webSocketHandle != None:
+                        curr_game.players[plyr].webSocketHandle.sendMsg(curr_game.round.turn_status(plyr))#Send everyone turn status 
+                    else:
+                        print("Player has diconnected for some reason")
+                    
         
         elif message['type'] == 'ready': #TODO: Wait for everyone to click ready
             curr_game.all_in[self.user.user] = True
@@ -267,7 +275,7 @@ class webSocketHandler(RequestHandler, tornado.websocket.WebSocketHandler):
             
         elif message['type'] == 'playComponent' or message['type'] == 'gameOptions' or message['type'] == 'cardinalView':
             for plyr in curr_game.players:
-                if plyr != self.user.user:
+                if plyr != self.user.user and curr_game.players[plyr].webSocketHandle != None:
                     curr_game.players[plyr].webSocketHandle.sendMsg(message)
         
         elif message['type'] == 'redirect':
@@ -401,6 +409,9 @@ handlers = [
       
 ]
 if __name__ == "__main__":
+    #For python 3.8 and above:
+    if sys.version_info >= (3,8):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     app = Application(handlers, **settings)
     app.listen(options.port)
     
