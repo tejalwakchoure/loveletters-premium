@@ -1,1 +1,4 @@
 __pycache__
+react/game/assets/
+react/game/build/
+templates/build/
